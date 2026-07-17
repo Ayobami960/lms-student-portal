@@ -1,10 +1,12 @@
 import 'dotenv/config';
-import { PrismaClient } from '../generated/prisma/client.js';
+// ✅ IMPORT FROM THE STANDARD GLOBAL PACKAGES ROUTE NOW
+import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
 import { neonConfig } from '@neondatabase/serverless';
 import ws from 'ws';
 
-// Safe environment checking using globalThis to prevent TypeScript compilation errors
+const isVercel = process.env.VERCEL === '1';
+
 if (!(globalThis as any).window) {
   neonConfig.webSocketConstructor = ws;
 }
@@ -18,18 +20,17 @@ const createPrismaClient = () => {
     throw new Error('DATABASE_URL environment variable is missing');
   }
 
-  const adapter = new PrismaNeon({
-    connectionString: process.env.DATABASE_URL,
-  });
+  let connectionString = process.env.DATABASE_URL;
+  if (isVercel && !connectionString.includes('connection_limit')) {
+    connectionString += connectionString.includes('?') ? '&connection_limit=1' : '?connection_limit=1';
+  }
 
+  const adapter = new PrismaNeon({ connectionString });
   return new PrismaClient({ adapter });
 };
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' || isVercel) {
   globalForPrisma.prisma = prisma;
 }
-
-
-
