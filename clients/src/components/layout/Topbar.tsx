@@ -11,8 +11,7 @@ interface TopbarProps {
 export const Topbar: React.FC<TopbarProps> = ({ onOpenSidebar, currentTheme, onToggleTheme }) => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
-
+ 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = query.trim();

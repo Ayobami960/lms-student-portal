@@ -6,7 +6,6 @@ import {
   ClipboardList,
   Award,
   Bot,
-  Settings,
   LogOut,
   X,
   type LucideIcon,
