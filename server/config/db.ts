@@ -1,8 +1,7 @@
 import 'dotenv/config';
-// ✅ IMPORT FROM THE STANDARD GLOBAL PACKAGES ROUTE NOW
 import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
-import { neonConfig } from '@neondatabase/serverless';
+import { Pool, neonConfig } from '@neondatabase/serverless';
 import ws from 'ws';
 
 const isVercel = process.env.VERCEL === '1';
@@ -13,6 +12,7 @@ if (!(globalThis as any).window) {
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
+  neonPool?: Pool;
 };
 
 const createPrismaClient = () => {
@@ -20,12 +20,24 @@ const createPrismaClient = () => {
     throw new Error('DATABASE_URL environment variable is missing');
   }
 
-  let connectionString = process.env.DATABASE_URL;
-  if (isVercel && !connectionString.includes('connection_limit')) {
-    connectionString += connectionString.includes('?') ? '&connection_limit=1' : '?connection_limit=1';
+  const connectionString = process.env.DATABASE_URL;
+  
+  let pool: Pool;
+  if (globalForPrisma.neonPool) {
+    pool = globalForPrisma.neonPool;
+  } else {
+    pool = new Pool({ 
+      connectionString,
+      max: isVercel ? 1 : 10 
+    });
+    
+    if (!isVercel && process.env.NODE_ENV !== 'production') {
+      globalForPrisma.neonPool = pool;
+    }
   }
 
-  const adapter = new PrismaNeon({ connectionString });
+  // ✅ FIX: Assert 'pool as any' to cleanly bypass the rigid PoolConfig type mismatch
+  const adapter = new PrismaNeon(pool as any); 
   return new PrismaClient({ adapter });
 };
 
