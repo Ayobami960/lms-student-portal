@@ -15,6 +15,8 @@ const CoursesPage = lazy(() => import("./pages/courses/CoursesPage"));
 const CoursesDetail = lazy(() => import("./pages/courses/CourseDetails"));
 const AssignmentsPage = lazy(() => import("./pages/Assignment/AssignmentsPage"));
 const AIAssistantPage = lazy(() => import("./pages/AIAssistantPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
 
 
 function Fallback() {
@@ -106,9 +108,21 @@ export default function App() {
             </PublicRoute>
           } 
         />
+        <Route 
+          path="/forgot-password" 
+          element={
+            <PublicRoute>
+              <ForgotPasswordPage />
+            </PublicRoute>
+          } 
+        />
+        
+        
+        
 
         {/* Protected layout wraps the dashboard and course routes */}
         <Route element={<ProtectedLayout currentTheme={theme} onToggleTheme={toggleTheme} />}>
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:id" element={<CoursesDetail />} />

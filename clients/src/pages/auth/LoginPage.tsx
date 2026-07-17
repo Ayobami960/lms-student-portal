@@ -80,13 +80,7 @@ export const LoginPage: React.FC = () => {
       {/* Right side: Login Form (Scrollable Container) */}
       <main className="flex-1 flex flex-col items-center justify-center h-full overflow-y-auto p-md  bg-surface-container-low dark:bg-inverse-surface">
         {/* Mobile Header (only visible on small screens) */}
-        <header className="lg:hidden mb-xl text-center">
-          <div className="flex items-center justify-center gap-sm mb-xs">
-            <School className="text-primary w-10 h-10" />
-            <h1 className="text-2xl font-bold tracking-tight text-primary">Lumina AI</h1>
-          </div>
-          <p className="text-sm text-outline">Elevate your learning experience</p>
-        </header>
+        
 
         {/* Center Registration Core Form Card */}
         <div className="w-full max-w-[400px] my-auto bg-surface-container-lowest dark:bg-surface-container p-lg rounded-2xl shadow-xl border border-outline-variant/30">

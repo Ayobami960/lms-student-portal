@@ -99,13 +99,7 @@ export const RegisterPage: React.FC = () => {
       {/* Right side: Register Form (Scrollable Container) */}
       <main className="flex-1 flex flex-col items-center justify-center h-full overflow-y-auto p-md lg:p-xl bg-surface-container-low dark:bg-inverse-surface">
         {/* Mobile Header (only visible on small screens) */}
-        <header className="lg:hidden mb-lg text-center">
-          <div className="flex items-center justify-center gap-sm mb-xs">
-            <School className="text-primary w-10 h-10" />
-            <h1 className="text-2xl font-bold tracking-tight text-primary">Lumina AI</h1>
-          </div>
-          <p className="text-sm text-outline">Elevate your learning experience</p>
-        </header>
+    
 
         {/* Center Core Form Card */}
         <div className="w-full max-w-[440px] my-auto bg-surface-container-lowest dark:bg-surface-container p-lg rounded-2xl shadow-xl border border-outline-variant/30">
@@ -155,31 +149,7 @@ export const RegisterPage: React.FC = () => {
               )}
             </div>
 
-            {/* Role Selection (Radio Cards) */}
-            {/* <div>
-              <label className="block text-xs font-medium text-on-surface-variant mb-1.5">I am a...</label>
-              <div className="flex gap-3">
-                <label className="flex flex-1 items-center gap-2 rounded-lg border border-outline px-3 py-2 text-xs font-medium cursor-pointer hover:bg-surface-container-high transition-all select-none">
-                  <input
-                    type="radio"
-                    value="STUDENT"
-                    className="w-4 h-4 text-primary border-outline focus:ring-primary"
-                    {...register("role")}
-                  />
-                  <span className="text-on-surface-variant">Student</span>
-                </label>
-                <label className="flex flex-1 items-center gap-2 rounded-lg border border-outline px-3 py-2 text-xs font-medium cursor-pointer hover:bg-surface-container-high transition-all select-none">
-                  <input
-                    type="radio"
-                    value="INSTRUCTOR"
-                    className="w-4 h-4 text-primary border-outline focus:ring-primary"
-                    {...register("role")}
-                  />
-                  <span className="text-on-surface-variant">Instructor</span>
-                </label>
-              </div>
-            </div> */}
-
+           
             {/* Password Field Wrapper */}
             <div>
               <label htmlFor="password" className="block text-xs font-medium text-on-surface-variant mb-1">
