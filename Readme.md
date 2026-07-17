@@ -6,15 +6,6 @@ The platform provides students with an intuitive learning experience that includ
 
 The application is designed with scalability, accessibility, maintainability, performance, and production readiness in mind.
 
----
-
-## Live Demo
-
-🔗 **Live Application:** [Add your deployed URL]
-
-🔗 **Repository:** [Add your GitHub repository URL]
-
----
 
 ## Table of Contents
 
