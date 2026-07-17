@@ -51,11 +51,8 @@
   },
   "private": true,
   "scripts": {
-    "dev": "ts-node server.ts",
-    "build": "tsc",
-    "seed": "bun run seed.ts",
-    "start:dev": "INNGEST_DEV=1 nodemon --exec bun run index.ts",
-    "vercel-build": "prisma generate && tsc"
+  "vercel-build": "prisma generate && tsc",
+  "build": "prisma generate && tsc"
   },
   "type": "module"
 }

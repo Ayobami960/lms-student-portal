@@ -1,24 +1,33 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-function get(name: string, fallback: string): string {
-  return process.env[name] ?? fallback;
+function getRequired(name: string): string {
+  const value = process.env[name];
+  // Only throw an error if we are running in production/Vercel
+  if (!value && (process.env.NODE_ENV === "production" || process.env.VERCEL === "1")) {
+    throw new Error(`❌ Missing mandatory environment variable: ${name}`);
+  }
+  return value ?? "";
 }
 
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? "development",
   port: parseInt(process.env.PORT ?? "5000", 10),
-  databaseUrl: get("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/lms_platform"),
-  jwtAccessSecret: get("JWT_ACCESS_SECRET", "dev_access_secret_change_me"),
-  jwtRefreshSecret: get("JWT_REFRESH_SECRET", "dev_refresh_secret_change_me"),
-  accessTokenExpiresIn: get("ACCESS_TOKEN_EXPIRES_IN", "15m"),
-  refreshTokenExpiresIn: get("REFRESH_TOKEN_EXPIRES_IN", "7d"),
-  corsOrigin: get("CORS_ORIGIN", "http://localhost:3000"),
-  storageProvider: get("STORAGE_PROVIDER", "local"),
-  storageApiKey: get("STORAGE_API_KEY", ""),
-  storageApiSecret: get("STORAGE_API_SECRET", ""),
-  storageBucket: get("STORAGE_BUCKET", "lms-uploads"),
-  aiProvider: get("AI_PROVIDER", "mock"),
-  aiApiKey: get("AI_API_KEY", ""),
-  isProduction: process.env.NODE_ENV === "production",
+  // Safe default for local development, but strictly enforced on Vercel
+  databaseUrl: process.env.DATABASE_URL ?? "postgresql://postgres:postgres@localhost:5432/lms_platform",
+  
+  // Enforce these strictly on production
+  jwtAccessSecret: getRequired("JWT_ACCESS_SECRET"),
+  jwtRefreshSecret: getRequired("JWT_REFRESH_SECRET"),
+  
+  accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN ?? "15m",
+  refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN ?? "7d",
+  corsOrigin: process.env.CORS_ORIGIN ?? "http://localhost:3000",
+  storageProvider: process.env.STORAGE_PROVIDER ?? "local",
+  storageApiKey: process.env.STORAGE_API_KEY ?? "",
+  storageApiSecret: process.env.STORAGE_API_SECRET ?? "",
+  storageBucket: process.env.STORAGE_BUCKET ?? "lms-uploads",
+  aiProvider: process.env.AI_PROVIDER ?? "mock",
+  aiApiKey: process.env.AI_API_KEY ?? "",
+  isProduction: process.env.NODE_ENV === "production" || process.env.VERCEL === "1",
 };
