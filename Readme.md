@@ -354,8 +354,3 @@ The AI Assistant can:
 - Suggested prompts
 - Markdown support
 
-
-
-Help me create a study plan.
-
-Summarize this course module.
