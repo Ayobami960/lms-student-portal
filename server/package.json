@@ -55,7 +55,8 @@
     "build": "tsc",
     "seed": "bun run seed.ts",
     "start:dev": "INNGEST_DEV=1 nodemon --exec bun run index.ts",
-    "vercel-build": "prisma generate && tsc"
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "type": "module"
 }
