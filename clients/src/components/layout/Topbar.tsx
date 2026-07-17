@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate } from "react-router";
 import { Menu, Search, Bell, Moon, Sun } from "lucide-react";
 
 interface TopbarProps {
