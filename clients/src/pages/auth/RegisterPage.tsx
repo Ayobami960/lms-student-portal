@@ -75,7 +75,7 @@ export const RegisterPage: React.FC = () => {
       {/* Left side: Brand Visual Panel */}
       <section className="hidden lg:flex lg:w-1/2 relative bg-primary items-center justify-center p-xl overflow-hidden">
         <img
-          alt="Lumina LMS"
+          alt="EduAI Pro"
           className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay"
           src="https://lh3.googleusercontent.com/aida/AP1WRLv0vs9g5jzZQmfctFgrk63PUbEIp0aKKxw18fHegiIPMCUCHsmRMCpLKZvYlZvPh8jrwvK27YMIG5AR6VjWzG5aSdgWaDiFI0r_5lOV1Zaj5SjuNY1bcpbRS-NdSGJzfgkgEhW1VD3mYCOnAeD349yGZkbIkYRus_IwY9wgMnxL2jza0jislWjVyDh29lk6iAe95SN9C433SQnNHraJNRQPxLP5VDrTVb3FuqwDZ-ERU0tlXQRRkUVV7HOj"
         />
@@ -84,7 +84,7 @@ export const RegisterPage: React.FC = () => {
             <div className="bg-surface-container-lowest/20 backdrop-blur-md p-md rounded-xl inline-flex items-center justify-center">
               <School className="text-white w-16 h-16" />
             </div>
-            <h1 className="text-4xl text-white font-bold tracking-tight">Lumina LMS</h1>
+            <h1 className="text-4xl text-white font-bold tracking-tight">EduAI Pro</h1>
             <p className="text-lg text-on-primary-container/90">Elevate your modern learning experience.</p>
             <div className="mt-lg flex items-center gap-md">
               <div className="h-[1px] w-12 bg-white/30"></div>

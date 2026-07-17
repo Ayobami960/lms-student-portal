@@ -1,8 +1,8 @@
-
+import { Prisma } from "../generated/prisma/client";
 import { prisma } from "../config/db";
 import { ApiError } from "../utils/ApiError";
 import { slugify } from "../utils/slugify";
-import { Prisma } from "@prisma/client";
+// import { Prisma } from "@prisma/client";
 
 interface ListCoursesParams {
   search?: string;
