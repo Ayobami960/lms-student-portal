@@ -1,0 +1,275 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  GRADED
+  LATE
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+// ------------------------- MODELS -------------------------
+
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  role       Role     @default(STUDENT)
+  avatar     String?
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  refreshTokens   RefreshToken[]
+  coursesTaught   Course[]         @relation("InstructorCourses")
+  enrollments     Enrollment[]
+  lessonProgress  LessonProgress[]
+  submissions     Submission[]
+  certificates    Certificate[]
+  aiConversations AIConversation[]
+  passwordResets  PasswordReset[]
+
+  @@index([role])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_resets")
+}
+
+model Course {
+  id           String   @id @default(uuid())
+  title        String
+  slug         String   @unique
+  description  String
+  thumbnail    String?
+  category     String
+  level        Level    @default(BEGINNER)
+  duration     Int      @default(0) // minutes
+  rating       Float    @default(0)
+  published    Boolean  @default(false)
+  instructorId String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  instructor  User         @relation("InstructorCourses", fields: [instructorId], references: [id])
+  modules     Module[]
+  enrollments Enrollment[]
+  certificates Certificate[]
+
+  @@index([category])
+  @@index([level])
+  @@index([published])
+  @@index([instructorId])
+  @@map("courses")
+}
+
+model Enrollment {
+  id          String    @id @default(uuid())
+  studentId   String
+  courseId    String
+  progress    Float     @default(0) // 0-100
+  completed   Boolean   @default(false)
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId])
+  @@index([studentId])
+  @@index([courseId])
+  @@map("enrollments")
+}
+
+model Module {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  order       Int
+  courseId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@index([courseId])
+  @@map("modules")
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  content     String?
+  videoUrl    String?
+  order       Int
+  moduleId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  module     Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress   LessonProgress[]
+  assignments Assignment[]
+
+  @@index([moduleId])
+  @@map("lessons")
+}
+
+model LessonProgress {
+  id          String    @id @default(uuid())
+  studentId   String
+  lessonId    String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  lesson  Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, lessonId])
+  @@index([studentId])
+  @@index([lessonId])
+  @@map("lesson_progress")
+}
+
+model Assignment {
+  id           String   @id @default(uuid())
+  title        String
+  description  String
+  instructions String?
+  dueDate      DateTime
+  maxScore     Int      @default(100)
+  lessonId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  lesson      Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+
+  @@index([lessonId])
+  @@map("assignments")
+}
+
+model Submission {
+  id           String           @id @default(uuid())
+  assignmentId String
+  studentId    String
+  fileUrl      String?
+  fileName     String?
+  comment      String?
+  score        Int?
+  feedback     String?
+  status       SubmissionStatus @default(SUBMITTED)
+  submittedAt  DateTime         @default(now())
+  gradedAt     DateTime?
+  updatedAt    DateTime         @updatedAt
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student    User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([assignmentId, studentId])
+  @@index([assignmentId])
+  @@index([studentId])
+  @@map("submissions")
+}
+
+model Certificate {
+  id                String   @id @default(uuid())
+  certificateNumber String   @unique
+  studentId         String
+  courseId          String
+  studentName       String
+  courseName        String
+  issueDate         DateTime @default(now())
+  certificateUrl    String?
+  createdAt         DateTime @default(now())
+
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId])
+  @@index([studentId])
+  @@map("certificates")
+}
+
+model AIConversation {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String   @default("New Conversation")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AIMessage[]
+
+  @@index([userId])
+  @@map("ai_conversations")
+}
+
+model AIMessage {
+  id             String      @id @default(uuid())
+  conversationId String
+  role           MessageRole
+  content        String
+  createdAt      DateTime    @default(now())
+
+  conversation AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@map("ai_messages")
+}

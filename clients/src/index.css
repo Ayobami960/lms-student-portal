@@ -1,0 +1,206 @@
+@import "tailwindcss";
+
+@theme {
+  /* Let Tailwind know to use the .dark selector strategy */
+  --variant-dark: .dark &;
+
+  /* Custom brand colors mapped to your design variables */
+  --color-primary: #3525cd;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #4f46e5;
+  --color-on-primary-container: #dad7ff;
+  
+  --color-secondary: #006a61;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #86f2e4;
+  --color-on-secondary-container: #006f66;
+  --color-secondary-fixed-dim: #6bd8cb;
+  
+  --color-tertiary: #571ac0;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #6f3dd9;
+  --color-on-tertiary-container: #e3d5ff;
+  --color-tertiary-fixed: #e9ddff;
+  --color-on-tertiary-fixed-variant: #5516be;
+  
+  --color-surface: #f8f9ff;
+  --color-on-surface: #0b1c30;
+  --color-on-surface-variant: #464555;
+  --color-surface-container: #e5eeff;
+  --color-surface-container-high: #dce9ff;
+  --color-surface-container-highest: #d3e4fe;
+  --color-surface-container-lowest: #ffffff;
+  
+  --color-outline: #777587;
+  --color-outline-variant: #c7c4d8;
+  
+  /* Custom Spacing & Border Radius */
+  --spacing-md: 1.5rem;
+  --spacing-sm: 1rem;
+  --spacing-xs: 0.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-margin-mobile: 1rem;
+  --spacing-margin-desktop: 2.5rem;
+}
+
+/* Base style resets */
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    @apply bg-surface text-on-surface transition-colors duration-200;
+  }
+}
+
+/* Correct Tailwind v4 variable mapping for Dark Mode */
+@layer base {
+  .dark {
+    --color-surface: #0b1c30;
+    --color-on-surface: #f8f9ff;
+    --color-surface-container-lowest: #13273e;
+    --color-surface-container-high: #1c3552;
+    --color-surface-container: #172e48;
+    --color-on-surface-variant: #c7c4d8;
+    --color-outline-variant: #2d435e;
+  }
+}
+
+
+/* Reusable component classes — inputs, search, buttons, cards */
+/* Plain CSS version — uses the CSS variables already defined in @theme */
+
+.input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-outline-variant);
+  background-color: var(--color-surface-container-lowest);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: var(--color-on-surface);
+  outline: none;
+  transition: border-color 150ms, box-shadow 150ms;
+}
+
+.input::placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+.input:hover {
+  border-color: var(--color-outline);
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(53 37 205 / 0.2);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Search field: same as .input, with left padding for an icon.
+   Pair with an absolutely-positioned icon inside a relative wrapper,
+   as already done in CoursesPage.tsx */
+.input-search {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-outline-variant);
+  background-color: var(--color-surface-container-lowest);
+  padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+  font-size: 0.875rem;
+  color: var(--color-on-surface);
+  outline: none;
+  transition: border-color 150ms, box-shadow 150ms;
+}
+
+.input-search::placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+.input-search:hover {
+  border-color: var(--color-outline);
+}
+
+.input-search:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(53 37 205 / 0.2);
+}
+
+/* Dropdown / select styling with a custom chevron */
+select.input {
+  cursor: pointer;
+  appearance: none;
+  padding-right: 2.25rem;
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23777587' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+/* Primary action button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-on-primary);
+  border: none;
+  cursor: pointer;
+  transition: opacity 150ms, transform 150ms;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+/* Secondary / outline button — used for pagination, reset, etc. */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-outline-variant);
+  background-color: var(--color-surface-container-lowest);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-on-surface);
+  cursor: pointer;
+  transition: border-color 150ms, color 150ms;
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  border-color: var(--color-outline-variant);
+  color: var(--color-on-surface);
+}
+
+/* Card surface used by CourseCard and similar list items */
+.card {
+  border-radius: 1rem;
+  border: 1px solid var(--color-outline-variant);
+  background-color: var(--color-surface-container-lowest);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}

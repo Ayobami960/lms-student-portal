@@ -1,0 +1,68 @@
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: "STUDENT" | "INSTRUCTOR" | "ADMIN";
+  avatar?: string | null;
+}
+
+interface AuthState {
+  accessToken: string | null;
+  user: AuthUser | null;
+}
+
+// Access tokens are short-lived and re-obtained via the httpOnly refresh cookie
+// on load, so only the user profile is persisted (for instant UI on refresh).
+const STORAGE_KEY = "lms-student-auth";
+
+function loadPersistedUser(): AuthUser | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw).user as AuthUser) : null;
+  } catch {
+    return null;
+  }
+}
+
+const initialState: AuthState = {
+  accessToken: null,
+  user: loadPersistedUser(),
+};
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    setAuth(state, action: PayloadAction<{ accessToken: string; user: AuthUser }>) {
+      state.accessToken = action.payload.accessToken;
+      state.user = action.payload.user;
+    },
+    setUser(state, action: PayloadAction<AuthUser>) {
+      state.user = action.payload;
+    },
+    setAccessToken(state, action: PayloadAction<string>) {
+      state.accessToken = action.payload;
+    },
+    clearAuth(state) {
+      state.accessToken = null;
+      state.user = null;
+    },
+  },
+});
+
+export const { setAuth, setUser, setAccessToken, clearAuth } = authSlice.actions;
+export default authSlice.reducer;
+
+// Persist just the user profile to localStorage whenever auth state changes.
+// Wired up via store.subscribe() in store/index.ts.
+export function persistAuthUser(user: AuthUser | null) {
+  try {
+    if (user) localStorage.setItem(STORAGE_KEY, JSON.stringify({ user }));
+    else localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* localStorage unavailable — ignore */
+  }
+}
