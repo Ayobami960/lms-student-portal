@@ -1,16 +1,16 @@
-import express, { type Application, type Request, type Response } from "express";
+import "dotenv/config";
+import express, { type Application, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
 
-import { env } from "./config/env";
-import { logger } from "./utils/logger";
-import { prisma } from "./config/db";
-import { storage } from "./config/storage";
-import { generalLimiter } from "./middleware/rateLimit";
-import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
-import routes from "./routes";
+import { env } from "./config/env.js";
+import { logger } from "./utils/logger.js";
+import { storage } from "./config/storage.js";
+import { generalLimiter } from "./middleware/rateLimit.js";
+import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
+import routes from "./routes/index.js";
 
 const app: Application = express();
 
@@ -26,12 +26,12 @@ app.use(generalLimiter);
 // Static file serving for locally-stored uploads (avatars, submissions, certificates)
 app.use("/uploads", express.static(storage.uploadDir));
 
+app.get("/", (req: Request, res: Response) => {
+  res.send("Server is Live!");
+});
+
 // Routes
 app.use("/api/v1", routes);
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello from the backend!");
-});
 
 // 404 + global error handler
 app.use(notFoundHandler);
@@ -41,22 +41,24 @@ const isVercelRuntime = process.env.VERCEL === "1";
 
 // Persistent process entry point for standalone development execution
 if (!isVercelRuntime) {
-  async function main() {
-    await prisma.$connect();
-    app.listen(env.port, () => {
-      logger.info("========================================");
-      logger.info("🚀 Server is running successfully!");
-      logger.info(`LMS API listening on port ${env.port} [${env.nodeEnv}]`);
-      logger.info("========================================");
-    });
-  }
+  app.listen(env.port, async () => {
+    logger.info("========================================");
+    logger.info("🚀 Server is running successfully!");
+    logger.info(`LMS API listening on port ${env.port} [${env.nodeEnv}]`);
+    logger.info("========================================");
 
-  main().catch((err) => {
-    logger.error({ err }, "Failed to start server process");
-    process.exit(1);
+    // Lazy import so dotenv/config has fully loaded env vars first
+    const { prisma } = await import("./config/db.js");
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      logger.info("✅ Database connected successfully");
+    } catch (err: any) {
+      logger.error({ err }, "❌ DB connection failed");
+    }
   });
 
   process.on("SIGINT", async () => {
+    const { prisma } = await import("./config/db.js");
     await prisma.$disconnect();
     process.exit(0);
   });
