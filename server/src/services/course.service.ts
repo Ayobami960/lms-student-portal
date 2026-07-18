@@ -1,4 +1,4 @@
-import { Prisma } from "../generated/prisma/client";
+import { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../config/db";
 import { ApiError } from "../utils/ApiError";
 import { slugify } from "../utils/slugify";
@@ -64,7 +64,7 @@ export const courseService = {
       prisma.course.count({ where }),
     ]);
 
-    const mappedItems = items.map((course) => ({
+    const mappedItems = items.map((course: any) => ({
       ...course,
       enrollment: course.enrollments?.[0] ?? null,
     }));

@@ -11,7 +11,7 @@ import { logger } from "./utils/logger";
 import { generalLimiter } from "./middleware/rateLimit";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { storage } from "./config/storage";
-import routes from "./routes";
+import routes from "./src/routes";
 import { swaggerSpec } from "./config/swagger";
 
 const app = express();

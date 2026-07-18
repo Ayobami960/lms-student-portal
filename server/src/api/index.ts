@@ -1,7 +1,7 @@
-import app from "./app";
-import { env } from "./config/env";
-import { logger } from "./utils/logger";
-import { prisma } from "./config/db";
+import app from "../app";
+import { env } from "../config/env";
+import { logger } from "../utils/logger";
+import { prisma } from "../config/db";
 
 const isVercelRuntime = process.env.VERCEL === "1";
 

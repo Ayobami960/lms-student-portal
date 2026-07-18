@@ -19,6 +19,6 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true
   },
-  "include": ["src", "validations", "app.ts", "index.ts", "routes", "controllers", "config", "types"],
+  "include": ["src", "src/validations", "app.ts", "src/api/index.ts", "src/routes", "src/controllers", "config", "src/types"],
   "exclude": ["node_modules", "dist", "tests"]
 }
