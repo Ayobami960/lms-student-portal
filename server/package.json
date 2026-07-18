@@ -56,7 +56,7 @@
     "seed": "bun run seed.ts",
     "start:dev": "INNGEST_DEV=1 nodemon --exec bun run src/server.ts",
     "postinstall": "prisma generate",
-    "vercel-build": "prisma generate && prisma migrate deploy"
+    "vercel-build": "prisma generate && prisma db push"
   },
   "type": "module"
 }
