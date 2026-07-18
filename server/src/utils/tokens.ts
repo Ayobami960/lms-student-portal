@@ -1,5 +1,5 @@
+import 'dotenv/config'
 import jwt from "jsonwebtoken";
-import { env } from "../config/env";
 
 export interface AccessTokenPayload {
   sub: string; // userId
@@ -7,22 +7,27 @@ export interface AccessTokenPayload {
   email: string;
 }
 
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
+const ACCESS_TOKEN_EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN || "15m";
+const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || "7d";
+
 export function signAccessToken(payload: AccessTokenPayload): string {
-  return jwt.sign(payload, env.jwtAccessSecret, { 
-    expiresIn: env.accessTokenExpiresIn as any 
+  return jwt.sign(payload, JWT_ACCESS_SECRET, {
+    expiresIn: ACCESS_TOKEN_EXPIRES_IN as any,
   });
 }
 
 export function signRefreshToken(userId: string): string {
-  return jwt.sign({ sub: userId }, env.jwtRefreshSecret, { 
-    expiresIn: env.refreshTokenExpiresIn as any 
+  return jwt.sign({ sub: userId }, JWT_REFRESH_SECRET, {
+    expiresIn: REFRESH_TOKEN_EXPIRES_IN as any,
   });
 }
 
 export function verifyAccessToken(token: string): AccessTokenPayload {
-  return jwt.verify(token, env.jwtAccessSecret) as AccessTokenPayload;
+  return jwt.verify(token, JWT_ACCESS_SECRET) as AccessTokenPayload;
 }
 
 export function verifyRefreshToken(token: string): { sub: string } {
-  return jwt.verify(token, env.jwtRefreshSecret) as { sub: string };
+  return jwt.verify(token, JWT_REFRESH_SECRET) as { sub: string };
 }
