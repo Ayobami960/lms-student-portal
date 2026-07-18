@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "module": "src/index.ts",
+  "module": "src/server.ts",
   "dependencies": {
     "@prisma/adapter-neon": "^7.8.0",
     "@prisma/adapter-pg": "^7.8.0",
@@ -51,10 +51,10 @@
   },
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "seed": "bun run seed.ts",
-    "start:dev": "INNGEST_DEV=1 nodemon --exec bun run src/index.ts",
+    "start:dev": "INNGEST_DEV=1 nodemon --exec bun run src/server.ts",
     "postinstall": "prisma generate",
     "vercel-build": "prisma generate && prisma migrate deploy"
   },

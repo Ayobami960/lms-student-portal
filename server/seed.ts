@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { prisma } from './config/db.js';
+import { prisma } from './src/config/db.js';
 
 const DEFAULT_PASSWORD = 'Smith@lms123';
 

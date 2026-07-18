@@ -27,8 +27,7 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
     "esModuleInterop": true,
-    "ignoreDeprecations": "6.0"
   },
-  "include": ["src", "src/validations", "app.ts", "src/index.ts", "src/routes", "src/controllers", "config", "src/types"],
+  "include": ["src", "src/validations", "src/server.ts", "src/routes", "src/controllers", "config", "src/types"],
   "exclude": ["node_modules", "dist", "tests"]
 }
