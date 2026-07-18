@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # AI-Powered Learning Management System (LMS)
 
 A modern, fully responsive, AI-powered Learning Management System built with React, TypeScript, Tailwind CSS, and REST API architecture.
@@ -39,6 +38,35 @@ The application is designed with scalability, accessibility, maintainability, pe
   - [Access Points](#access-points)
   - [Capabilities](#capabilities)
   - [Chat Features](#chat-features)
+- [AI-Powered Learning Management System (LMS)](#ai-powered-learning-management-system-lms-1)
+  - [Table of Contents](#table-of-contents-1)
+- [Project Overview](#project-overview-1)
+- [Features](#features-1)
+  - [Authentication](#authentication-1)
+  - [Student Dashboard](#student-dashboard-1)
+    - [Summary Metrics](#summary-metrics-1)
+    - [Analytics](#analytics-1)
+    - [Recent Activity](#recent-activity-1)
+    - [Continue Learning](#continue-learning-1)
+- [Course Management](#course-management-1)
+  - [Course Listing](#course-listing-1)
+  - [Search](#search-1)
+  - [Filtering](#filtering-1)
+  - [Sorting](#sorting-1)
+  - [Pagination](#pagination-1)
+- [Course Details](#course-details-1)
+- [Assignment Management](#assignment-management-1)
+  - [Assignment List](#assignment-list-1)
+    - [Assignment Statuses](#assignment-statuses-1)
+  - [Assignment Submission](#assignment-submission-1)
+    - [Supported File Types](#supported-file-types-1)
+    - [Validation](#validation-1)
+- [Assignment Grading](#assignment-grading-1)
+- [Certificate Generation](#certificate-generation-1)
+- [AI Learning Assistant](#ai-learning-assistant-1)
+  - [Access Points](#access-points-1)
+  - [Capabilities](#capabilities-1)
+  - [Chat Features](#chat-features-1)
 
 ---
 
