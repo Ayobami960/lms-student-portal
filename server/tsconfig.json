@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+   "compilerOptions": {
     "lib": ["ESNext"],
     "target": "ESNext",
     "module": "Preserve",
@@ -19,17 +19,6 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true
   },
-  // FIX: Ensure your specific file or root files are included here
-  "include": [
-    "src/**/*", 
-    "validations/**/*", 
-    "routes/**/*", 
-    "controllers/**/*", 
-    "config/**/*", 
-    "types/**/*",
-    "app.ts", 
-    "index.ts",
-    "*.ts" // This includes any root-level TypeScript files
-  ],
+  "include": ["src", "validations", "app.ts", "index.ts", "routes", "controllers", "config", "types"],
   "exclude": ["node_modules", "dist", "tests"]
 }
