@@ -9,20 +9,20 @@
   --color-on-primary: #ffffff;
   --color-primary-container: #4f46e5;
   --color-on-primary-container: #dad7ff;
-  
+
   --color-secondary: #006a61;
   --color-on-secondary: #ffffff;
   --color-secondary-container: #86f2e4;
   --color-on-secondary-container: #006f66;
   --color-secondary-fixed-dim: #6bd8cb;
-  
+
   --color-tertiary: #571ac0;
   --color-on-tertiary: #ffffff;
   --color-tertiary-container: #6f3dd9;
   --color-on-tertiary-container: #e3d5ff;
   --color-tertiary-fixed: #e9ddff;
   --color-on-tertiary-fixed-variant: #5516be;
-  
+
   --color-surface: #f8f9ff;
   --color-on-surface: #0b1c30;
   --color-on-surface-variant: #464555;
@@ -30,10 +30,10 @@
   --color-surface-container-high: #dce9ff;
   --color-surface-container-highest: #d3e4fe;
   --color-surface-container-lowest: #ffffff;
-  
+
   --color-outline: #777587;
   --color-outline-variant: #c7c4d8;
-  
+
   /* Custom Spacing & Border Radius */
   --spacing-md: 1.5rem;
   --spacing-sm: 1rem;
@@ -203,4 +203,270 @@ select.input {
   border: 1px solid var(--color-outline-variant);
   background-color: var(--color-surface-container-lowest);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+
+/* Scrolling text loader — colors now pull from your theme tokens
+   instead of hardcoded white/gray, so it adapts automatically in dark mode. */
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader {
+  --loader-main-size: 4em;
+  --loader-text-color: var(--color-on-surface);
+  --loader-shine-color: var(--color-primary);
+  --loader-shadow-color: var(--color-outline);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+  position: relative;
+  font-size: var(--loader-main-size);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--loader-text-color);
+  width: 7.3em;
+  height: 1em;
+  filter: drop-shadow(0 0 0.05em color-mix(in srgb, var(--loader-shine-color) 25%, transparent));
+}
+
+.loader .text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  position: absolute;
+}
+
+.loader .text:nth-child(1) {
+  clip-path: polygon(0% 0%, 11.11% 0%, 11.11% 100%, 0% 100%);
+  font-size: calc(var(--loader-main-size) / 20);
+  margin-left: -2.1em;
+  opacity: 0.6;
+}
+
+.loader .text:nth-child(2) {
+  clip-path: polygon(11.11% 0%, 22.22% 0%, 22.22% 100%, 11.11% 100%);
+  font-size: calc(var(--loader-main-size) / 16);
+  margin-left: -0.98em;
+  opacity: 0.7;
+}
+
+.loader .text:nth-child(3) {
+  clip-path: polygon(22.22% 0%, 33.33% 0%, 33.33% 100%, 22.22% 100%);
+  font-size: calc(var(--loader-main-size) / 13);
+  margin-left: -0.33em;
+  opacity: 0.8;
+}
+
+.loader .text:nth-child(4) {
+  clip-path: polygon(33.33% 0%, 44.44% 0%, 44.44% 100%, 33.33% 100%);
+  font-size: calc(var(--loader-main-size) / 11);
+  margin-left: -0.05em;
+  opacity: 0.9;
+}
+
+.loader .text:nth-child(5) {
+  clip-path: polygon(44.44% 0%, 55.55% 0%, 55.55% 100%, 44.44% 100%);
+  font-size: calc(var(--loader-main-size) / 10);
+  margin-left: 0em;
+  opacity: 1;
+}
+
+.loader .text:nth-child(6) {
+  clip-path: polygon(55.55% 0%, 66.66% 0%, 66.66% 100%, 55.55% 100%);
+  font-size: calc(var(--loader-main-size) / 11);
+  margin-left: 0.05em;
+  opacity: 0.9;
+}
+
+.loader .text:nth-child(7) {
+  clip-path: polygon(66.66% 0%, 77.77% 0%, 77.77% 100%, 66.66% 100%);
+  font-size: calc(var(--loader-main-size) / 13);
+  margin-left: 0.33em;
+  opacity: 0.8;
+}
+
+.loader .text:nth-child(8) {
+  clip-path: polygon(77.77% 0%, 88.88% 0%, 88.88% 100%, 77.77% 100%);
+  font-size: calc(var(--loader-main-size) / 16);
+  margin-left: 0.98em;
+  opacity: 0.7;
+}
+
+.loader .text:nth-child(9) {
+  clip-path: polygon(88.88% 0%, 100% 0%, 100% 100%, 88.88% 100%);
+  font-size: calc(var(--loader-main-size) / 20);
+  margin-left: 2.1em;
+  opacity: 0.6;
+}
+
+.loader .text span {
+  animation:
+    loader-scrolling 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite,
+    loader-shadow 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite;
+}
+
+.loader .text:nth-child(1) span {
+  background: linear-gradient(
+    to right,
+    var(--loader-text-color) 4%,
+    var(--loader-shadow-color) 7%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.loader .text:nth-child(2) span {
+  background: linear-gradient(
+    to right,
+    var(--loader-text-color) 9%,
+    var(--loader-shadow-color) 13%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.loader .text:nth-child(3) span {
+  background: linear-gradient(
+    to right,
+    var(--loader-text-color) 15%,
+    var(--loader-shadow-color) 18%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.loader .text:nth-child(4) span {
+  background: linear-gradient(
+    to right,
+    var(--loader-text-color) 20%,
+    var(--loader-shadow-color) 23%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.loader .text:nth-child(6) span {
+  background: linear-gradient(
+    to right,
+    var(--loader-shadow-color) 29%,
+    var(--loader-text-color) 32%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.loader .text:nth-child(7) span {
+  background: linear-gradient(
+    to right,
+    var(--loader-shadow-color) 34%,
+    var(--loader-text-color) 37%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.loader .text:nth-child(8) span {
+  background: linear-gradient(
+    to right,
+    var(--loader-shadow-color) 39%,
+    var(--loader-text-color) 42%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.loader .text:nth-child(9) span {
+  background: linear-gradient(
+    to right,
+    var(--loader-shadow-color) 45%,
+    var(--loader-text-color) 48%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.loader .line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  height: 0.05em;
+  width: calc(var(--loader-main-size) / 2);
+  margin-top: 0.9em;
+  border-radius: 0.05em;
+}
+
+.loader .line::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: var(--loader-text-color);
+  opacity: 0.3;
+}
+
+.loader .line::after {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: var(--loader-text-color);
+  border-radius: 0.05em;
+  transform: translateX(-90%);
+  animation: loader-wobble 2s cubic-bezier(0.5, 0.8, 0.5, 0.2) infinite;
+}
+
+@keyframes loader-wobble {
+  0% {
+    transform: translateX(-90%);
+  }
+  50% {
+    transform: translateX(90%);
+  }
+  100% {
+    transform: translateX(-90%);
+  }
+}
+
+@keyframes loader-scrolling {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes loader-shadow {
+  0% {
+    background-position: -98% 0;
+  }
+  100% {
+    background-position: 102% 0;
+  }
 }

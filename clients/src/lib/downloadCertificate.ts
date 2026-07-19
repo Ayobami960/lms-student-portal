@@ -1,6 +1,6 @@
 // RTK Query is built for JSON in/out; a binary file download is simpler as a
 // plain authenticated fetch that hands the browser a blob URL to open.
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8080/api/v1";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000/api/v1";
 
 export function certificateDownloadUrl(id: string) {
   return `${API_URL}/certificates/${id}/download`;

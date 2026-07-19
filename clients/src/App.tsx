@@ -1,17 +1,19 @@
 import { Routes, Route, Navigate } from "react-router";
 import { lazy, Suspense, useState, useEffect } from "react";
-import { Loader2 } from "lucide-react";
+
 import ProtectedLayout from "./components/layout/ProtectedLayout";
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { useLazyMeQuery } from "./store/api/apiSlice";
-// FIX: Imported setAccessToken and clearAuth alongside setUser
+
 import { setUser, setAccessToken, clearAuth } from "./store/authSlice";
+import Loader from "./components/Loading";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/auth/RegisterPage"));
 const DashboardPage = lazy(() => import("./pages/Dashboard"));
 const CertificatesPage = lazy(() => import("./pages/CertificatesPage"));
-
+const GradingPage = lazy(() => import("./pages/InstructorController/GradingPage"));
+const InstructorCoursesPage = lazy(() => import("./pages/InstructorController/InstructorCoursesPage"));
 const CoursesPage = lazy(() => import("./pages/courses/CoursesPage"));
 const CoursesDetail = lazy(() => import("./pages/courses/CourseDetails"));
 const AssignmentsPage = lazy(() => import("./pages/Assignment/AssignmentsPage"));
@@ -22,8 +24,8 @@ const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
 
 function Fallback() {
   return (
-    <div className="flex h-screen items-center justify-center bg-surface">
-      <Loader2 className="animate-spin text-primary" size={32} />
+    <div className="flex h-screen items-center justify-center ">
+       <Loader/>
     </div>
   );
 }
@@ -140,6 +142,8 @@ export default function App() {
           <Route path="/assignments" element={<AssignmentsPage />} />
           <Route path="/certificates" element={<CertificatesPage />} />
           <Route path="/ai-assistant" element={<AIAssistantPage />} />
+            <Route path="/my-courses" element={<InstructorCoursesPage />} />
+            <Route path="/grading" element={<GradingPage />} />
         </Route>
 
         {/* Fallback route - sends unhandled paths back home */}

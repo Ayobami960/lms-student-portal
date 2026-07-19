@@ -1,22 +1,19 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Link, useNavigate } from "react-router"; // Keeps your v7 router-friendly import
+import { Link, useNavigate } from "react-router";
 import { Eye, EyeOff, School, Mail, Lock, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
-// Integration Hooks & Slices
 import { useLoginMutation } from "../../store/api/apiSlice";
 import { setAuth } from "../../store/authSlice";
 import { useAppDispatch } from "../../hooks/redux";
 
-// Form validation schema
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
   password: z.string().min(1, "Password is required"),
-  rememberMe: z.boolean().optional(),
+  terms: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -30,15 +27,20 @@ export const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    watch,
+    formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
-      rememberMe: false,
+      terms: false,
     },
   });
+
+   const termsAccepted = watch("terms");
+
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -79,10 +81,6 @@ export const LoginPage: React.FC = () => {
 
       {/* Right side: Login Form (Scrollable Container) */}
       <main className="flex-1 flex flex-col items-center justify-center h-full overflow-y-auto p-md  bg-surface-container-low dark:bg-inverse-surface">
-        {/* Mobile Header (only visible on small screens) */}
-        
-
-        {/* Center Registration Core Form Card */}
         <div className="w-full max-w-[400px] my-auto bg-surface-container-lowest dark:bg-surface-container p-lg rounded-2xl shadow-xl border border-outline-variant/30">
           <div className="mb-lg">
             <h2 className="text-2xl font-semibold text-on-surface tracking-tight mb-2">Welcome Back</h2>
@@ -147,20 +145,19 @@ export const LoginPage: React.FC = () => {
             <div className="flex items-center justify-between pt-1">
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
-                  {...register("rememberMe")}
+                  {...register("terms")}
                   type="checkbox"
-                  
                   className="w-4 h-4 rounded text-primary border-outline focus:ring-primary"
                 />
                 <span className="text-xs font-medium text-on-surface-variant">Remember me</span>
               </label>
             </div>
 
-            {/* Main CTA Submission Trigger */}
+            {/* Main CTA Submission Trigger — disabled until email + password are both valid */}
             <button
               type="submit"
-              disabled={isLoading}
-              className="w-full mt-4 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-lg shadow-md transition-all disabled:opacity-70 disabled:cursor-not-allowed text-sm"
+              disabled={isLoading || !termsAccepted || !isValid}
+              className="w-full mt-4 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {isLoading ? (
                 <>
@@ -173,7 +170,6 @@ export const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          {/* Registration Alternation Anchor link wrapper */}
           <div className="mt-lg pt-md border-t border-outline-variant/30 text-center">
             <p className="text-xs text-on-surface-variant">
               Don&apos;t have an account?{" "}
@@ -189,4 +185,3 @@ export const LoginPage: React.FC = () => {
 };
 
 export default LoginPage;
-

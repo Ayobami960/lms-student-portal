@@ -1,12 +1,16 @@
-import React, { useState,  useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, Navigate } from "react-router";
 import ReactMarkdown from "react-markdown";
 import toast from "react-hot-toast";
 import {
   BookMarked,
+  BookOpen,
   CheckCircle2,
   TrendingUp,
   Award,
+  Users,
+  ClipboardList,
+  Star,
   Cpu,
   X,
   Send,
@@ -30,7 +34,6 @@ interface Message {
 }
 
 // Quick-start prompts surfaced both on the dashboard card and inside the chat panel.
-// Keeping this as one source of truth means the two surfaces never drift out of sync.
 const QUICK_PROMPTS = [
   { label: "Summarize my progress", prompt: "Summarize my current course progress and tell me what to focus on next." },
   { label: "Explain a concept", prompt: "Can you explain a concept I'm struggling with in my current module?" },
@@ -39,51 +42,35 @@ const QUICK_PROMPTS = [
 
 export default function DashboardPage() {
   const user = useAppSelector((s) => s.auth.user);
+  const isInstructor = user?.role === "INSTRUCTOR";
   const isStudent = user?.role === "STUDENT";
 
-  // This dashboard is student-only — anyone else gets redirected immediately.
-  if (user && !isStudent) {
-    return <Navigate to="/" replace />;
-  }
-
-  // API Queries
-  const { data: statsRes, isLoading: statsLoading } = useGetDashboardAnalyticsQuery(undefined, { skip: !isStudent });
-  const { data: progressRes, isLoading: progressLoading } = useGetProgressAnalyticsQuery(undefined, { skip: !isStudent });
+  // API Queries — always called unconditionally, just skipped per role.
+  const { data: statsRes, isLoading: statsLoading } = useGetDashboardAnalyticsQuery();
+  const { data: progressRes, isLoading: progressLoading } = useGetProgressAnalyticsQuery(undefined, {
+    skip: isInstructor,
+  });
 
   const stats = statsRes?.data;
   const progress = progressRes?.data;
 
-  // Summary cards derived from the student's stats payload.
-  const summaryCards = [
-    {
-      label: "Enrolled Courses",
-      value: stats?.enrolledCourses ?? 0,
-      icon: BookMarked,
-      color: "bg-primary/10 text-primary",
-    },
-    {
-      label: "Completed Courses",
-      value: stats?.completedCourses ?? 0,
-      icon: CheckCircle2,
-      color: "bg-secondary/10 text-secondary",
-    },
-    {
-      label: "Average Progress",
-      value: `${stats?.averageProgress ?? 0}%`,
-      icon: TrendingUp,
-      color: "bg-tertiary/10 text-tertiary",
-    },
-    {
-      label: "Certificates Earned",
-      value: stats?.certificatesEarned ?? 0,
-      icon: Award,
-      color: "bg-primary/10 text-primary",
-    },
-  ];
+  // Summary cards differ per role, same as the old dashboard.
+  const summaryCards = isInstructor
+    ? [
+        { label: "Your Courses", value: stats?.totalCourses ?? 0, icon: BookOpen, color: "bg-primary/10 text-primary" },
+        { label: "Total Students", value: stats?.totalStudents ?? 0, icon: Users, color: "bg-secondary/10 text-secondary" },
+        { label: "To Grade", value: stats?.submissionsToGrade ?? 0, icon: ClipboardList, color: "bg-tertiary/10 text-tertiary" },
+        { label: "Avg. Rating", value: (stats?.averageRating ?? 0).toFixed(1), icon: Star, color: "bg-primary/10 text-primary" },
+      ]
+    : [
+        { label: "Enrolled Courses", value: stats?.totalCourses ?? 0, icon: BookMarked, color: "bg-primary/10 text-primary" },
+        { label: "Completed Courses", value: stats?.completedCourses ?? 0, icon: CheckCircle2, color: "bg-secondary/10 text-secondary" },
+        { label: "Average Progress", value: `${stats?.averageProgress ?? 0}%`, icon: TrendingUp, color: "bg-tertiary/10 text-tertiary" },
+        { label: "Certificates Earned", value: stats?.certificatesEarned ?? 0, icon: Award, color: "bg-primary/10 text-primary" },
+      ];
 
   // ------------------------------------------------------------------
-  // AI Companion state — wired to the real /ai/chat endpoint so replies
-  // are actually generated instead of a canned placeholder.
+  // AI Companion state — wired to the real /ai/chat endpoint.
   // ------------------------------------------------------------------
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const [userInput, setUserInput] = useState<string>("");
@@ -91,7 +78,9 @@ export default function DashboardPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: "ai",
-      text: `Hi ${user?.name?.split(" ")[0] || "there"}! Let me know if you need help analyzing your course progression or studying for quizzes.`,
+      text: `Hi ${user?.name?.split(" ")[0] || "there"}! Let me know if you need help analyzing your ${
+        isInstructor ? "courses" : "course progression"
+      } or ${isInstructor ? "grading" : "studying for quizzes"}.`,
     },
   ]);
   const [sendChatMessage, { isLoading: isTyping }] = useSendChatMessageMutation();
@@ -99,17 +88,14 @@ export default function DashboardPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const threadRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to the newest message whenever the thread changes.
   useEffect(() => {
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, isTyping]);
 
-  // Focus the composer as soon as the panel opens.
   useEffect(() => {
     if (isChatOpen) inputRef.current?.focus();
   }, [isChatOpen]);
 
-  // Let Escape close the panel, same as any dismissible surface should.
   useEffect(() => {
     if (!isChatOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -149,6 +135,12 @@ export default function DashboardPage() {
     sendMessage(prompt);
   };
 
+  // Guard goes AFTER all hooks so hook order stays stable across renders.
+  // Anyone who's neither a student nor an instructor gets redirected.
+  if (user && !isStudent && !isInstructor) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <div className="space-y-lg relative animate-fade-in">
       {/* Welcome Header */}
@@ -157,8 +149,10 @@ export default function DashboardPage() {
           Welcome back, {user?.name?.split(" ")[0]} 👋
         </h2>
         <div className="flex flex-col md:flex-row md:items-center gap-2">
-          <p className="text-lg text-on-surface-variant">Here's where you left off.</p>
-          {stats?.averageProgress !== undefined && (
+          <p className="text-lg text-on-surface-variant">
+            {isInstructor ? "Here's how your courses are doing." : "Here's where you left off."}
+          </p>
+          {!isInstructor && stats?.averageProgress !== undefined && (
             <div className="flex-1 max-w-xs h-2 bg-outline-variant rounded-full overflow-hidden">
               <div
                 className="h-full bg-secondary rounded-full transition-all duration-500"
@@ -196,40 +190,74 @@ export default function DashboardPage() {
         )}
       </section>
 
-      {/* Course Completion Metrics */}
+      {/* Student: Course Progress | Instructor: Your Courses table */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-md">
         <div className="bg-surface-container-lowest border border-outline-variant shadow-sm p-md rounded-xl flex flex-col justify-between lg:col-span-3">
-          <div>
-            <h3 className="text-xl font-semibold mb-md">Course Progress</h3>
-            {progressLoading ? (
-              <div className="space-y-md">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="h-10 bg-outline-variant/20 rounded animate-pulse" />
-                ))}
-              </div>
-            ) : !progress?.length ? (
-              <p className="text-sm text-outline">No enrolled active courses found.</p>
-            ) : (
-              <div className="space-y-md">
-                {progress.slice(0, 3).map((course: any) => (
-                  <div key={course.courseId}>
-                    <div className="flex justify-between text-sm mb-1 font-medium">
-                      <span className="truncate max-w-[200px]">{course.courseTitle}</span>
-                      <span className="text-primary font-semibold">{course.progress}%</span>
+          {isInstructor ? (
+            <div>
+              <h3 className="text-xl font-semibold mb-md">Your Courses</h3>
+              {!stats?.courses?.length ? (
+                <div className="text-center py-lg">
+                  <BookOpen className="w-8 h-8 mx-auto text-outline-variant mb-2" />
+                  <p className="text-sm text-outline mb-3">No courses yet — create your first course to get started.</p>
+                  <Link to="/my-courses" className="text-sm font-semibold text-primary hover:underline">
+                    Go to My Courses
+                  </Link>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="border-b border-outline-variant text-xs uppercase text-outline">
+                      <tr>
+                        <th className="px-4 py-3">Course</th>
+                        <th className="px-4 py-3">Students</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.courses.map((c: any) => (
+                        <tr key={c.id} className="border-b border-outline-variant/60 last:border-0">
+                          <td className="px-4 py-3 font-medium text-on-surface">{c.title}</td>
+                          <td className="px-4 py-3 text-outline">{c.students}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div>
+              <h3 className="text-xl font-semibold mb-md">Course Progress</h3>
+              {progressLoading ? (
+                <div className="space-y-md">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="h-10 bg-outline-variant/20 rounded animate-pulse" />
+                  ))}
+                </div>
+              ) : !progress?.length ? (
+                <p className="text-sm text-outline">No enrolled active courses found.</p>
+              ) : (
+                <div className="space-y-md">
+                  {progress.slice(0, 3).map((course: any) => (
+                    <div key={course.courseId}>
+                      <div className="flex justify-between text-sm mb-1 font-medium">
+                        <span className="truncate max-w-[200px]">{course.courseTitle}</span>
+                        <span className="text-primary font-semibold">{course.progress}%</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-outline-variant rounded-full overflow-hidden">
+                        <div className="h-full bg-primary" style={{ width: `${course.progress}%` }} />
+                      </div>
                     </div>
-                    <div className="w-full h-1.5 bg-outline-variant rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary"
-                        style={{ width: `${course.progress}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <Link to="/courses" className="w-full mt-6 text-center font-semibold text-sm text-primary hover:underline">
-            View All Courses
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          <Link
+            to={isInstructor ? "/my-courses" : "/courses"}
+            className="w-full mt-6 text-center font-semibold text-sm text-primary hover:underline"
+          >
+            {isInstructor ? "View All Your Courses" : "View All Courses"}
           </Link>
         </div>
       </section>
@@ -258,7 +286,6 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* Quick-start prompts — clicking one opens the chat and sends it immediately */}
         <div className="flex flex-wrap gap-2 mb-md">
           {QUICK_PROMPTS.map((q) => (
             <button
@@ -284,7 +311,6 @@ export default function DashboardPage() {
             aria-label="Course Companion chat"
             className="w-85 md:w-96 bg-surface-container-lowest border border-outline-variant/80 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 ease-out animate-in fade-in slide-in-from-bottom-6"
           >
-            {/* Header */}
             <div className="bg-primary p-md flex justify-between items-center text-on-primary">
               <div className="flex items-center gap-sm">
                 <div className="relative bg-white/15 p-2 rounded-xl border border-white/15">
@@ -307,11 +333,7 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            {/* Conversation */}
-            <div
-              ref={threadRef}
-              className="h-72 p-md overflow-y-auto bg-surface-container-low/30 space-y-md scroll-smooth"
-            >
+            <div ref={threadRef} className="h-72 p-md overflow-y-auto bg-surface-container-low/30 space-y-md scroll-smooth">
               {messages.map((msg, i) => {
                 const isUser = msg.sender === "user";
                 return (
@@ -358,7 +380,6 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* Quick prompts inside the panel too, for when it's opened via the FAB */}
             <div className="px-md pt-sm flex flex-wrap gap-1.5 border-t border-outline-variant/60 bg-surface-container-lowest">
               {QUICK_PROMPTS.map((q) => (
                 <button
@@ -372,7 +393,6 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            {/* Composer */}
             <div className="p-md bg-surface-container-lowest">
               <form
                 onSubmit={handleSendMessage}
@@ -403,7 +423,6 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Floating Action Button */}
         <button
           onClick={() => setIsChatOpen(!isChatOpen)}
           aria-label={isChatOpen ? "Close companion chat" : "Open companion chat"}

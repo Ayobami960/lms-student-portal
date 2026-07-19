@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,10 +6,8 @@ import { Link, useNavigate } from "react-router";
 import { Eye, EyeOff, School, Mail, Lock, User, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
-// Integration Hooks & Slices
 import { useRegisterMutation } from "../../store/api/apiSlice";
 
-// Complete schema validation matching your integration rules
 const schema = z
   .object({
     name: z.string().min(2, "Name is required"),
@@ -23,7 +20,6 @@ const schema = z
       .regex(/[0-9]/, "Add a number"),
     confirmPassword: z.string(),
     role: z.enum(["STUDENT", "INSTRUCTOR"]),
-    // Fixed: Uses boolean refinement to enforce checking the box
     terms: z.boolean().refine((val) => val === true, {
       message: "You must accept the terms to continue",
     }),
@@ -41,24 +37,28 @@ export const RegisterPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
 
-  
-  
   const [registerUser, { isLoading }] = useRegisterMutation();
- 
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    watch,
+    formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    mode: "onChange",
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
       role: "STUDENT",
+      terms: false,
     },
   });
+
+ 
+  const termsAccepted = watch("terms");
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -98,10 +98,6 @@ export const RegisterPage: React.FC = () => {
 
       {/* Right side: Register Form (Scrollable Container) */}
       <main className="flex-1 flex flex-col items-center justify-center h-full overflow-y-auto p-md lg:p-xl bg-surface-container-low dark:bg-inverse-surface">
-        {/* Mobile Header (only visible on small screens) */}
-    
-
-        {/* Center Core Form Card */}
         <div className="w-full max-w-[440px] my-auto bg-surface-container-lowest dark:bg-surface-container p-lg rounded-2xl shadow-xl border border-outline-variant/30">
           <div className="mb-md">
             <h2 className="text-2xl font-semibold text-on-surface tracking-tight mb-1">Create Your Account</h2>
@@ -149,7 +145,24 @@ export const RegisterPage: React.FC = () => {
               )}
             </div>
 
-           
+            {/* Role Selector — restored from the old page, styled to match this layout */}
+            <div>
+              <label className="block text-xs font-medium text-on-surface-variant mb-1">I am a...</label>
+              <div className="grid grid-cols-2 gap-2">
+                <label className="flex items-center justify-center gap-2 rounded-lg border border-outline px-3 py-2 text-sm text-on-surface-variant cursor-pointer transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary has-[:checked]:font-semibold">
+                  <input type="radio" value="STUDENT" {...register("role")} className="accent-primary" />
+                  Student
+                </label>
+                <label className="flex items-center justify-center gap-2 rounded-lg border border-outline px-3 py-2 text-sm text-on-surface-variant cursor-pointer transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary has-[:checked]:font-semibold">
+                  <input type="radio" value="INSTRUCTOR" {...register("role")} className="accent-primary" />
+                  Instructor
+                </label>
+              </div>
+              {errors.role && (
+                <p className="mt-1 text-xs text-error font-medium" role="alert">{errors.role.message}</p>
+              )}
+            </div>
+
             {/* Password Field Wrapper */}
             <div>
               <label htmlFor="password" className="block text-xs font-medium text-on-surface-variant mb-1">
@@ -183,13 +196,12 @@ export const RegisterPage: React.FC = () => {
               <label htmlFor="confirmPassword" className="block text-xs font-medium text-on-surface-variant mb-1">
                 Confirm Password
               </label>
-             
               <div className="relative flex items-center rounded-lg border border-outline focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
                 <Lock className="w-4.5 h-4.5 text-outline absolute left-3" />
                 <input
                   {...register("confirmPassword")}
                   id="confirmPassword"
-                  type={showPassword1 ? "text" : "confirmPassword"}
+                  type={showPassword1 ? "text" : "password"}
                   placeholder="••••••••"
                   className="w-full pl-10 pr-10 py-2 bg-transparent border-0 rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-0"
                 />
@@ -224,11 +236,11 @@ export const RegisterPage: React.FC = () => {
               )}
             </div>
 
-            {/* Main CTA Submission Trigger */}
+            {/* Main CTA Submission Trigger — disabled until terms are checked and the form is valid */}
             <button
               type="submit"
-              disabled={isLoading}
-              className="w-full mt-3 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all disabled:opacity-70 disabled:cursor-not-allowed text-sm"
+              disabled={isLoading || !termsAccepted || !isValid}
+              className="w-full mt-3 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {isLoading ? (
                 <>
@@ -241,7 +253,6 @@ export const RegisterPage: React.FC = () => {
             </button>
           </form>
 
-          {/* Login Alternation Anchor link wrapper */}
           <div className="mt-md pt-md border-t border-outline-variant/30 text-center">
             <p className="text-xs text-on-surface-variant">
               Already have an account?{" "}
