@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { assignmentController } from "../controllers/assignment.controller";
-import { authenticate } from "../middleware/authenticate";
-import { authorize } from "../middleware/authorize";
-import { validate } from "../middleware/validate";
-import { createAssignmentSchema, updateAssignmentSchema } from "../validations/assignment.validation";
+import { assignmentController } from "../controllers/assignment.controller.js";
+import { authenticate } from "../middleware/authenticate.js";
+import { authorize } from "../middleware/authorize.js";
+import { validate } from "../middleware/validate.js";
+import { createAssignmentSchema, updateAssignmentSchema } from "../validations/assignment.validation.js";
 
 const router = Router();
 

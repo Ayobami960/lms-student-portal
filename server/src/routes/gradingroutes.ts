@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { gradingController } from "../controllers/grading.controller";
-import { authenticate } from "../middleware/authenticate";
-import { authorize } from "../middleware/authorize";
-import { validate } from "../middleware/validate";
-import { gradeSubmissionSchema } from "../validations/grading.validation";
+import { gradingController } from "../controllers/grading.controller.js";
+import { authenticate } from "../middleware/authenticate.js";
+import { authorize } from "../middleware/authorize.js";
+import { validate } from "../middleware/validate.js";
+import { gradeSubmissionSchema } from "../validations/grading.validation.js";
 
 const router = Router();
 

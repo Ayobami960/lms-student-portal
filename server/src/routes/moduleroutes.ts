@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { moduleController } from "../controllers/module.controller";
-import { authenticate } from "../middleware/authenticate";
-import { authorize } from "../middleware/authorize";
-import { validate } from "../middleware/validate";
-import { createModuleSchema, updateModuleSchema } from "../validations/module.validation";
+import { moduleController } from "../controllers/module.controller.js";
+import { authenticate } from "../middleware/authenticate.js";
+import { authorize } from "../middleware/authorize.js";
+import { validate } from "../middleware/validate.js";
+import { createModuleSchema, updateModuleSchema } from "../validations/module.validation.js";
 
 const router = Router({ mergeParams: true });
 

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { lessonController } from "../controllers/lesson.controller";
-import { authenticate } from "../middleware/authenticate";
-import { authorize } from "../middleware/authorize";
-import { validate } from "../middleware/validate";
-import { createLessonSchema, updateLessonSchema } from "../validations/lesson.validation";
+import { lessonController } from "../controllers/lesson.controller.js";
+import { authenticate } from "../middleware/authenticate.js";
+import { authorize } from "../middleware/authorize.js";
+import { validate } from "../middleware/validate.js";
+import { createLessonSchema, updateLessonSchema } from "../validations/lesson.validation.js";
 
 const router = Router();
 
