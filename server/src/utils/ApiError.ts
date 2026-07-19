@@ -1,11 +1,16 @@
 export class ApiError extends Error {
   statusCode: number;
-  errors?: { field: string; message: string }[];
+  
+  // FIXED: Explicitly added '| undefined' so exactOptionalPropertyTypes allows the assignment
+  errors?: { field: string; message: string }[] | undefined;
 
   constructor(statusCode: number, message: string, errors?: { field: string; message: string }[]) {
     super(message);
     this.statusCode = statusCode;
+    
+    // FIXED: Alternately, you can also use: this.errors = errors ?? [];
     this.errors = errors;
+    
     Object.setPrototypeOf(this, ApiError.prototype);
   }
 
