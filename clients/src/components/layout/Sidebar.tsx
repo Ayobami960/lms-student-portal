@@ -41,10 +41,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     try {
       await logout().unwrap();
     } catch {
-      // ignore — clear local state regardless of API result
+     
     }
     dispatch(clearAuth());
-    navigate("/login");
+
+    window.location.href = "/login";
   }
 
   return (
