@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 // import pinoHttp from "pino-http";
 
 import { logger } from "./utils/logger.js";
-// import { storage } from "./config/storage.js";
+import { storage } from "./config/storage.js";
 import { generalLimiter } from "./middleware/rateLimit.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import routes from "./routes/index.js";
@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use(generalLimiter);
 
 // Static file serving for locally-stored uploads (avatars, submissions, certificates)
-// app.use("/uploads", express.static(storage.uploadDir));
+app.use("/uploads", express.static(storage.uploadDir));
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Server is Live!");
