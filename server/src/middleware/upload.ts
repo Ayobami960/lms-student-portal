@@ -2,7 +2,7 @@ import multer from "multer";
 import path from "path";
 import crypto from "crypto";
 import { storage } from "../config/storage";
-import { ApiError } from "../utils/ApiError";
+import { ApiError } from "../utils/ApiError.js";
 
 const ALLOWED_EXT = [".pdf", ".doc", ".docx", ".ppt", ".pptx", ".zip", ".png", ".jpg", ".jpeg"];
 const MAX_SIZE = 25 * 1024 * 1024; // 25MB

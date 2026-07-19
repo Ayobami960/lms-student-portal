@@ -6,6 +6,8 @@ export const generalLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: "Too many requests, please try again later." },
+  // Fixes Vercel proxy initialization validation error
+  validate: { trustProxy: false }, 
 });
 
 export const authLimiter = rateLimit({
@@ -14,4 +16,6 @@ export const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: "Too many auth attempts, please try again later." },
+  // Fixes Vercel proxy initialization validation error
+  validate: { trustProxy: false }, 
 });

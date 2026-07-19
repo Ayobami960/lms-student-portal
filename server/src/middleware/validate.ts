@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodObject, ZodError } from "zod"; 
-import { ApiError } from "../utils/ApiError";
+import { ApiError } from "../utils/ApiError.js";
 
 
 export function validate(schema: ZodObject<any, any>) { 
