@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router";
+import { NavLink } from "react-router";
 import {
   GraduationCap,
   LayoutDashboard,
@@ -27,7 +27,7 @@ interface MenuItem {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+ 
   const [logout] = useLogoutMutation();
   const menuItems: MenuItem[] = [
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
@@ -41,10 +41,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     try {
       await logout().unwrap();
     } catch {
-     
+      // ignore — clear local state regardless of API result
     }
     dispatch(clearAuth());
-
+    
     window.location.href = "/login";
   }
 
