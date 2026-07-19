@@ -18,7 +18,7 @@ const NODE_ENV = process.env.NODE_ENV ?? "development";
 
 // Middleware => security, parsing, etc.
 app.use(helmet());
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
