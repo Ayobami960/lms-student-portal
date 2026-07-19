@@ -1,4 +1,5 @@
-import { Prisma } from "../../generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
+
 import { prisma } from "../config/db";
 import { ApiError } from "../utils/ApiError";
 import { slugify } from "../utils/slugify";
