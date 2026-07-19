@@ -4,6 +4,8 @@ import userRoutes from "./userRoutes.js";
 import courseRoutes from "./courseRoutes.js";
 import moduleRoutes from "./moduleRoutes.js";
 import lessonRoutes from "./lessonRoutes.js";
+import assignmentRoutes from "./assignmentRoutes.js";
+import submissionRoutes from "./submissionRoutes.js";
 
 
 const router = Router();
@@ -13,8 +15,8 @@ router.use("/users", userRoutes);
 router.use("/courses", courseRoutes);
 router.use("/", moduleRoutes);       
 router.use("/", lessonRoutes);      
-// router.use("/", assignmentRoutes);   // /assignments, /lessons/:lessonId/assignments
-// router.use("/", submissionRoutes);   // /assignments/:id/submit, /submissions
+router.use("/", assignmentRoutes);  
+router.use("/", submissionRoutes);   
 // router.use("/grading", gradingRoutes);
 // router.use("/certificates", certificateRoutes);
 // router.use("/analytics", analyticsRoutes);
