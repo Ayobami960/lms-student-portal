@@ -1,8 +1,8 @@
 import { Router } from "express"; 
-import { userController } from "../controllers/user.controller";
-import { authenticate } from "../middleware/authenticate";
-import { authorize } from "../middleware/authorize";
-import { upload } from "../middleware/upload";
+import { userController } from "../controllers/user.controller.js";
+import { authenticate } from "../middleware/authenticate.js";
+import { authorize } from "../middleware/authorize.js";
+import { upload } from "../middleware/upload.js";
 
 const userRoutes = Router();
 
