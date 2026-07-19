@@ -2,7 +2,6 @@ import { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../config/db.js";
 import { ApiError } from "../utils/ApiError.js";
 import { slugify } from "../utils/slugify.js";
-// import { Prisma } from "@prisma/client";
 
 interface ListCoursesParams {
   search?: string;
@@ -12,7 +11,7 @@ interface ListCoursesParams {
   page: number;
   limit: number;
   publishedOnly: boolean;
-  studentId?: string; // to attach enrollment/progress info
+  studentId?: string; 
 }
 
 export const courseService = {
@@ -44,22 +43,27 @@ export const courseService = {
         ? { title: "asc" }
         : { createdAt: "desc" };
 
+    // FIXED: Construct the include block safely to satisfy exactOptionalPropertyTypes
+    const includeConfig: any = {
+      instructor: { select: { id: true, name: true, avatar: true } },
+      _count: { select: { enrollments: true, modules: true } },
+    };
+
+    // Only inject enrollments filter if studentId is actually defined, rather than passing explicit undefined
+    if (studentId) {
+      includeConfig.enrollments = {
+        where: { studentId },
+        take: 1,
+      };
+    }
+
     const [items, total] = await Promise.all([
       prisma.course.findMany({
         where,
         orderBy,
         skip: (page - 1) * limit,
         take: limit,
-        include: {
-          instructor: { select: { id: true, name: true, avatar: true } },
-          _count: { select: { enrollments: true, modules: true } },
-          enrollments: studentId
-            ? {
-                where: { studentId },
-                take: 1,
-              }
-            : undefined,
-        },
+        include: includeConfig, // Pass cleaned layout mapping here
       }),
       prisma.course.count({ where }),
     ]);
@@ -84,7 +88,9 @@ export const courseService = {
         _count: { select: { enrollments: true } },
       },
     });
-    if (!course) throw ApiError.notFound("Course not found");
+    
+    // FIXED: Used 'new' keyword instantiator
+    if (!course) throw new ApiError(404, "Course not found");
 
     let enrollment = null;
     if (studentId) {
@@ -117,9 +123,11 @@ export const courseService = {
     duration: number; thumbnail: string; published: boolean;
   }>) {
     const course = await prisma.course.findUnique({ where: { id } });
-    if (!course) throw ApiError.notFound("Course not found");
+    
+    // FIXED: Used 'new' keyword instantiators
+    if (!course) throw new ApiError(404, "Course not found");
     if (requester.role !== "ADMIN" && course.instructorId !== requester.id) {
-      throw ApiError.forbidden("You can only update your own courses");
+      throw new ApiError(403, "You can only update your own courses");
     }
 
     return prisma.course.update({ where: { id }, data });
@@ -127,21 +135,25 @@ export const courseService = {
 
   async remove(id: string, requester: { id: string; role: string }) {
     const course = await prisma.course.findUnique({ where: { id } });
-    if (!course) throw ApiError.notFound("Course not found");
+    
+    // FIXED: Used 'new' keyword instantiators
+    if (!course) throw new ApiError(404, "Course not found");
     if (requester.role !== "ADMIN" && course.instructorId !== requester.id) {
-      throw ApiError.forbidden("You can only delete your own courses");
+      throw new ApiError(403, "You can only delete your own courses");
     }
     await prisma.course.delete({ where: { id } });
   },
 
   async enroll(courseId: string, studentId: string) {
     const course = await prisma.course.findUnique({ where: { id: courseId } });
-    if (!course) throw ApiError.notFound("Course not found");
+    
+    // FIXED: Used 'new' keyword instantiators
+    if (!course) throw new ApiError(404, "Course not found");
 
     const existing = await prisma.enrollment.findUnique({
       where: { studentId_courseId: { studentId, courseId } },
     });
-    if (existing) throw ApiError.conflict("You are already enrolled in this course");
+    if (existing) throw new ApiError(409, "You are already enrolled in this course");
 
     return prisma.enrollment.create({ data: { studentId, courseId } });
   },
