@@ -48,7 +48,6 @@ export const authController = {
 
   forgotPassword: asyncHandler(async (req, res) => {
     const result = await authService.forgotPassword(req.body.email);
-    // token only returned here for local/dev convenience; production would email it
     sendSuccess(res, isProduction ? null : result, "If that account exists, a reset link has been sent");
   }),
 
@@ -58,7 +57,11 @@ export const authController = {
   }),
 
   me: asyncHandler(async (req: Request, res: Response) => {
-    const user = await authService.me(req.user!.sub);
+    // Safety check to stop runtime crashing if middleware fails
+    if (!req.user || !req.user.sub) {
+      return res.status(401).json({ success: false, message: "Unauthorized access context missing" });
+    }
+    const user = await authService.me(req.user.sub);
     sendSuccess(res, user, "Current user retrieved");
   }),
 };
