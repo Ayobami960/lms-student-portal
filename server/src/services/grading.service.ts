@@ -29,9 +29,11 @@ export const gradingService = {
         student: { select: { id: true, name: true, email: true } },
       },
     });
-    if (!submission) throw ApiError.notFound("Submission not found");
+    
+    
+    if (!submission) throw new ApiError(404, "Submission not found");
     if (instructor.role !== "ADMIN" && submission.assignment.lesson.module.course.instructorId !== instructor.id) {
-      throw ApiError.forbidden("You do not teach this course");
+      throw new ApiError(403, "You do not teach this course");
     }
     return submission;
   },
@@ -39,13 +41,20 @@ export const gradingService = {
   async grade(id: string, instructor: { id: string; role: string }, score: number, feedback?: string) {
     const submission = await gradingService.getSubmission(id, instructor);
 
+    
     if (score < 0 || score > submission.assignment.maxScore) {
-      throw ApiError.badRequest(`Score must be between 0 and ${submission.assignment.maxScore}`);
+      throw new ApiError(400, `Score must be between 0 and ${submission.assignment.maxScore}`);
     }
 
     return prisma.submission.update({
       where: { id },
-      data: { score, feedback, status: "GRADED", gradedAt: new Date() },
+      data: { 
+        score, 
+        
+        feedback: feedback ?? null, 
+        status: "GRADED", 
+        gradedAt: new Date() 
+      },
     });
   },
 };
