@@ -51,7 +51,9 @@
   },
   "private": true,
   "scripts": {
-    "vercel-build": "prisma generate && prisma db push"
+    "dev": "bun --watch src/server.ts",
+    "build": "tsc",
+    "vercel-build": "prisma generate && prisma db push && bun run build"
   },
   "type": "module"
 }
