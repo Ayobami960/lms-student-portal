@@ -1,7 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
-import { ApiError } from "../utils/ApiError";
-import { logger } from "../utils/logger";
-import { env } from "../config/env";
+import { ApiError } from "../utils/ApiError.js";
+import { logger } from "../utils/logger.js";
+
+const isProduction = process.env.NODE_ENV === "production";
 
 export function notFoundHandler(req: Request, res: Response) {
   res.status(404).json({ success: false, message: `Route not found: ${req.method} ${req.originalUrl}` });
@@ -20,6 +21,6 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
   logger.error({ err }, "Unhandled error");
   return res.status(500).json({
     success: false,
-    message: env.isProduction ? "Internal server error" : (err as Error)?.message ?? "Internal server error",
+    message: isProduction ? "Internal server error" : (err as Error)?.message ?? "Internal server error",
   });
 }
