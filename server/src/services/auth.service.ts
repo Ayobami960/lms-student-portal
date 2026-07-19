@@ -1,12 +1,12 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 
-import { ApiError } from "../utils/ApiError";
-import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../utils/tokens";
-import { env } from "../config/env";
-import { prisma } from "../config/db";
+import { ApiError } from "../utils/ApiError.js";
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../utils/tokens.js";
+import { prisma } from "../config/db.js";
 
 const SALT_ROUNDS = 12;
+const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN ?? "7d";
 
 function msFromDuration(duration: string): number {
   const match = duration ? duration.match(/^(\d+)([smhd])$/) : null;
@@ -64,7 +64,7 @@ export const authService = {
       data: {
         token: refreshToken,
         userId,
-        expiresAt: new Date(Date.now() + msFromDuration(env.refreshTokenExpiresIn)),
+        expiresAt: new Date(Date.now() + msFromDuration(REFRESH_TOKEN_EXPIRES_IN)),
       },
     });
 

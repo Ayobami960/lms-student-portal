@@ -1,15 +1,15 @@
 import type { Request, Response } from "express";
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess } from "../utils/apiResponse";
-import { authService } from "../services/auth.service";
-import { env } from "../config/env";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess } from "../utils/apiResponse.js";
+import { authService } from "../services/auth.service.js";
 
 const REFRESH_COOKIE = "refreshToken";
+const isProduction = process.env.NODE_ENV === "production";
 
 function setRefreshCookie(res: Response, token: string) {
   res.cookie(REFRESH_COOKIE, token, {
     httpOnly: true,
-    secure: env.isProduction,
+    secure: isProduction,
     sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/api/v1/auth",
@@ -49,7 +49,7 @@ export const authController = {
   forgotPassword: asyncHandler(async (req, res) => {
     const result = await authService.forgotPassword(req.body.email);
     // token only returned here for local/dev convenience; production would email it
-    sendSuccess(res, env.isProduction ? null : result, "If that account exists, a reset link has been sent");
+    sendSuccess(res, isProduction ? null : result, "If that account exists, a reset link has been sent");
   }),
 
   resetPassword: asyncHandler(async (req, res) => {

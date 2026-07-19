@@ -1,18 +1,22 @@
+import 'dotenv/config'
 import path from "path";
 import fs from "fs";
-import { env } from "./env";
 
-// Minimal local-disk storage adapter. Swap for Cloudinary/S3 in production
-// by implementing the same interface (uploadDir/getFileUrl).
-const UPLOAD_DIR = path.join(process.cwd(), "uploads");
+const isVercelRuntime = process.env.VERCEL === "1";
 
-if (!fs.existsSync(UPLOAD_DIR)) {
+// Local disk storage only makes sense outside serverless (e.g. local dev).
+// On Vercel, use Cloudinary/S3 — local disk is read-only and ephemeral.
+const UPLOAD_DIR = isVercelRuntime
+  ? "/tmp/uploads"
+  : path.join(process.cwd(), "uploads");
+
+if (!isVercelRuntime && !fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
 export const storage = {
   uploadDir: UPLOAD_DIR,
-  provider: env.storageProvider,
+  provider: process.env.STORAGE_PROVIDER ?? "local",
   getFileUrl(filename: string): string {
     return `/uploads/${filename}`;
   },

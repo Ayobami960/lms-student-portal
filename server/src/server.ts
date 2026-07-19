@@ -5,7 +5,6 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
 
-import { env } from "./config/env.js";
 import { logger } from "./utils/logger.js";
 import { storage } from "./config/storage.js";
 import { generalLimiter } from "./middleware/rateLimit.js";
@@ -13,6 +12,9 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import routes from "./routes/index.js";
 
 const app: Application = express();
+
+const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
+const NODE_ENV = process.env.NODE_ENV ?? "development";
 
 // Middleware => security, parsing, etc.
 app.use(helmet());
@@ -41,10 +43,10 @@ const isVercelRuntime = process.env.VERCEL === "1";
 
 // Persistent process entry point for standalone development execution
 if (!isVercelRuntime) {
-  app.listen(env.port, async () => {
+  app.listen(PORT, async () => {
     logger.info("========================================");
     logger.info("🚀 Server is running successfully!");
-    logger.info(`LMS API listening on port ${env.port} [${env.nodeEnv}]`);
+    logger.info(`LMS API listening on port ${PORT} [${NODE_ENV}]`);
     logger.info("========================================");
 
     // Lazy import so dotenv/config has fully loaded env vars first
