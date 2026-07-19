@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
-
-import { prisma } from "../config/db";
-import { ApiError } from "../utils/ApiError";
-import { slugify } from "../utils/slugify";
+import { Prisma } from "../../generated/prisma/client.js";
+import { prisma } from "../config/db.js";
+import { ApiError } from "../utils/ApiError.js";
+import { slugify } from "../utils/slugify.js";
 // import { Prisma } from "@prisma/client";
 
 interface ListCoursesParams {
