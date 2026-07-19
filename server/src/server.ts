@@ -9,7 +9,7 @@ import { logger } from "./utils/logger.js";
 // import { storage } from "./config/storage.js";
 import { generalLimiter } from "./middleware/rateLimit.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
-// import routes from "./routes/index.js";
+import routes from "./routes/index.js";
 
 const app: Application = express();
 
@@ -34,7 +34,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Routes
-// app.use("/api/v1", routes);
+app.use("/api/v1", routes);
 
 // 404 + global error handler
 app.use(notFoundHandler);
