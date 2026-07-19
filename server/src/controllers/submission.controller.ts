@@ -1,6 +1,6 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess } from "../utils/apiResponse";
-import { submissionService } from "../services/submission.service";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess } from "../utils/apiResponse.js";
+import { submissionService } from "../services/submission.service.js";
 
 export const submissionController = {
   submit: asyncHandler(async (req, res) => {
