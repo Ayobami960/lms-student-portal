@@ -8,6 +8,8 @@ import assignmentRoutes from "./assignmentRoutes.js";
 import submissionRoutes from "./submissionRoutes.js";
 import gradingRoutes from "./gradingRoutes.js";
 import certificateRoutes from "./certificateRoutes.js";
+import analyticsRoutes from "./analyticsRoutes.js";
+import aiRoutes from "./aiRoutes.js";
 
 
 const router = Router();
@@ -21,7 +23,7 @@ router.use("/", assignmentRoutes);
 router.use("/", submissionRoutes);   
 router.use("/grading", gradingRoutes);
 router.use("/certificates", certificateRoutes);
-// router.use("/analytics", analyticsRoutes);
-// router.use("/ai", aiRoutes);
+router.use("/analytics", analyticsRoutes);
+router.use("/ai", aiRoutes);
 
 export default router;
