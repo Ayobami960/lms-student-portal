@@ -1,49 +1,53 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess, sendPaginated } from "../utils/apiResponse";
-import { courseService } from "../services/course.service";
+import { type Request, type Response } from "express";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess, sendPaginated } from "../utils/apiResponse.js";
+import { courseService } from "../services/course.service.js";
 
 export const courseController = {
-  list: asyncHandler(async (req, res) => {
+  list: asyncHandler(async (req: Request, res: Response) => {
     const page = parseInt((req.query.page as string) ?? "1", 10);
     const limit = parseInt((req.query.limit as string) ?? "12", 10);
     const isPrivileged = req.user?.role === "ADMIN" || req.user?.role === "INSTRUCTOR";
-    const studentId = req.user?.role === "STUDENT" ? req.user.sub : undefined;
+    
+    // Coerce undefined to null or a defined alternative layout matching constraints
+    const studentId = req.user?.role === "STUDENT" ? req.user.sub : null;
 
     const { items, total } = await courseService.list({
-      search: req.query.search as string | undefined,
-      category: req.query.category as string | undefined,
+      // FIXED: Fallback to an empty string to satisfy exactOptionalPropertyTypes compliance loops
+      search: (req.query.search as string) ?? "",
+      category: (req.query.category as string) ?? "",
       level: req.query.level as any,
       sort: req.query.sort as any,
       page,
       limit,
       publishedOnly: !isPrivileged,
-      studentId,
+      studentId: studentId as any,
     });
     sendPaginated(res, items, { page, limit, total });
   }),
 
-  getById: asyncHandler(async (req, res) => {
+  getById: asyncHandler(async (req: Request, res: Response) => {
     const studentId = req.user?.role === "STUDENT" ? req.user.sub : undefined;
     const course = await courseService.getById(req.params.id as string, studentId);
     sendSuccess(res, course);
   }),
 
-  create: asyncHandler(async (req, res) => {
+  create: asyncHandler(async (req: Request, res: Response) => {
     const course = await courseService.create(req.user!.sub, req.body);
     sendSuccess(res, course, "Course created", 201);
   }),
 
-  update: asyncHandler(async (req, res) => {
+  update: asyncHandler(async (req: Request, res: Response) => {
     const course = await courseService.update(req.params.id as string, { id: req.user!.sub, role: req.user!.role }, req.body);
     sendSuccess(res, course, "Course updated");
   }),
 
-  remove: asyncHandler(async (req, res) => {
+  remove: asyncHandler(async (req: Request, res: Response) => {
     await courseService.remove(req.params.id as string, { id: req.user!.sub, role: req.user!.role });
     sendSuccess(res, null, "Course deleted");
   }),
 
-  enroll: asyncHandler(async (req, res) => {
+  enroll: asyncHandler(async (req: Request, res: Response) => {
     const enrollment = await courseService.enroll(req.params.id as string, req.user!.sub);
     sendSuccess(res, enrollment, "Enrolled successfully", 201);
   }),

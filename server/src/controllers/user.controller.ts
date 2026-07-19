@@ -1,8 +1,8 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess, sendPaginated } from "../utils/apiResponse";
-import { userService } from "../services/user.service";
-import { storage } from "../config/storage";
-import { ApiError } from "../utils/ApiError";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess, sendPaginated } from "../utils/apiResponse.js";
+import { userService } from "../services/user.service.js";
+import { storage } from "../config/storage.js";
+import { ApiError } from "../utils/ApiError.js";
 
 export const userController = {
   me: asyncHandler(async (req, res) => {

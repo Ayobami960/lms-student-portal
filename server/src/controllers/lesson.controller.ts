@@ -1,6 +1,6 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess } from "../utils/apiResponse";
-import { lessonService } from "../services/lesson.service";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess } from "../utils/apiResponse.js";
+import { lessonService } from "../services/lesson.service.js";
 
 export const lessonController = {
   list: asyncHandler(async (req, res) => {

@@ -1,6 +1,6 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess } from "../utils/apiResponse";
-import { aiService } from "../services/ai.service";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess } from "../utils/apiResponse.js";
+import { aiService } from "../services/ai.service.js";
 
 export const aiController = {
   chat: asyncHandler(async (req, res) => {

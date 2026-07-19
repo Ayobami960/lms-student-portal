@@ -1,6 +1,6 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess } from "../utils/apiResponse";
-import { moduleService } from "../services/module.service";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess } from "../utils/apiResponse.js";
+import { moduleService } from "../services/module.service.js";
 
 export const moduleController = {
   list: asyncHandler(async (req, res) => {

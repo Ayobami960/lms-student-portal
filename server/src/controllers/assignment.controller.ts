@@ -1,6 +1,6 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess } from "../utils/apiResponse";
-import { assignmentService } from "../services/assignment.service";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess } from "../utils/apiResponse.js";
+import { assignmentService } from "../services/assignment.service.js";
 
 export const assignmentController = {
   list: asyncHandler(async (req, res) => {

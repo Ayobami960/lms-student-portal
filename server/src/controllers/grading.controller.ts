@@ -1,6 +1,6 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess } from "../utils/apiResponse";
-import { gradingService } from "../services/grading.service";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess } from "../utils/apiResponse.js";
+import { gradingService } from "../services/grading.service.js";
 
 export const gradingController = {
   list: asyncHandler(async (req, res) => {

@@ -9,7 +9,6 @@ export const submissionService = {
     // FIXED: Instantiated ApiError using 'new' keywords
     if (!assignment) throw new ApiError(404, "Assignment not found");
     if (!file) throw new ApiError(400, "A file upload is required");
-
     const isLate = new Date() > assignment.dueDate;
     const fileUrl = storage.getFileUrl(file.filename);
 

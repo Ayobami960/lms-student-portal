@@ -1,9 +1,9 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess } from "../utils/apiResponse";
-import { certificateService } from "../services/certificate.service";
-import { ApiError } from "../utils/ApiError";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess } from "../utils/apiResponse.js";
+import { certificateService } from "../services/certificate.service.js";
+import { ApiError } from "../utils/ApiError.js";
 import path from "path";
-import { storage } from "../config/storage";
+import { storage } from "../config/storage.js";
 
 export const certificateController = {
   list: asyncHandler(async (req, res) => {

@@ -1,6 +1,6 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { sendSuccess } from "../utils/apiResponse";
-import { analyticsService } from "../services/analytics.service";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendSuccess } from "../utils/apiResponse.js";
+import { analyticsService } from "../services/analytics.service.js";
 
 export const analyticsController = {
   dashboard: asyncHandler(async (req, res) => {
