@@ -2,7 +2,6 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./baseQuery";
 import type { AuthUser } from "../authSlice";
 
-// ---------------- Response Types ----------------
 export interface ApiSuccess<T> { 
   success: true; 
   message: string; 
@@ -29,13 +28,11 @@ export interface CompleteLessonResponse {
   courseCompleted: boolean;
 }
 
-// ---------------- Api Slice ----------------
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
   tagTypes: ["Course", "Module", "Lesson", "Assignment", "Submission", "Certificate", "Conversation", "User", "Me"],
   endpoints: (builder) => ({
-    // ---------------- Auth ----------------
     register: builder.mutation<ApiSuccess<{ accessToken: string }>, { name: string; email: string; password: string; confirmPassword: string; role?: string }>({
       query: (body) => ({ url: "/auth/register", method: "POST", body }),
     }),
@@ -45,7 +42,7 @@ export const apiSlice = createApi({
     logout: builder.mutation<ApiSuccess<null>, void>({
       query: () => ({ url: "/auth/logout", method: "POST" }),
     }),
-    me: builder.query<ApiSuccess<AuthUser>, void>({
+    me: builder.query<ApiSuccess<AuthUser> & { accessToken?: string }, void>({
       query: () => "/auth/me",
       providesTags: ["Me"],
     }),
@@ -55,8 +52,6 @@ export const apiSlice = createApi({
     resetPassword: builder.mutation<ApiSuccess<null>, { token: string; password: string }>({
       query: (body) => ({ url: "/auth/reset-password", method: "POST", body }),
     }),
-
-    // ---------------- Courses ----------------
     listCourses: builder.query<Paginated<any>, { search?: string; category?: string; level?: string; sort?: string; page?: number; limit?: number }>({
       query: (params) => ({ url: "/courses", params }),
       providesTags: (result) =>
@@ -78,8 +73,6 @@ export const apiSlice = createApi({
       query: (id) => ({ url: `/courses/${id}/enroll`, method: "POST" }),
       invalidatesTags: (_r, _e, id) => [{ type: "Course", id }, { type: "Course", id: "LIST" }],
     }),
-
-    // ---------------- Lessons ----------------
     getLesson: builder.query<ApiSuccess<any>, string>({
       query: (id) => `/lessons/${id}`,
       providesTags: (_r, _e, id) => [{ type: "Lesson", id }],
@@ -91,8 +84,6 @@ export const apiSlice = createApi({
         ...(result ? [{ type: "Course" as const, id: result.data.courseId }] : []),
       ],
     }),
-
-    // ---------------- Assignments ----------------
     listAssignments: builder.query<ApiSuccess<any[]>, { courseId?: string } | void>({
       query: (params) => ({ url: "/assignments", params: params ?? {} }),
       providesTags: (result) =>
@@ -107,8 +98,6 @@ export const apiSlice = createApi({
       },
       invalidatesTags: [{ type: "Assignment", id: "LIST" }],
     }),
-
-    // ---------------- Grading (instructor) ----------------
     listGradingSubmissions: builder.query<ApiSuccess<any[]>, { courseId?: string } | void>({
       query: (params) => ({ url: "/grading/submissions", params: params ?? {} }),
       providesTags: (result) =>
@@ -118,8 +107,6 @@ export const apiSlice = createApi({
       query: ({ id, ...body }) => ({ url: `/grading/submissions/${id}`, method: "PATCH", body }),
       invalidatesTags: (_r, _e, { id }) => [{ type: "Submission", id }, { type: "Submission", id: "LIST" }],
     }),
-
-    // ---------------- Certificates ----------------
     listCertificates: builder.query<ApiSuccess<any[]>, void>({
       query: () => "/certificates",
       providesTags: (result) =>
@@ -129,13 +116,9 @@ export const apiSlice = createApi({
       query: (courseId) => ({ url: "/certificates/generate", method: "POST", body: { courseId } }),
       invalidatesTags: [{ type: "Certificate", id: "LIST" }],
     }),
-
-    // ---------------- Analytics ----------------
     getDashboardAnalytics: builder.query<ApiSuccess<any>, void>({ query: () => "/analytics/dashboard" }),
     getProgressAnalytics: builder.query<ApiSuccess<any[]>, void>({ query: () => "/analytics/progress" }),
     getPerformanceAnalytics: builder.query<ApiSuccess<any[]>, void>({ query: () => "/analytics/performance" }),
-
-    // ---------------- AI Assistant ----------------
     listConversations: builder.query<ApiSuccess<any[]>, void>({
       query: () => "/ai/conversations",
       providesTags: (result) =>
@@ -149,8 +132,6 @@ export const apiSlice = createApi({
       query: (body) => ({ url: "/ai/chat", method: "POST", body }),
       invalidatesTags: [{ type: "Conversation", id: "LIST" }],
     }),
-
-    // ---------------- Instructor course creation ----------------
     createModule: builder.mutation<ApiSuccess<any>, { courseId: string; data: Record<string, unknown> }>({
       query: ({ courseId, data }) => ({ url: `/courses/${courseId}/modules`, method: "POST", body: data }),
       invalidatesTags: (_r, _e, { courseId }) => [{ type: "Course", id: courseId }],
@@ -161,6 +142,7 @@ export const apiSlice = createApi({
     }),
   }),
 });
+
 export const {
   useRegisterMutation,
   useLoginMutation,

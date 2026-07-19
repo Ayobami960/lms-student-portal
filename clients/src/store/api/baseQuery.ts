@@ -27,8 +27,38 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
   extraOptions
 ) => {
   await mutex.waitForUnlock();
+  
+  const state = api.getState() as RootState;
+  let token = state.auth.accessToken;
+  const hasUser = !!state.auth.user;
+
+  // FIX: If we have a persisted user profile but no token (e.g., right after reload),
+  // immediately force a token refresh instead of sending a doomed, unauthenticated request.
+  if (!token && hasUser) {
+    if (!mutex.isLocked()) {
+      const release = await mutex.acquire();
+      try {
+        const refreshResult = await rawBaseQuery({ url: "/auth/refresh", method: "POST" }, api, extraOptions);
+        const data = refreshResult.data as { data?: { accessToken?: string } } | undefined;
+        
+        if (data?.data?.accessToken) {
+          api.dispatch(setAccessToken(data.data.accessToken));
+        } else {
+          api.dispatch(clearAuth());
+          return { error: { status: 401, data: "Session expired" } };
+        }
+      } finally {
+        release();
+      }
+    } else {
+      await mutex.waitForUnlock();
+    }
+  }
+
+  // Proceed with the actual request
   let result = await rawBaseQuery(args, api, extraOptions);
 
+  // Keep your existing 401 handling below for when tokens naturally expire mid-session
   if (result.error && result.error.status === 401) {
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();

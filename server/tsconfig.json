@@ -1,17 +1,14 @@
 {
-   "compilerOptions": {
+  "compilerOptions": {
     // Environment setup & latest features
     "lib": ["ESNext"],
     "target": "ESNext",
-    "module": "Preserve",
-    "moduleDetection": "force",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
     "allowJs": true,
     "types": ["bun", "express", "node"],
 
-    // Bundler mode
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
 
@@ -26,7 +23,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
-    "esModuleInterop": true,
+    "esModuleInterop": true
   },
   "include": ["src", "src/validations", "src/server.ts", "src/routes", "src/controllers", "config", "src/types"],
   "exclude": ["node_modules", "dist", "tests"]

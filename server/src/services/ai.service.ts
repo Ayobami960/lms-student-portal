@@ -1,7 +1,7 @@
-import { prisma } from "../config/db";
-import { ApiError } from "../utils/ApiError";
-import { aiConfig } from "../config/ai";
-import { logger } from "../utils/logger";
+import { prisma } from "../config/db.js";
+import { ApiError } from "../utils/ApiError.js";
+import { aiConfig } from "../config/ai.js";
+import { logger } from "../utils/logger.js";
 
 interface ChatContext {
   courseTitle?: string;

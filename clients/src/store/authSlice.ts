@@ -14,8 +14,6 @@ interface AuthState {
   user: AuthUser | null;
 }
 
-// Access tokens are short-lived and re-obtained via the httpOnly refresh cookie
-// on load, so only the user profile is persisted (for instant UI on refresh).
 const STORAGE_KEY = "lms-student-auth";
 
 function loadPersistedUser(): AuthUser | null {
@@ -56,13 +54,11 @@ const authSlice = createSlice({
 export const { setAuth, setUser, setAccessToken, clearAuth } = authSlice.actions;
 export default authSlice.reducer;
 
-// Persist just the user profile to localStorage whenever auth state changes.
-// Wired up via store.subscribe() in store/index.ts.
 export function persistAuthUser(user: AuthUser | null) {
   try {
     if (user) localStorage.setItem(STORAGE_KEY, JSON.stringify({ user }));
     else localStorage.removeItem(STORAGE_KEY);
   } catch {
-    /* localStorage unavailable — ignore */
+    /* localStorage unavailable */
   }
 }

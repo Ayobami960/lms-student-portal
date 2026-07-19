@@ -4,7 +4,8 @@ import { Loader2 } from "lucide-react";
 import ProtectedLayout from "./components/layout/ProtectedLayout";
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { useLazyMeQuery } from "./store/api/apiSlice";
-import { setUser } from "./store/authSlice";
+// FIX: Imported setAccessToken and clearAuth alongside setUser
+import { setUser, setAccessToken, clearAuth } from "./store/authSlice";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/auth/RegisterPage"));
@@ -53,13 +54,26 @@ export default function App() {
 
     triggerMe()
       .unwrap()
-      .then((me) => {
+      .then((payload) => {
         if (mounted) {
-          dispatch(setUser(me.data));
+          // FIX 1: Update the user object profile details
+          dispatch(setUser(payload.data));
+          
+          // FIX 2: Your api slice backend intercepts and returns a brand-new 
+          // short-lived access token in the response data or cookies. We must read it here 
+          // and save it into our global state slice context so headers attach correctly.
+          // Note: Adjust payload path if your API returns it inside another wrapper like payload.accessToken
+          if (payload.accessToken) {
+            dispatch(setAccessToken(payload.accessToken));
+          }
         }
       })
       .catch(() => {
-        // no-op: we'll remain on the login page if refresh fails
+        // FIX 3: If the background refresh API request hits a 401 or network error 
+        // because the user's cookies expired, clean up the stale localStorage user layout context.
+        if (mounted) {
+          dispatch(clearAuth());
+        }
       })
       .finally(() => {
         if (mounted) setIsAuthChecked(true);
@@ -116,21 +130,16 @@ export default function App() {
             </PublicRoute>
           } 
         />
-        
-        
-        
 
         {/* Protected layout wraps the dashboard and course routes */}
         <Route element={<ProtectedLayout currentTheme={theme} onToggleTheme={toggleTheme} />}>
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:id" element={<CoursesDetail />} />
-          
-            <Route path="/assignments" element={<AssignmentsPage />} />
+          <Route path="/assignments" element={<AssignmentsPage />} />
           <Route path="/certificates" element={<CertificatesPage />} />
           <Route path="/ai-assistant" element={<AIAssistantPage />} />
-
         </Route>
 
         {/* Fallback route - sends unhandled paths back home */}
