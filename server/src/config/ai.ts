@@ -1,7 +1,5 @@
-import { env } from "./env";
-
 export const aiConfig = {
-  provider: env.aiProvider,
-  apiKey: env.aiApiKey,
-  isMock: env.aiProvider === "mock" || !env.aiApiKey,
+  provider: process.env.AI_PROVIDER ?? "mock",
+  apiKey: process.env.AI_API_KEY,
+  isMock: (process.env.AI_PROVIDER ?? "mock") === "mock" || !process.env.AI_API_KEY,
 };
