@@ -13,8 +13,6 @@ import aiRoutes from "./ai.routes";
 
 const router = Router();
 
-router.get("/health", (_req, res) => res.json({ success: true, message: "API is healthy", data: { timestamp: new Date().toISOString() } }));
-
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);
 router.use("/courses", courseRoutes);
