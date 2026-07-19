@@ -1,4 +1,18 @@
-import { prisma } from "../config/db";
+import { prisma } from "../config/db.js";
+
+// Explicit structural interfaces matching your Prisma model schemas
+interface CourseWithCount {
+  id: string;
+  title: string;
+  _count: {
+    enrollments: number;
+  };
+}
+
+interface GroupByRoleResult {
+  role: string;
+  _count: number;
+}
 
 export const analyticsService = {
   async studentDashboard(studentId: string) {
@@ -9,20 +23,25 @@ export const analyticsService = {
     ]);
 
     const totalCourses = enrollments.length;
-    const completedCourses = enrollments.filter((e) => e.completed).length;
+    
+    // Explicitly typed 'e' to satisfy strict implicitAny rules
+    const completedCourses = enrollments.filter((e: any) => e.completed).length;
+    
+    // Explicitly typed both the running accumulator 'sum' and current item 'e'
     const averageProgress = totalCourses > 0
-      ? Math.round(enrollments.reduce((sum, e) => sum + e.progress, 0) / totalCourses)
+      ? Math.round(enrollments.reduce((sum: number, e: any) => sum + e.progress, 0) / totalCourses)
       : 0;
-    const pendingAssignments = submissions.filter((s) => s.status !== "GRADED").length +
+      
+    const pendingAssignments = submissions.filter((s: any) => s.status !== "GRADED").length +
       await countUnsubmittedAssignments(studentId);
 
-    const gradedSubmissions = submissions.filter((s) => s.score !== null);
+    const gradedSubmissions = submissions.filter((s: any) => s.score !== null);
     const averageScore = gradedSubmissions.length > 0
-      ? Math.round(gradedSubmissions.reduce((sum, s) => sum + (s.score ?? 0), 0) / gradedSubmissions.length)
+      ? Math.round(gradedSubmissions.reduce((sum: number, s: any) => sum + (s.score ?? 0), 0) / gradedSubmissions.length)
       : null;
 
     // Approximate learning hours from course durations weighted by progress
-    const learningMinutes = enrollments.reduce((sum, e) => sum + (e.course.duration * e.progress) / 100, 0);
+    const learningMinutes = enrollments.reduce((sum: number, e: any) => sum + (e.course.duration * e.progress) / 100, 0);
 
     return {
       totalCourses,
@@ -41,7 +60,8 @@ export const analyticsService = {
       include: { course: { select: { id: true, title: true, thumbnail: true } } },
       orderBy: { enrolledAt: "desc" },
     });
-    return enrollments.map((e) => ({
+    
+    return enrollments.map((e: any) => ({
       courseId: e.courseId,
       courseTitle: e.course.title,
       thumbnail: e.course.thumbnail,
@@ -56,7 +76,8 @@ export const analyticsService = {
       include: { assignment: { select: { title: true, maxScore: true } } },
       orderBy: { gradedAt: "desc" },
     });
-    return submissions.map((s) => ({
+    
+    return submissions.map((s: any) => ({
       assignment: s.assignment.title,
       score: s.score,
       maxScore: s.assignment.maxScore,
@@ -69,7 +90,9 @@ export const analyticsService = {
       where: { instructorId },
       include: { _count: { select: { enrollments: true } } },
     });
-    const courseIds = courses.map((c) => c.id);
+    
+    // Explicitly typed map iterator argument
+    const courseIds = courses.map((c: any) => c.id);
 
     const [totalStudents, submissionsToGrade, avgRating] = await Promise.all([
       prisma.enrollment.count({ where: { courseId: { in: courseIds } } }),
@@ -84,7 +107,12 @@ export const analyticsService = {
       totalStudents,
       submissionsToGrade,
       averageRating: avgRating._avg.rating ?? 0,
-      courses: courses.map((c) => ({ id: c.id, title: c.title, students: c._count.enrollments })),
+      // Map return layout matching explicit structure definitions
+      courses: (courses as unknown as CourseWithCount[]).map((c) => ({ 
+        id: c.id, 
+        title: c.title, 
+        students: c._count.enrollments 
+      })),
     };
   },
 
@@ -97,14 +125,22 @@ export const analyticsService = {
       prisma.user.groupBy({ by: ["role"], _count: true }),
     ]);
 
-    return { totalUsers, totalCourses, totalEnrollments, totalCertificates, usersByRole };
+    return { 
+      totalUsers, 
+      totalCourses, 
+      totalEnrollments, 
+      totalCertificates, 
+      usersByRole: usersByRole as unknown as GroupByRoleResult[]
+    };
   },
 };
 
+// Fixed top-level input type parameter mapping context
 async function countUnsubmittedAssignments(studentId: string) {
   const assignments = await prisma.assignment.findMany({
     where: { lesson: { module: { course: { enrollments: { some: { studentId } } } } } },
     include: { submissions: { where: { studentId } } },
   });
-  return assignments.filter((a) => a.submissions.length === 0 && a.dueDate > new Date()).length;
+  
+  return assignments.filter((a: any) => a.submissions.length === 0 && a.dueDate > new Date()).length;
 }

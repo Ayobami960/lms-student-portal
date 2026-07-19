@@ -1,7 +1,7 @@
 import PDFDocument from "pdfkit";
 import fs from "fs";
 import path from "path";
-import { storage } from "../config/storage";
+import { storage } from "../config/storage.js";
 
 interface CertificateData {
   certificateNumber: string;

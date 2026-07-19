@@ -1,6 +1,6 @@
-import { prisma } from "../config/db";
-import { ApiError } from "../utils/ApiError";
-import { storage } from "../config/storage";
+import { prisma } from "../config/db.js";
+import { ApiError } from "../utils/ApiError.js";
+import { storage } from "../config/storage.js";
 
 export const submissionService = {
   async submit(assignmentId: string, studentId: string, file: Express.Multer.File | undefined, comment?: string) {

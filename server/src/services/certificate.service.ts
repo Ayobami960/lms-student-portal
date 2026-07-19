@@ -1,7 +1,7 @@
-import { prisma } from "../config/db";
-import { ApiError } from "../utils/ApiError";
-import { generateCertificateNumber } from "../utils/slugify";
-import { generateCertificatePdf } from "./pdf.service";
+import { prisma } from "../config/db.js";
+import { ApiError } from "../utils/ApiError.js";
+import { generateCertificateNumber } from "../utils/slugify.js";
+import { generateCertificatePdf } from "./pdf.service.js";
 
 export const certificateService = {
   async listForUser(userId: string) {

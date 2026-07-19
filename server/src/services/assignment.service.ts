@@ -1,5 +1,5 @@
-import { prisma } from "../config/db";
-import { ApiError } from "../utils/ApiError";
+import { prisma } from "../config/db.js";
+import { ApiError } from "../utils/ApiError.js";
 
 export const assignmentService = {
   async listForUser(user: { id: string; role: string }, courseId?: string) {

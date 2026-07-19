@@ -1,5 +1,5 @@
-import { prisma } from "../config/db";
-import { ApiError } from "../utils/ApiError";
+import { prisma } from "../config/db.js";
+import { ApiError } from "../utils/ApiError.js";
 
 async function assertModuleOwnership(moduleId: string, requester: { id: string; role: string }) {
   const mod = await prisma.module.findUnique({ where: { id: moduleId }, include: { course: true } });
