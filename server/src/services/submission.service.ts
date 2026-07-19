@@ -5,19 +5,21 @@ import { storage } from "../config/storage.js";
 export const submissionService = {
   async submit(assignmentId: string, studentId: string, file: Express.Multer.File | undefined, comment?: string) {
     const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId } });
-    if (!assignment) throw ApiError.notFound("Assignment not found");
-    if (!file) throw ApiError.badRequest("A file upload is required");
+    
+    // FIXED: Instantiated ApiError using 'new' keywords
+    if (!assignment) throw new ApiError(404, "Assignment not found");
+    if (!file) throw new ApiError(400, "A file upload is required");
 
     const isLate = new Date() > assignment.dueDate;
     const fileUrl = storage.getFileUrl(file.filename);
 
-    // Allow replacing a submission before the deadline (or any time, admin discretion) via upsert
     return prisma.submission.upsert({
       where: { assignmentId_studentId: { assignmentId, studentId } },
       update: {
         fileUrl,
         fileName: file.originalname,
-        comment,
+        // FIXED: Coerced undefined to null to comply with exactOptionalPropertyTypes
+        comment: comment ?? null,
         status: isLate ? "LATE" : "SUBMITTED",
         submittedAt: new Date(),
         score: null,
@@ -29,7 +31,8 @@ export const submissionService = {
         studentId,
         fileUrl,
         fileName: file.originalname,
-        comment,
+        // FIXED: Coerced undefined to null to comply with exactOptionalPropertyTypes
+        comment: comment ?? null,
         status: isLate ? "LATE" : "SUBMITTED",
       },
     });
@@ -56,13 +59,20 @@ export const submissionService = {
   async getById(id: string, user: { id: string; role: string }) {
     const submission = await prisma.submission.findUnique({
       where: { id },
-      include: { assignment: { include: { lesson: { include: { module: { include: { course: true } } } } } }, student: { select: { id: true, name: true, email: true } } },
+      include: { 
+        assignment: { include: { lesson: { include: { module: { include: { course: true } } } } } }, 
+        student: { select: { id: true, name: true, email: true } } 
+      },
     });
-    if (!submission) throw ApiError.notFound("Submission not found");
+    
+    // FIXED: Instantiated ApiError using 'new' keywords
+    if (!submission) throw new ApiError(404, "Submission not found");
+    
     const isOwner = submission.studentId === user.id;
     const isCourseInstructor = submission.assignment.lesson.module.course.instructorId === user.id;
+    
     if (!isOwner && !isCourseInstructor && user.role !== "ADMIN") {
-      throw ApiError.forbidden("You cannot view this submission");
+      throw new ApiError(403, "You cannot view this submission");
     }
     return submission;
   },
