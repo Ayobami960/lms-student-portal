@@ -11,17 +11,22 @@ interface ListCoursesParams {
   page: number;
   limit: number;
   publishedOnly: boolean;
-  studentId?: string; 
+  studentId?: string;
+  // When set, only courses owned by this instructor are returned.
+  // Used so an INSTRUCTOR only ever sees their own courses; ADMIN omits
+  // this to see everyone's.
+  instructorId?: string;
 }
 
 export const courseService = {
   async list(params: ListCoursesParams) {
-    const { search, category, level, sort, page, limit, publishedOnly, studentId } = params;
+    const { search, category, level, sort, page, limit, publishedOnly, studentId, instructorId } = params;
 
     const where: Prisma.CourseWhereInput = {
       ...(publishedOnly ? { published: true } : {}),
       ...(category ? { category } : {}),
       ...(level ? { level } : {}),
+      ...(instructorId ? { instructorId } : {}),
       ...(search
         ? {
             OR: [
@@ -43,7 +48,7 @@ export const courseService = {
         ? { title: "asc" }
         : { createdAt: "desc" };
 
-    // FIXED: Construct the include block safely to satisfy exactOptionalPropertyTypes
+    
     const includeConfig: any = {
       instructor: { select: { id: true, name: true, avatar: true } },
       _count: { select: { enrollments: true, modules: true } },
@@ -63,7 +68,7 @@ export const courseService = {
         orderBy,
         skip: (page - 1) * limit,
         take: limit,
-        include: includeConfig, // Pass cleaned layout mapping here
+        include: includeConfig,
       }),
       prisma.course.count({ where }),
     ]);
@@ -76,55 +81,61 @@ export const courseService = {
     return { items: mappedItems, total };
   },
 
-  async getById(id: string, studentId?: string) {
-    const course = await prisma.course.findUnique({
-      where: { id },
-      include: {
-        instructor: { select: { id: true, name: true, avatar: true } },
-        modules: {
-          orderBy: { order: "asc" },
-          include: { lessons: { orderBy: { order: "asc" } } },
-        },
-        _count: { select: { enrollments: true } },
+ async getById(id: string, requester?: { id: string; role: string }) {
+  const course = await prisma.course.findUnique({
+    where: { id },
+    include: {
+      instructor: { select: { id: true, name: true, avatar: true } },
+      modules: {
+        orderBy: { order: "asc" },
+        include: { lessons: { orderBy: { order: "asc" } } },
       },
+      _count: { select: { enrollments: true } },
+    },
+  });
+
+  if (!course) throw new ApiError(404, "Course not found");
+
+  const isOwner = requester?.role === "ADMIN" || (!!requester && course.instructorId === requester.id);
+  if (!course.published && !isOwner) {
+    throw new ApiError(404, "Course not found");
+  }
+
+  let enrollment = null;
+  if (requester?.role === "STUDENT") {
+    enrollment = await prisma.enrollment.findUnique({
+      where: { studentId_courseId: { studentId: requester.id, courseId: id } },
     });
+  }
+
+  return { ...course, enrollment };
+},
+
+async create(instructorId: string, data: {
+  title: string; description: string; category: string;
+  level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED"; duration: number;
+  thumbnail?: string; published?: boolean; // NEW
+}) {
+  const baseSlug = slugify(data.title);
+  let slug = baseSlug;
+  let counter = 1;
+  while (await prisma.course.findUnique({ where: { slug } })) {
+    slug = `${baseSlug}-${counter++}`;
+  }
+
+  return prisma.course.create({
+    data: { ...data, slug, instructorId, rating: 0 },
     
-    // FIXED: Used 'new' keyword instantiator
-    if (!course) throw new ApiError(404, "Course not found");
-
-    let enrollment = null;
-    if (studentId) {
-      enrollment = await prisma.enrollment.findUnique({
-        where: { studentId_courseId: { studentId, courseId: id } },
-      });
-    }
-
-    return { ...course, enrollment };
-  },
-
-  async create(instructorId: string, data: {
-    title: string; description: string; category: string;
-    level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED"; duration: number; thumbnail?: string;
-  }) {
-    const baseSlug = slugify(data.title);
-    let slug = baseSlug;
-    let counter = 1;
-    while (await prisma.course.findUnique({ where: { slug } })) {
-      slug = `${baseSlug}-${counter++}`;
-    }
-
-    return prisma.course.create({
-      data: { ...data, slug, instructorId, rating: 0 },
-    });
-  },
+  });
+},
 
   async update(id: string, requester: { id: string; role: string }, data: Partial<{
     title: string; description: string; category: string; level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
     duration: number; thumbnail: string; published: boolean;
   }>) {
     const course = await prisma.course.findUnique({ where: { id } });
+
     
-    // FIXED: Used 'new' keyword instantiators
     if (!course) throw new ApiError(404, "Course not found");
     if (requester.role !== "ADMIN" && course.instructorId !== requester.id) {
       throw new ApiError(403, "You can only update your own courses");
@@ -135,8 +146,8 @@ export const courseService = {
 
   async remove(id: string, requester: { id: string; role: string }) {
     const course = await prisma.course.findUnique({ where: { id } });
+
     
-    // FIXED: Used 'new' keyword instantiators
     if (!course) throw new ApiError(404, "Course not found");
     if (requester.role !== "ADMIN" && course.instructorId !== requester.id) {
       throw new ApiError(403, "You can only delete your own courses");
@@ -145,16 +156,15 @@ export const courseService = {
   },
 
   async enroll(courseId: string, studentId: string) {
-    const course = await prisma.course.findUnique({ where: { id: courseId } });
-    
-    // FIXED: Used 'new' keyword instantiators
-    if (!course) throw new ApiError(404, "Course not found");
+  const course = await prisma.course.findUnique({ where: { id: courseId } });
+  if (!course) throw new ApiError(404, "Course not found");
+  if (!course.published) throw new ApiError(404, "Course not found"); 
 
-    const existing = await prisma.enrollment.findUnique({
-      where: { studentId_courseId: { studentId, courseId } },
-    });
-    if (existing) throw new ApiError(409, "You are already enrolled in this course");
+  const existing = await prisma.enrollment.findUnique({
+    where: { studentId_courseId: { studentId, courseId } },
+  });
+  if (existing) throw new ApiError(409, "You are already enrolled in this course");
 
-    return prisma.enrollment.create({ data: { studentId, courseId } });
-  },
+  return prisma.enrollment.create({ data: { studentId, courseId } });
+},
 };

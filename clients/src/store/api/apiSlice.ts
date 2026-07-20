@@ -52,7 +52,7 @@ export const apiSlice = createApi({
     resetPassword: builder.mutation<ApiSuccess<null>, { token: string; password: string }>({
       query: (body) => ({ url: "/auth/reset-password", method: "POST", body }),
     }),
-    listCourses: builder.query<Paginated<any>, { search?: string; category?: string; level?: string; sort?: string; page?: number; limit?: number }>({
+    listCourses: builder.query<Paginated<any>, { search?: string; category?: string; level?: string; sort?: string; page?: number; limit?: number; mine?: boolean }>({
       query: (params) => ({ url: "/courses", params }),
       providesTags: (result) =>
         result ? [...result.data.map((c: any) => ({ type: "Course" as const, id: c.id })), { type: "Course", id: "LIST" }] : [{ type: "Course", id: "LIST" }],
@@ -69,6 +69,10 @@ export const apiSlice = createApi({
       query: ({ id, data }) => ({ url: `/courses/${id}`, method: "PATCH", body: data }),
       invalidatesTags: (_r, _e, { id }) => [{ type: "Course", id }, { type: "Course", id: "LIST" }],
     }),
+    deleteCourse: builder.mutation<ApiSuccess<null>, string>({
+      query: (id) => ({ url: `/courses/${id}`, method: "DELETE" }),
+      invalidatesTags: (_r, _e, id) => [{ type: "Course", id }, { type: "Course", id: "LIST" }],
+    }),
     enrollCourse: builder.mutation<ApiSuccess<any>, string>({
       query: (id) => ({ url: `/courses/${id}/enroll`, method: "POST" }),
       invalidatesTags: (_r, _e, id) => [{ type: "Course", id }, { type: "Course", id: "LIST" }],
@@ -83,6 +87,10 @@ export const apiSlice = createApi({
         { type: "Lesson", id },
         ...(result ? [{ type: "Course" as const, id: result.data.courseId }] : []),
       ],
+    }),
+    updateLesson: builder.mutation<ApiSuccess<any>, { id: string; courseId: string; data: Record<string, unknown> }>({
+      query: ({ id, data }) => ({ url: `/lessons/${id}`, method: "PATCH", body: data }),
+      invalidatesTags: (_r, _e, { id, courseId }) => [{ type: "Lesson", id }, { type: "Course", id: courseId }],
     }),
     listAssignments: builder.query<ApiSuccess<any[]>, { courseId?: string } | void>({
       query: (params) => ({ url: "/assignments", params: params ?? {} }),
@@ -155,9 +163,11 @@ export const {
   useGetCourseQuery,
   useCreateCourseMutation,
   useUpdateCourseMutation,
+  useDeleteCourseMutation,
   useEnrollCourseMutation,
   useGetLessonQuery,
   useCompleteLessonMutation,
+  useUpdateLessonMutation,
   useListAssignmentsQuery,
   useSubmitAssignmentMutation,
   useListGradingSubmissionsQuery,

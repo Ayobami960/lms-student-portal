@@ -14,6 +14,10 @@ const DashboardPage = lazy(() => import("./pages/Dashboard"));
 const CertificatesPage = lazy(() => import("./pages/CertificatesPage"));
 const GradingPage = lazy(() => import("./pages/InstructorController/GradingPage"));
 const InstructorCoursesPage = lazy(() => import("./pages/InstructorController/InstructorCoursesPage"));
+const ViewCoursesPage = lazy(() => import("./pages/InstructorController/ViewCoursesPage"));
+
+const CourseEditPage = lazy(() => import("./pages/InstructorController/CourseEdit"));
+
 const CoursesPage = lazy(() => import("./pages/courses/CoursesPage"));
 const CoursesDetail = lazy(() => import("./pages/courses/CourseDetails"));
 const AssignmentsPage = lazy(() => import("./pages/Assignment/AssignmentsPage"));
@@ -61,10 +65,7 @@ export default function App() {
           // FIX 1: Update the user object profile details
           dispatch(setUser(payload.data));
           
-          // FIX 2: Your api slice backend intercepts and returns a brand-new 
-          // short-lived access token in the response data or cookies. We must read it here 
-          // and save it into our global state slice context so headers attach correctly.
-          // Note: Adjust payload path if your API returns it inside another wrapper like payload.accessToken
+          
           if (payload.accessToken) {
             dispatch(setAccessToken(payload.accessToken));
           }
@@ -143,6 +144,11 @@ export default function App() {
           <Route path="/certificates" element={<CertificatesPage />} />
           <Route path="/ai-assistant" element={<AIAssistantPage />} />
             <Route path="/my-courses" element={<InstructorCoursesPage />} />
+            
+            <Route path="/view-courses/:id" element={<ViewCoursesPage />} />
+          
+            
+            <Route path="/my-courses/:id" element={<CourseEditPage />} />
             <Route path="/grading" element={<GradingPage />} />
         </Route>
 

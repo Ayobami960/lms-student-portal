@@ -39,16 +39,20 @@ export const lessonService = {
     return prisma.lesson.create({ data: { ...data, moduleId, order: data.order ?? count } });
   },
 
-  async update(id: string, requester: { id: string; role: string }, data: Partial<{
-    title: string; description: string; content: string; videoUrl: string; order: number;
-  }>) {
-    const lesson = await prisma.lesson.findUnique({ where: { id }, include: { module: { include: { course: true } } } });
-    if (!lesson) throw ApiError.notFound("Lesson not found");
-    if (requester.role !== "ADMIN" && lesson.module.course.instructorId !== requester.id) {
-      throw ApiError.forbidden("You do not own this course");
-    }
-    return prisma.lesson.update({ where: { id }, data });
-  },
+  // lesson.service.ts — add this method
+async update(id: string, requester: { id: string; role: string }, data: Partial<{
+  title: string; description: string; content: string; videoUrl: string;
+}>) {
+  const lesson = await prisma.lesson.findUnique({
+    where: { id },
+    include: { module: { include: { course: true } } },
+  });
+  if (!lesson) throw new ApiError(404, "Lesson not found");
+  if (requester.role !== "ADMIN" && lesson.module.course.instructorId !== requester.id) {
+    throw new ApiError(403, "You can only update lessons in your own courses");
+  }
+  return prisma.lesson.update({ where: { id }, data });
+},
 
   async remove(id: string, requester: { id: string; role: string }) {
     const lesson = await prisma.lesson.findUnique({ where: { id }, include: { module: { include: { course: true } } } });

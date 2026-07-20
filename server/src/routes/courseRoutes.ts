@@ -20,10 +20,17 @@ function optionalAuth(req: Request, _res: Response, next: NextFunction) {
 
 const courseRoutes = Router();
 
+// FIX: this route is meant to be open to everyone (anonymous browsers,
+// students, instructors viewing "my courses", and admins viewing the full
+// catalog) — access control for it is handled inside courseController.list
+// based on req.user?.role and the "mine" query flag, not by gating the
+// route to a fixed role list. authorize("STUDENT", "ADMIN") was blocking
+// INSTRUCTOR (and effectively anonymous users, since optionalAuth doesn't
+// guarantee req.user exists) from this route entirely.
 courseRoutes.get("/", optionalAuth, validate(listCoursesQuerySchema), courseController.list);
 courseRoutes.post("/", authenticate, authorize("INSTRUCTOR", "ADMIN"), validate(createCourseSchema), courseController.create);
 courseRoutes.get("/:id", optionalAuth, courseController.getById);
-courseRoutes.patch("/:id", authenticate, authorize("INSTRUCTOR", "ADMIN"), validate(updateCourseSchema), courseController.update);
+courseRoutes.patch("/:id", authenticate, authorize("INSTRUCTOR"), validate(updateCourseSchema), courseController.update);
 courseRoutes.delete("/:id", authenticate, authorize("INSTRUCTOR", "ADMIN"), courseController.remove);
 courseRoutes.post("/:id/enroll", authenticate, authorize("STUDENT"), courseController.enroll);
 

@@ -7,16 +7,23 @@ export const courseController = {
   list: asyncHandler(async (req: Request, res: Response) => {
     const page = parseInt((req.query.page as string) ?? "1", 10);
     const limit = parseInt((req.query.limit as string) ?? "12", 10);
-    const isPrivileged = req.user?.role === "ADMIN" || req.user?.role === "INSTRUCTOR";
+    const role = req.user?.role;
+    const isAdmin = role === "ADMIN";
+    // "mine=true" is what the instructor's My Courses page sends. Without
+    // it, an authenticated instructor browsing the public catalog should
+    // see the same published-only results everyone else does — not be
+    // silently restricted to just their own courses.
+    const wantsMine = req.query.mine === "true";
+    const isOwnerView = role === "INSTRUCTOR" && wantsMine;
 
     // 1. Build the base params with guaranteed defined fields
     const listParams: any = {
       page,
       limit,
-      publishedOnly: !isPrivileged,
+      publishedOnly: !isAdmin && !isOwnerView,
     };
 
-    // 2. Conditionally append optional fields ONLY if they are populated 
+    // 2. Conditionally append optional fields ONLY if they are populated
     // This cleanly bypasses 'exactOptionalPropertyTypes' strict errors
     if (req.query.search) {
       listParams.search = req.query.search as string;
@@ -34,14 +41,20 @@ export const courseController = {
       listParams.studentId = req.user.sub;
     }
 
+    // Only the instructor's own "My Courses" request is scoped to them.
+    // ADMIN never gets scoped — they always see the full catalog.
+    if (isOwnerView && req.user?.sub) {
+      listParams.instructorId = req.user.sub;
+    }
+
     // 3. Dispatch the sanitized arguments object
     const { items, total } = await courseService.list(listParams);
     sendPaginated(res, items, { page, limit, total });
   }),
 
   getById: asyncHandler(async (req: Request, res: Response) => {
-    const studentId = req.user?.role === "STUDENT" ? req.user.sub : undefined;
-    const course = await courseService.getById(req.params.id as string, studentId);
+    const requester = req.user ? { id: req.user.sub, role: req.user.role } : undefined;
+    const course = await courseService.getById(req.params.id as string, requester);
     sendSuccess(res, course);
   }),
 
