@@ -283,7 +283,20 @@ const CourseEditPage = () => {
 
        
 
-        
+        <label className="flex items-center gap-2 text-sm text-on-surface">
+          <input type="checkbox" className="h-4 w-4 rounded border-outline-variant" {...register("published")} />
+          Published — visible to students for enrollment
+        </label>
+
+
+      <div className="flex gap-3">
+          <Button type="submit" loading={isSaving}>
+            Save changes
+          </Button>
+          <Button type="button" variant="secondary" onClick={() => navigate("/my-courses")}>
+            Cancel
+          </Button>
+        </div>
       </form>
 
       {/* --- Existing modules & lessons (read-only for now) --- */}
@@ -472,20 +485,7 @@ const CourseEditPage = () => {
       </section>
 
 
-       <label className="flex items-center gap-2 text-sm text-on-surface">
-          <input type="checkbox" className="h-4 w-4 rounded border-outline-variant" {...register("published")} />
-          Published — visible to students for enrollment
-        </label>
-
-
-      <div className="flex gap-3">
-          <Button type="submit" loading={isSaving}>
-            Save changes
-          </Button>
-          <Button type="button" variant="secondary" onClick={() => navigate("/my-courses")}>
-            Cancel
-          </Button>
-        </div>
+       
     </div>
   );
 };
