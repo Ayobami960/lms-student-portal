@@ -7,24 +7,15 @@ import {
   BookOpen,
   Sparkles,
   LogOut,
-  X,
-  type LucideIcon,
+  X
 } from "lucide-react";
 
 import { clearAuth } from "../../store/authSlice";
 import { useLogoutMutation } from "../../store/api/apiSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import type { MenuItem, SidebarProps } from "../../types";
 
-interface SidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
-interface MenuItem {
-  to: string;
-  label: string;
-  icon: LucideIcon;
-}
 
 const STUDENT_LINKS: MenuItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -68,7 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       )}
 
       <aside
-        className={`fixed left-0 top-0 h-full w-[280px] flex flex-col p-md gap-sm border-r border-outline-variant bg-surface-container-lowest z-50 shadow-sm transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed left-0 top-0 h-full w-70 flex flex-col p-md gap-sm border-r border-outline-variant bg-surface-container-lowest z-50 shadow-sm transition-transform duration-300 lg:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -79,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <GraduationCap className="w-5 h-5" fill="currentColor" strokeWidth={1} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-primary leading-tight">EduAI Pro</h1>
+              <h1 className="text-xl font-bold leading-tight">EduAI Pro</h1>
               <p className="text-xs font-semibold text-outline tracking-wider">Learning Portal</p>
             </div>
           </div>

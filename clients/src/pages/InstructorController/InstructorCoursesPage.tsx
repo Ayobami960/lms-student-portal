@@ -70,10 +70,7 @@ const InstructorCoursesPage = () => {
               key={c.id}
               className="group relative bg-surface-container-lowest border border-outline-variant shadow-sm rounded-xl p-md transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              {/* Card body still opens the public course page. Buttons below
-                  are siblings, not nested inside this Link — nesting
-                  <button>/<a> inside another <a> is invalid HTML and would
-                  make Edit/Delete also trigger this navigation. */}
+              
               <Link to={`/view-courses/${c.id}`} className="block">
                 <div className="mb-2 flex items-center justify-between pr-14">
                   <Badge variant={c.published ? "success" : "warning"}>

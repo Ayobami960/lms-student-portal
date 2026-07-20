@@ -1,18 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import type { AuthUser, AuthState } from "../types";
 
-export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
-  role: "STUDENT" | "INSTRUCTOR" | "ADMIN";
-  avatar?: string | null;
-}
 
-interface AuthState {
-  accessToken: string | null;
-  user: AuthUser | null;
-}
 
 const STORAGE_KEY = "lms-student-auth";
 

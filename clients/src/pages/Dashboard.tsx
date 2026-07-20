@@ -25,8 +25,9 @@ import {
 } from "../store/api/apiSlice";
 import { useAppSelector } from "../hooks/redux";
 
-// Custom UI Subcomponents
+
 import { AIWidget } from "../components/AIWidget";
+import EnrollmentChart from "../components/chart/EnrollmentChart";
 
 interface Message {
   sender: "ai" | "user";
@@ -57,17 +58,17 @@ export default function DashboardPage() {
   // Summary cards differ per role, same as the old dashboard.
   const summaryCards = isInstructor
     ? [
-        { label: "Your Courses", value: stats?.totalCourses ?? 0, icon: BookOpen, color: "bg-primary/10 text-primary" },
-        { label: "Total Students", value: stats?.totalStudents ?? 0, icon: Users, color: "bg-secondary/10 text-secondary" },
-        { label: "To Grade", value: stats?.submissionsToGrade ?? 0, icon: ClipboardList, color: "bg-tertiary/10 text-tertiary" },
-        { label: "Avg. Rating", value: (stats?.averageRating ?? 0).toFixed(1), icon: Star, color: "bg-primary/10 text-primary" },
-      ]
+      { label: "Your Courses", value: stats?.totalCourses ?? 0, icon: BookOpen, color: "bg-primary/10 text-primary" },
+      { label: "Total Students", value: stats?.totalStudents ?? 0, icon: Users, color: "bg-secondary/10 text-secondary" },
+      { label: "To Grade", value: stats?.submissionsToGrade ?? 0, icon: ClipboardList, color: "bg-tertiary/10 text-tertiary" },
+      { label: "Avg. Rating", value: (stats?.averageRating ?? 0).toFixed(1), icon: Star, color: "bg-primary/10 text-primary" },
+    ]
     : [
-        { label: "Enrolled Courses", value: stats?.totalCourses ?? 0, icon: BookMarked, color: "bg-primary/10 text-primary" },
-        { label: "Completed Courses", value: stats?.completedCourses ?? 0, icon: CheckCircle2, color: "bg-secondary/10 text-secondary" },
-        { label: "Average Progress", value: `${stats?.averageProgress ?? 0}%`, icon: TrendingUp, color: "bg-tertiary/10 text-tertiary" },
-        { label: "Certificates Earned", value: stats?.certificatesEarned ?? 0, icon: Award, color: "bg-primary/10 text-primary" },
-      ];
+      { label: "Enrolled Courses", value: stats?.totalCourses ?? 0, icon: BookMarked, color: "bg-primary/10 text-primary" },
+      { label: "Completed Courses", value: stats?.completedCourses ?? 0, icon: CheckCircle2, color: "bg-secondary/10 text-secondary" },
+      { label: "Average Progress", value: `${stats?.averageProgress ?? 0}%`, icon: TrendingUp, color: "bg-tertiary/10 text-tertiary" },
+      { label: "Certificates Earned", value: stats?.certificatesEarned ?? 0, icon: Award, color: "bg-primary/10 text-primary" },
+    ];
 
   // ------------------------------------------------------------------
   // AI Companion state — wired to the real /ai/chat endpoint.
@@ -78,9 +79,8 @@ export default function DashboardPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: "ai",
-      text: `Hi ${user?.name?.split(" ")[0] || "there"}! Let me know if you need help analyzing your ${
-        isInstructor ? "courses" : "course progression"
-      } or ${isInstructor ? "grading" : "studying for quizzes"}.`,
+      text: `Hi ${user?.name?.split(" ")[0] || "there"}! Let me know if you need help analyzing your ${isInstructor ? "courses" : "course progression"
+        } or ${isInstructor ? "grading" : "studying for quizzes"}.`,
     },
   ]);
   const [sendChatMessage, { isLoading: isTyping }] = useSendChatMessageMutation();
@@ -205,24 +205,34 @@ export default function DashboardPage() {
                   </Link>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
-                    <thead className="border-b border-outline-variant text-xs uppercase text-outline">
-                      <tr>
-                        <th className="px-4 py-3">Course</th>
-                        <th className="px-4 py-3">Students</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {stats.courses.map((c: any) => (
-                        <tr key={c.id} className="border-b border-outline-variant/60 last:border-0">
-                          <td className="px-4 py-3 font-medium text-on-surface">{c.title}</td>
-                          <td className="px-4 py-3 text-outline">{c.students}</td>
+                <>
+                  {/* NEW — enrollment bar chart */}
+                  <div className="mb-lg">
+                    <h4 className="text-sm font-semibold text-on-surface-variant uppercase tracking-wide mb-3">
+                      Enrollment by Course
+                    </h4>
+                    <EnrollmentChart courses={stats.courses} />
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                      <thead className="border-b border-outline-variant text-xs uppercase text-outline">
+                        <tr>
+                          <th className="px-4 py-3">Course</th>
+                          <th className="px-4 py-3">Students</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {stats.courses.map((c: any) => (
+                          <tr key={c.id} className="border-b border-outline-variant/60 last:border-0">
+                            <td className="px-4 py-3 font-medium text-on-surface">{c.title}</td>
+                            <td className="px-4 py-3 text-outline">{c.students}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
               )}
             </div>
           ) : (
@@ -344,11 +354,10 @@ export default function DashboardPage() {
                       </div>
                     )}
                     <div
-                      className={`p-3 max-w-[80%] text-sm shadow-xs ${
-                        isUser
+                      className={`p-3 max-w-[80%] text-sm shadow-xs ${isUser
                           ? "bg-primary text-on-primary rounded-2xl rounded-tr-sm"
                           : "bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-2xl rounded-tl-sm"
-                      }`}
+                        }`}
                     >
                       {isUser ? (
                         <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
@@ -426,11 +435,10 @@ export default function DashboardPage() {
         <button
           onClick={() => setIsChatOpen(!isChatOpen)}
           aria-label={isChatOpen ? "Close companion chat" : "Open companion chat"}
-          className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 relative cursor-pointer group ${
-            isChatOpen
+          className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 relative cursor-pointer group ${isChatOpen
               ? "bg-surface-container-lowest text-primary border border-primary/20 scale-95"
               : "bg-primary text-on-primary hover:scale-105 hover:shadow-primary/20 hover:shadow-2xl"
-          }`}
+            }`}
         >
           {!isChatOpen && (
             <span className="absolute inset-0 rounded-full bg-primary/20 animate-ping group-hover:animate-none opacity-75" />

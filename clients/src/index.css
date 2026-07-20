@@ -44,10 +44,21 @@
   --spacing-margin-desktop: 2.5rem;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
+
+* {
+  scrollbar-width: none;
+}
+
 /* Base style resets */
 @layer base {
   body {
     font-family: 'Inter', sans-serif;
+  -ms-overflow-style: none;
+
     @apply bg-surface text-on-surface transition-colors duration-200;
   }
 }
@@ -470,3 +481,8 @@ select.input {
     background-position: 102% 0;
   }
 }
+
+
+
+
+

@@ -18,6 +18,7 @@ import { Input } from "../../components/ui/Input";
 import { Select } from "../../components/ui/Select";
 import { Button } from "../../components/ui/Button";
 import { Skeleton } from "../../components/Skeleton";
+import type { LessonInput, ModuleInput } from "../../types";
 
 // Slug isn't editable here — it's assigned once at creation (see
 // course.service.ts#create) and the update endpoint doesn't accept it.
@@ -34,18 +35,7 @@ const schema = z.object({
 type FormInput = z.input<typeof schema>;
 type FormOutput = z.output<typeof schema>;
 
-interface LessonInput {
-  title: string;
-  description: string;
-  content: string;
-  videoUrl: string;
-}
 
-interface ModuleInput {
-  title: string;
-  description: string;
-  lessons: LessonInput[];
-}
 
 const emptyLesson = (): LessonInput => ({ title: "", description: "", content: "", videoUrl: "" });
 const emptyModule = (): ModuleInput => ({ title: "", description: "", lessons: [emptyLesson()] });

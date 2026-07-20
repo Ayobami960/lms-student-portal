@@ -1,32 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./baseQuery";
-import type { AuthUser } from "../authSlice";
 
-export interface ApiSuccess<T> { 
-  success: true; 
-  message: string; 
-  data: T; 
-}
-
-export interface Paginated<T> { 
-  success: true; 
-  message: string; 
-  data: T[]; 
-  pagination: { 
-    page: number; 
-    limit: number; 
-    total: number; 
-    totalPages: number; 
-  }; 
-}
-
-export interface CompleteLessonResponse {
-  progress: number;
-  completed: boolean;
-  courseId: string;
-  nextLessonId: string | null;
-  courseCompleted: boolean;
-}
+import type { AuthUser, ApiSuccess, Paginated, CompleteLessonResponse } from "../../types";
 
 export const apiSlice = createApi({
   reducerPath: "api",
