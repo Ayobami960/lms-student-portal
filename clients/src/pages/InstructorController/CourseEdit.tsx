@@ -113,7 +113,7 @@ const CourseEditPage = () => {
     }
   }
 
-  
+
   const [newModules, setNewModules] = useState<ModuleInput[]>([]);
   const [savingModules, setSavingModules] = useState(false);
 
@@ -155,7 +155,7 @@ const CourseEditPage = () => {
       const existingCount = course?.modules?.length ?? 0;
       for (let i = 0; i < newModules.length; i++) {
         const mod = newModules[i];
-        if (!mod.title.trim()) continue; 
+        if (!mod.title.trim()) continue;
 
         const moduleRes = await createModule({
           courseId: id,
@@ -165,7 +165,7 @@ const CourseEditPage = () => {
 
         for (let j = 0; j < mod.lessons.length; j++) {
           const lesson = mod.lessons[j];
-          if (!lesson.title.trim()) continue; 
+          if (!lesson.title.trim()) continue;
 
           await createLesson({
             moduleId,
@@ -182,8 +182,8 @@ const CourseEditPage = () => {
 
       toast.success("Modules added");
       setNewModules([]);
-      refetch(); 
-      
+      refetch();
+
     } catch (e: any) {
       toast.error(e?.data?.message ?? "Failed to add modules");
     } finally {
@@ -217,7 +217,7 @@ const CourseEditPage = () => {
     );
   }
 
-  
+
   const isOwner = user?.role === "ADMIN" || course.instructorId === user?.id;
   if (!isOwner) {
     return <Navigate to="/my-courses" replace />;
@@ -281,7 +281,7 @@ const CourseEditPage = () => {
 
         <Input label="Thumbnail URL" id="thumbnail" {...register("thumbnail")} />
 
-       
+
 
         <label className="flex items-center gap-2 text-sm text-on-surface">
           <input type="checkbox" className="h-4 w-4 rounded border-outline-variant" {...register("published")} />
@@ -289,13 +289,11 @@ const CourseEditPage = () => {
         </label>
 
 
-      <div className="flex gap-3">
-          <Button type="submit" loading={isSaving}>
+        <div className="flex gap-3">
+          <Button className="w-full" type="submit" loading={isSaving}>
             Save changes
           </Button>
-          <Button type="button" variant="secondary" onClick={() => navigate("/my-courses")}>
-            Cancel
-          </Button>
+
         </div>
       </form>
 
@@ -484,8 +482,10 @@ const CourseEditPage = () => {
         )}
       </section>
 
+      <Button className="w-full" type="button" variant="secondary" onClick={() => navigate("/my-courses")}>
+        Cancel
+      </Button>
 
-       
     </div>
   );
 };
