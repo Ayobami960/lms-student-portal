@@ -13,6 +13,7 @@ export const createCourseSchema = z.object({
   }),
   query: z.object({}).optional(),
   params: z.object({}).optional(),
+  instructorId: z.string().optional(), 
 });
 
 export const updateCourseSchema = z.object({

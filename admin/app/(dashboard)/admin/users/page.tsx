@@ -6,13 +6,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
   useListUsersQuery,
   useApproveInstructorMutation,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
-  useSetUserActiveMutation,
+  useSetUserActivateMutation,
+  useSetUserDeactivateMutation,
   useInviteAdminMutation,
   useListPendingInvitationsQuery,
+  useMeQuery,
 } from "../../../../store/api/apiSlice";
 import { EmptyState } from "@/components/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -62,7 +71,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Users, Trash2, UserCheck, Clock, Ban, UserPlus, Mail, ShieldCheck } from "lucide-react";
+import { Users, Trash2, UserCheck, Clock, Ban, UserPlus, Mail, ShieldCheck, MoreVertical } from "lucide-react";
 
 const ROLES = ["STUDENT", "INSTRUCTOR", "ADMIN"] as const;
 
@@ -313,6 +322,9 @@ export default function AdminUsersPage() {
   const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
   const [pendingToggle, setPendingToggle] = useState<{ id: string; name: string; active: boolean } | null>(null);
 
+  const { data: meData } = useMeQuery();
+  const currentUserId = meData?.data?.id;
+
   const { data, isLoading } = useListUsersQuery({
     page,
     limit: 20,
@@ -320,7 +332,8 @@ export default function AdminUsersPage() {
   });
   const [updateRole] = useUpdateUserRoleMutation();
   const [deleteUser] = useDeleteUserMutation();
-  const [setUserActive] = useSetUserActiveMutation();
+  const [activateUser] = useSetUserActivateMutation();
+  const [deactivateUser] = useSetUserDeactivateMutation();
 
   async function handleRoleChange(id: string, role: string) {
     try {
@@ -334,9 +347,18 @@ export default function AdminUsersPage() {
   async function confirmToggleActive() {
     if (!pendingToggle) return;
     const { id, name, active } = pendingToggle;
+    if (active && id === currentUserId) {
+      toast.error("You cannot deactivate your own account");
+      setPendingToggle(null);
+      return;
+    }
     const action = active ? "deactivate" : "activate";
     try {
-      await setUserActive({ id, isActive: !active }).unwrap();
+      if (active) {
+        await deactivateUser(id).unwrap();
+      } else {
+        await activateUser(id).unwrap();
+      }
       toast.success(`${name} ${action}d`);
     } catch (e: any) {
       toast.error(e?.data?.message ?? `Failed to ${action} user`);
@@ -419,86 +441,103 @@ export default function AdminUsersPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.data.map((u: any) => (
-                <TableRow key={u.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
-                        {initials(u.name)}
+              {data.data.map((u: any) => {
+                const isActive = u.isActive !== false;
+
+                return (
+                  <TableRow key={u.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
+                          {initials(u.name)}
+                        </div>
+                        <div>
+                          <p className="font-medium leading-none">{u.name}</p>
+                          <p className="mt-1 text-xs text-muted-foreground">{u.email}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium leading-none">{u.name}</p>
-                        <p className="mt-1 text-xs text-muted-foreground">{u.email}</p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Select value={u.role} onValueChange={(v) => handleRoleChange(u.id, v)}>
-                      <SelectTrigger className={`h-8 w-36 text-xs ${roleBadgeClass(u.role)}`}>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {ROLES.map((r) => (
-                          <SelectItem key={r} value={r}>
-                            {r.charAt(0) + r.slice(1).toLowerCase()}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1.5">
-                      {u.role === "INSTRUCTOR" &&
-                        (u.isApproved ? (
+                    </TableCell>
+                    <TableCell>
+                      <Select value={u.role} onValueChange={(v) => handleRoleChange(u.id, v)}>
+                        <SelectTrigger className={`h-8 w-36 text-xs ${roleBadgeClass(u.role)}`}>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ROLES.map((r) => (
+                            <SelectItem key={r} value={r}>
+                              {r.charAt(0) + r.slice(1).toLowerCase()}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1.5">
+                        {u.role === "INSTRUCTOR" &&
+                          (u.isApproved ? (
+                            <Badge className="border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-900/20 dark:text-green-400">
+                              <UserCheck size={11} /> Approved
+                            </Badge>
+                          ) : (
+                            <Badge className="border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-900/20 dark:text-amber-400">
+                              <Clock size={11} /> Pending
+                            </Badge>
+                          ))}
+
+                        {!isActive && (
+                          <Badge variant="destructive">
+                            <Ban size={11} /> Deactivated
+                          </Badge>
+                        )}
+
+                        {isActive && (
                           <Badge className="border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-900/20 dark:text-green-400">
-                            <UserCheck size={11} /> Approved
+                            <UserCheck size={11} /> Active
                           </Badge>
-                        ) : (
-                          <Badge className="border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-900/20 dark:text-amber-400">
-                            <Clock size={11} /> Pending
-                          </Badge>
-                        ))}
-                      {u.isActive === false && (
-                        <Badge variant="destructive">
-                          <Ban size={11} /> Deactivated
-                        </Badge>
-                      )}
-                      {u.role !== "INSTRUCTOR" && u.isActive !== false && (
-                        <span className="text-xs text-muted-foreground">—</span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {new Date(u.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className={u.isActive === false ? "text-green-600 hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/20" : "text-amber-600 hover:bg-amber-50 hover:text-amber-700 dark:hover:bg-amber-900/20"}
-                        onClick={() =>
-                          setPendingToggle({ id: u.id, name: u.name, active: u.isActive !== false })
-                        }
-                        aria-label={u.isActive === false ? `Activate ${u.name}` : `Deactivate ${u.name}`}
-                        title={u.isActive === false ? "Activate" : "Deactivate"}
-                      >
-                        {u.isActive === false ? <UserCheck size={16} /> : <Ban size={16} />}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                        onClick={() => setPendingDelete({ id: u.id, name: u.name })}
-                        aria-label={`Delete ${u.name}`}
-                        title="Delete"
-                      >
-                        <Trash2 size={16} />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {new Date(u.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" aria-label={`Actions for ${u.name}`}>
+                            <MoreVertical size={16} />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {isActive ? (
+                            <DropdownMenuItem
+                              disabled={u.id === currentUserId}
+                              title={u.id === currentUserId ? "You cannot deactivate your own account" : undefined}
+                              className="text-red-600 focus:text-red-600"
+                              onClick={() => setPendingToggle({ id: u.id, name: u.name, active: true })}
+                            >
+                              <Ban size={14} /> Deactivate
+                            </DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem
+                              className="text-green-600 focus:text-green-600"
+                              onClick={() => setPendingToggle({ id: u.id, name: u.name, active: false })}
+                            >
+                              <UserCheck size={14} /> Activate
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => setPendingDelete({ id: u.id, name: u.name })}
+                          >
+                            <Trash2 size={14} /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>

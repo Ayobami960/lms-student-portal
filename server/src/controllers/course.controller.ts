@@ -23,8 +23,7 @@ export const courseController = {
       publishedOnly: !isAdmin && !isOwnerView,
     };
 
-    // 2. Conditionally append optional fields ONLY if they are populated
-    // This cleanly bypasses 'exactOptionalPropertyTypes' strict errors
+   
     if (req.query.search) {
       listParams.search = req.query.search as string;
     }
@@ -41,8 +40,6 @@ export const courseController = {
       listParams.studentId = req.user.sub;
     }
 
-    // Only the instructor's own "My Courses" request is scoped to them.
-    // ADMIN never gets scoped — they always see the full catalog.
     if (isOwnerView && req.user?.sub) {
       listParams.instructorId = req.user.sub;
     }
@@ -59,9 +56,13 @@ export const courseController = {
   }),
 
   create: asyncHandler(async (req: Request, res: Response) => {
-    const course = await courseService.create(req.user!.sub, req.body);
-    sendSuccess(res, course, "Course created", 201);
-  }),
+  const isAdmin = req.user!.role === "ADMIN";
+  const { instructorId: bodyInstructorId, ...courseData } = req.body;
+  const instructorId = isAdmin && bodyInstructorId ? bodyInstructorId : req.user!.sub;
+
+  const course = await courseService.create(instructorId, courseData);
+  sendSuccess(res, course, "Course created", 201);
+}),
 
   update: asyncHandler(async (req: Request, res: Response) => {
     const course = await courseService.update(req.params.id as string, { id: req.user!.sub, role: req.user!.role }, req.body);

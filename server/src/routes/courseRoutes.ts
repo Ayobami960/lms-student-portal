@@ -24,7 +24,7 @@ const courseRoutes = Router();
 courseRoutes.get("/", optionalAuth, validate(listCoursesQuerySchema), courseController.list);
 courseRoutes.post("/", authenticate, authorize("INSTRUCTOR", "ADMIN"), validate(createCourseSchema), courseController.create);
 courseRoutes.get("/:id", optionalAuth, courseController.getById);
-courseRoutes.patch("/:id", authenticate, authorize("INSTRUCTOR"), validate(updateCourseSchema), courseController.update);
+courseRoutes.patch("/:id", authenticate, authorize("INSTRUCTOR", "ADMIN"), validate(updateCourseSchema), courseController.update);
 courseRoutes.delete("/:id", authenticate, authorize("INSTRUCTOR", "ADMIN"), courseController.remove);
 courseRoutes.post("/:id/enroll", authenticate, authorize("STUDENT"), courseController.enroll);
 

@@ -141,9 +141,6 @@ export const courseService = {
 
     const updated = await prisma.course.update({ where: { id }, data });
 
-    // Notify anyone already enrolled the moment a course goes from draft -> published
-    // (courses are typically published before enrollment opens, but this covers early
-    // access / re-publishing an updated course that already has students).
     if (data.published === true && !course.published) {
       const enrollments = await prisma.enrollment.findMany({ where: { courseId: id }, include: { student: true } });
       for (const e of enrollments) {

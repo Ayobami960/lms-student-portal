@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import { useListCoursesQuery, useRemoveCourseMutation } from "../../../store/api/apiSlice";
 
 import { EmptyState } from "@/components/EmptyState";
-import { BookOpen, Trash2 } from "lucide-react";
+import { BookOpen, Trash2, Pencil, Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-// Builds a compact page list like: 1 … 4 5 6 … 12
 function getPageList(current: number, total: number): (number | "ellipsis")[] {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
   const pages = new Set([1, total, current - 1, current, current + 1]);
@@ -50,13 +50,30 @@ export default function AdminCoursesPage() {
 
   return (
     <div>
-      <h1 className="mb-1 text-2xl font-bold text-foreground">All Courses</h1>
-      <p className="mb-6 text-sm text-muted-foreground">Platform-wide course oversight.</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="mb-1 text-2xl font-bold text-foreground">All Courses</h1>
+          <p className="text-sm text-muted-foreground">Platform-wide course oversight.</p>
+        </div>
+        <Button asChild>
+          <Link href="/courses/new">
+            <Plus size={16} /> New course
+          </Link>
+        </Button>
+      </div>
 
       {isLoading ? (
         <div className="space-y-2">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-14" />)}</div>
       ) : !data?.data?.length ? (
-        <EmptyState icon={BookOpen} title="No courses yet" />
+        <EmptyState
+          icon={BookOpen}
+          title="No courses yet"
+          action={
+            <Button asChild>
+              <Link href="/courses/new">New course</Link>
+            </Button>
+          }
+        />
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full text-left text-sm">
@@ -76,7 +93,11 @@ export default function AdminCoursesPage() {
                   key={c.id}
                   className="border-b border-border/60 last:border-0 transition-colors hover:bg-muted/50"
                 >
-                  <td className="px-4 py-3 font-medium text-foreground">{c.title}</td>
+                  <td className="px-4 py-3 font-medium text-foreground">
+                    <Link href={`/courses/${c.id}`} className="hover:underline">
+                      {c.title}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">{c.instructor?.name}</td>
                   <td className="px-4 py-3 text-muted-foreground">{c.category}</td>
                   <td className="px-4 py-3">
@@ -86,15 +107,22 @@ export default function AdminCoursesPage() {
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{c._count?.enrollments ?? 0}</td>
                   <td className="px-4 py-3 text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleRemove(c.id, c.title)}
-                      className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                      aria-label={`Delete ${c.title}`}
-                    >
-                      <Trash2 size={16} />
-                    </Button>
+                    <div className="flex justify-end gap-1">
+                      <Button variant="ghost" size="icon" asChild aria-label={`Edit ${c.title}`}>
+                        <Link href={`/courses/${c.id}`}>
+                          <Pencil size={16} />
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemove(c.id, c.title)}
+                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        aria-label={`Delete ${c.title}`}
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}

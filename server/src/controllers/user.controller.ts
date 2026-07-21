@@ -39,9 +39,14 @@ export const userController = {
     sendSuccess(res, user, "Instructor approved");
   }),
 
-  setActive: asyncHandler(async (req, res) => {
-    const user = await userService.setActive(req.params.id as string, req.body.isActive);
-    sendSuccess(res, user, req.body.isActive ? "Account activated" : "Account deactivated");
+  activateUser: asyncHandler(async (req, res) => {
+    const user = await userService.activateUser(req.params.id as string);
+    sendSuccess(res, user, "Account activated");
+  }),
+
+  deactivateUser: asyncHandler(async (req, res) => {
+    const user = await userService.deactivateUser(req.params.id as string, req.user!.sub);
+    sendSuccess(res, user, "Account deactivated");
   }),
 
   updateRole: asyncHandler(async (req, res) => {

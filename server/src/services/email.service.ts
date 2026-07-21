@@ -23,12 +23,7 @@ export const emailService = {
     }
   },
 
-  /**
-   * Fans an email out to many recipients (course-published notices,
-   * maintenance-mode broadcasts, announcements). Sends are best-effort and
-   * run with limited concurrency so a broadcast to thousands of users
-   * doesn't open thousands of SMTP connections at once.
-   */
+ 
   async sendBulk(recipients: string[], subject: string, html: string, concurrency = 10): Promise<void> {
     let index = 0;
     async function worker() {

@@ -5,6 +5,17 @@ import type { AuthUser } from "../authSlice";
 export interface ApiSuccess<T> { success: true; message: string; data: T }
 export interface Paginated<T> { success: true; message: string; data: T[]; pagination: { page: number; limit: number; total: number; totalPages: number } }
 
+export interface CreateCoursePayload {
+  title?: string;
+  description?: string;
+  category?: string;
+  level?: string;
+  duration?: number;
+  thumbnail?: string;
+  published?: boolean;
+  instructorId?: string;
+}
+
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
@@ -34,9 +45,13 @@ export const apiSlice = createApi({
       query: (id) => ({ url: `/users/${id}/approve`, method: "PATCH" }),
       invalidatesTags: (_r, _e, id) => [{ type: "User", id }, { type: "User", id: "LIST" }],
     }),
-    setUserActive: builder.mutation<ApiSuccess<any>, { id: string; isActive: boolean }>({
-      query: ({ id, isActive }) => ({ url: `/users/${id}/active`, method: "PATCH", body: { isActive } }),
-      invalidatesTags: (_r, _e, { id }) => [{ type: "User", id }, { type: "User", id: "LIST" }],
+    setUserActivate: builder.mutation<ApiSuccess<any>, string>({
+      query: (id) => ({ url: `/users/${id}/activate`, method: "PATCH" }),
+      invalidatesTags: (_r, _e, id) => [{ type: "User", id }, { type: "User", id: "LIST" }],
+    }),
+    setUserDeactivate: builder.mutation<ApiSuccess<any>, string>({
+      query: (id) => ({ url: `/users/${id}/deactivate`, method: "PATCH" }),
+      invalidatesTags: (_r, _e, id) => [{ type: "User", id }, { type: "User", id: "LIST" }],
     }),
     updateUserRole: builder.mutation<ApiSuccess<any>, { id: string; role: string }>({
       query: ({ id, role }) => ({ url: `/users/${id}/role`, method: "PATCH", body: { role } }),
@@ -52,6 +67,18 @@ export const apiSlice = createApi({
       query: (params) => ({ url: "/courses", params }),
       providesTags: (result) =>
         result ? [...result.data.map((c: any) => ({ type: "Course" as const, id: c.id })), { type: "Course", id: "LIST" }] : [{ type: "Course", id: "LIST" }],
+    }),
+    getCourse: builder.query<ApiSuccess<any>, string>({
+      query: (id) => `/courses/${id}`,
+      providesTags: (_r, _e, id) => [{ type: "Course", id }],
+    }),
+    createCourse: builder.mutation<ApiSuccess<any>, CreateCoursePayload>({
+      query: (body) => ({ url: "/courses", method: "POST", body }),
+      invalidatesTags: [{ type: "Course", id: "LIST" }],
+    }),
+    updateCourse: builder.mutation<ApiSuccess<any>, { id: string; data: Record<string, unknown> }>({
+      query: ({ id, data }) => ({ url: `/courses/${id}`, method: "PATCH", body: data }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: "Course", id }, { type: "Course", id: "LIST" }],
     }),
     removeCourse: builder.mutation<ApiSuccess<null>, string>({
       query: (id) => ({ url: `/courses/${id}`, method: "DELETE" }),
@@ -127,10 +154,14 @@ export const {
   useLazyMeQuery,
   useListUsersQuery,
   useApproveInstructorMutation,
-  useSetUserActiveMutation,
+  useSetUserActivateMutation,
+  useSetUserDeactivateMutation,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
   useListCoursesQuery,
+  useGetCourseQuery,
+  useCreateCourseMutation,
+  useUpdateCourseMutation,
   useRemoveCourseMutation,
   useGetDashboardAnalyticsQuery,
   useGetAdminDashboardAnalyticsQuery,

@@ -37,7 +37,7 @@ export const userService = {
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { createdAt: "desc" },
-        select: { id: true, name: true, email: true, role: true, isVerified: true, isApproved: true, createdAt: true },
+        select: { id: true, name: true, email: true, role: true, isVerified: true, isApproved: true, isActive: true, createdAt: true },
       }),
       prisma.user.count({ where }),
     ]);
@@ -57,18 +57,53 @@ export const userService = {
     return updated;
   },
 
-  async setActive(id: string, isActive: boolean) {
+  async activateUser(id: string) {
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) throw ApiError.notFound("User not found");
-    const updated = await prisma.user.update({ where: { id }, data: { isActive }, select: { id: true, name: true, email: true, isActive: true } });
+    if (user.isActive) throw ApiError.badRequest("Account is already active");
 
-    const { subject, html } = isActive ? emailTemplates.accountActivated(updated.name) : emailTemplates.accountDeactivated(updated.name);
+    const updated = await prisma.user.update({
+      where: { id },
+      data: { isActive: true },
+      select: { id: true, name: true, email: true, isActive: true },
+    });
+
+    const { subject, html } = emailTemplates.accountActivated(updated.name);
     void emailService.send({ to: updated.email, subject, html });
     void notificationService.create(
       id,
-      isActive ? "ACCOUNT_ACTIVATED" : "ACCOUNT_DEACTIVATED",
-      isActive ? "Account reactivated" : "Account deactivated",
-      isActive ? "Your account has been reactivated." : "Your account has been deactivated by an administrator."
+      "ACCOUNT_ACTIVATED",
+      "Account reactivated",
+      "Your account has been reactivated."
+    );
+
+    return updated;
+  },
+
+  async deactivateUser(id: string, requesterId: string) {
+    if (id === requesterId) throw ApiError.badRequest("You cannot deactivate your own account");
+
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) throw ApiError.notFound("User not found");
+    if (!user.isActive) throw ApiError.badRequest("Account is already deactivated");
+
+    const [updated] = await prisma.$transaction([
+      prisma.user.update({
+        where: { id },
+        data: { isActive: false },
+        select: { id: true, name: true, email: true, isActive: true },
+      }),
+      // Force logout everywhere — a deactivated account shouldn't keep a live session
+      prisma.refreshToken.updateMany({ where: { userId: id }, data: { revoked: true } }),
+    ]);
+
+    const { subject, html } = emailTemplates.accountDeactivated(updated.name);
+    void emailService.send({ to: updated.email, subject, html });
+    void notificationService.create(
+      id,
+      "ACCOUNT_DEACTIVATED",
+      "Account deactivated",
+      "Your account has been deactivated by an administrator."
     );
 
     return updated;
