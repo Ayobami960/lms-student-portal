@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NotificationBell } from "../notifications/NotificationBell";
 
 // Turn "Jordan Alvarez" -> "JA", "Cher" -> "C", falls back to "?"
 function getInitials(name?: string | null) {
@@ -61,22 +62,24 @@ export function Topbar() {
       <div className="flex items-center gap-2">
         {/* <ThemeToggle /> */}
 
-        <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
+        {/* <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
           <Bell size={18} />
           <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
-        </Button>
+        </Button> */}
+
+        <NotificationBell />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="flex items-center gap-2 px-2 data-[state=open]:bg-accent"
+              className="flex items-center gap-2 p-2 data-[state=open]:bg-accent"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-full gradient-primary text-sm font-semibold text-white">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full gradient-primary text-sm font-semibold text-white">
                 {getInitials(user?.name)}
               </div>
-              <span className="hidden text-sm font-medium sm:block">{user?.name}</span>
-              <ChevronDown size={14} className="hidden text-muted-foreground sm:block" />
+              {/* <span className="hidden text-sm font-medium sm:block">{user?.name}</span> */}
+              {/* <ChevronDown size={14} className="hidden text-muted-foreground sm:block" /> */}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
@@ -85,11 +88,7 @@ export function Topbar() {
               <span className="text-xs font-normal text-muted-foreground">{user?.email}</span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User size={16} />
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            
             <DropdownMenuItem
               variant="destructive"
               onClick={handleLogout}

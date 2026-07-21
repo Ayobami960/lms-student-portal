@@ -129,7 +129,7 @@ export const analyticsService = {
         prisma.enrollment.count(),
         prisma.certificate.count(),
         prisma.user.groupBy({ by: ["role"], _count: true }),
-        prisma.user.count({ where: { role: "INSTRUCTOR", isVerified: false } }),
+        prisma.user.count({ where: { role: "INSTRUCTOR", isApproved: false } })
       ]);
 
     return {

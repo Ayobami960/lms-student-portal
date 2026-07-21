@@ -2,16 +2,13 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./baseQuery";
 import type { AuthUser } from "../authSlice";
 
-
-
-
 export interface ApiSuccess<T> { success: true; message: string; data: T }
 export interface Paginated<T> { success: true; message: string; data: T[]; pagination: { page: number; limit: number; total: number; totalPages: number } }
 
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Course", "User", "Certificate"],
+  tagTypes: ["Course", "User", "Certificate", "Notification", "Invitation", "Announcement"],
   endpoints: (builder) => ({
     // ---------------- Auth ----------------
     register: builder.mutation<ApiSuccess<{ accessToken: string }>, { name: string; email: string; password: string; confirmPassword: string }>({
@@ -37,6 +34,10 @@ export const apiSlice = createApi({
       query: (id) => ({ url: `/users/${id}/approve`, method: "PATCH" }),
       invalidatesTags: (_r, _e, id) => [{ type: "User", id }, { type: "User", id: "LIST" }],
     }),
+    setUserActive: builder.mutation<ApiSuccess<any>, { id: string; isActive: boolean }>({
+      query: ({ id, isActive }) => ({ url: `/users/${id}/active`, method: "PATCH", body: { isActive } }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: "User", id }, { type: "User", id: "LIST" }],
+    }),
     updateUserRole: builder.mutation<ApiSuccess<any>, { id: string; role: string }>({
       query: ({ id, role }) => ({ url: `/users/${id}/role`, method: "PATCH", body: { role } }),
       invalidatesTags: (_r, _e, { id }) => [{ type: "User", id }, { type: "User", id: "LIST" }],
@@ -59,8 +60,62 @@ export const apiSlice = createApi({
 
     // ---------------- Analytics ----------------
     getDashboardAnalytics: builder.query<ApiSuccess<any>, void>({ query: () => "/analytics/admin/dashboard" }),
-    getAdminDashboardAnalytics: builder.query<ApiSuccess<any>, void>({ query: () => "/analytics/admin/dashboard",}),
-    
+    getAdminDashboardAnalytics: builder.query<ApiSuccess<any>, void>({ query: () => "/analytics/admin/dashboard" }),
+
+    // ---------------- Admin invitations ----------------
+    inviteAdmin: builder.mutation<ApiSuccess<{ email: string; expiresAt: string }>, { email: string }>({
+      query: (body) => ({ url: "/admin/invitations", method: "POST", body }),
+      invalidatesTags: [{ type: "Invitation", id: "LIST" }],
+    }),
+    listPendingInvitations: builder.query<ApiSuccess<any[]>, void>({
+      query: () => "/admin/invitations",
+      providesTags: [{ type: "Invitation", id: "LIST" }],
+    }),
+    verifyInvitation: builder.query<ApiSuccess<{ email: string }>, string>({
+      query: (token) => `/admin/invitations/${token}`,
+    }),
+    acceptInvitation: builder.mutation<ApiSuccess<any>, { token: string; name: string; password: string; confirmPassword: string }>({
+      query: ({ token, ...body }) => ({ url: `/admin/invitations/${token}/accept`, method: "POST", body }),
+    }),
+
+    // ---------------- Platform settings / maintenance mode ----------------
+    getMaintenanceStatus: builder.query<ApiSuccess<{ enabled: boolean; message: string }>, void>({
+      query: () => "/settings/maintenance",
+      providesTags: ["Announcement"], // reuse a light tag just to allow manual refetch after toggling
+    }),
+    setMaintenanceStatus: builder.mutation<ApiSuccess<{ enabled: boolean; message: string }>, { enabled: boolean; message?: string }>({
+      query: (body) => ({ url: "/settings/maintenance", method: "PATCH", body }),
+      invalidatesTags: ["Announcement"],
+    }),
+
+    // ---------------- Announcements ----------------
+    listAnnouncements: builder.query<ApiSuccess<any[]>, void>({
+      query: () => "/announcements",
+      providesTags: (result) =>
+        result ? [...result.data.map((a: any) => ({ type: "Announcement" as const, id: a.id })), { type: "Announcement", id: "LIST" }] : [{ type: "Announcement", id: "LIST" }],
+    }),
+    createAnnouncement: builder.mutation<ApiSuccess<any>, { title: string; message: string; audience: string }>({
+      query: (body) => ({ url: "/announcements", method: "POST", body }),
+      invalidatesTags: [{ type: "Announcement", id: "LIST" }],
+    }),
+
+    // ---------------- Notifications ----------------
+    listNotifications: builder.query<ApiSuccess<{ notifications: any[]; unreadCount: number }>, void>({
+      query: () => "/notifications",
+      providesTags: [{ type: "Notification", id: "LIST" }],
+    }),
+    markNotificationRead: builder.mutation<ApiSuccess<any>, string>({
+      query: (id) => ({ url: `/notifications/${id}/read`, method: "PATCH" }),
+      invalidatesTags: [{ type: "Notification", id: "LIST" }],
+    }),
+    markAllNotificationsRead: builder.mutation<ApiSuccess<null>, void>({
+      query: () => ({ url: "/notifications/read-all", method: "PATCH" }),
+      invalidatesTags: [{ type: "Notification", id: "LIST" }],
+    }),
+    deleteNotification: builder.mutation<ApiSuccess<null>, string>({
+      query: (id) => ({ url: `/notifications/${id}`, method: "DELETE" }),
+      invalidatesTags: [{ type: "Notification", id: "LIST" }],
+    }),
   }),
 });
 
@@ -72,10 +127,23 @@ export const {
   useLazyMeQuery,
   useListUsersQuery,
   useApproveInstructorMutation,
+  useSetUserActiveMutation,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
   useListCoursesQuery,
   useRemoveCourseMutation,
   useGetDashboardAnalyticsQuery,
-  useGetAdminDashboardAnalyticsQuery
+  useGetAdminDashboardAnalyticsQuery,
+  useInviteAdminMutation,
+  useListPendingInvitationsQuery,
+  useVerifyInvitationQuery,
+  useAcceptInvitationMutation,
+  useGetMaintenanceStatusQuery,
+  useSetMaintenanceStatusMutation,
+  useListAnnouncementsQuery,
+  useCreateAnnouncementMutation,
+  useListNotificationsQuery,
+  useMarkNotificationReadMutation,
+  useMarkAllNotificationsReadMutation,
+  useDeleteNotificationMutation,
 } = apiSlice;

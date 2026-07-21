@@ -36,13 +36,15 @@ export const authService = {
     if (existing) throw ApiError.conflict("An account with this email already exists");
 
     const hashed = await bcrypt.hash(input.password, SALT_ROUNDS);
+    const role = input.role ?? "STUDENT";
+
     const user = await prisma.user.create({
       data: {
         name: input.name,
         email: input.email,
         password: hashed,
-        role: input.role ?? "STUDENT",
-        isVerified: (input.role ?? "STUDENT") !== "INSTRUCTOR", // instructors need admin approval before dashboard access
+        role,
+        isApproved: role !== "INSTRUCTOR", // instructors need admin approval before dashboard access
       },
     });
 

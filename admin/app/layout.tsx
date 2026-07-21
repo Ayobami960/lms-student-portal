@@ -1,8 +1,8 @@
+
 import type { Metadata } from "next";
 import { Playfair_Display, Source_Serif_4, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -24,7 +24,6 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-
 export const metadata: Metadata = {
   title: "LMS Platform — AI-Powered Learning",
   description: "A modern, AI-powered Learning Management System",
@@ -38,11 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${playfair.variable} ${sourceSerif.variable} ${dmSans.variable}`}
       suppressHydrationWarning
     >
-
-      <body>
-        <Providers>
-          {children}
-        </Providers>
+      {/* Set your default body font class here (e.g., font-sans or font-body) */}
+      <body className="font-sans antialiased">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

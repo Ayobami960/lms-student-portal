@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BookOpen, Users, BarChart3, X, GraduationCap } from "lucide-react";
+import { LayoutDashboard, BookOpen, Users, BarChart3, X, GraduationCap, Settings } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { setSidebarOpen } from "../../store/uiSlice";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,7 @@ const ADMIN_LINKS = [
   { href: "/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar() {
