@@ -1,5 +1,8 @@
 import { prisma } from "../config/db.js";
 import { ApiError } from "../utils/ApiError.js";
+import { emailService } from "./email.service.js";
+import { emailTemplates } from "../../emails/templates.js";
+import { notificationService } from "./notification.service.js";
 
 async function assertModuleOwnership(moduleId: string, requester: { id: string; role: string }) {
   const mod = await prisma.module.findUnique({ where: { id: moduleId }, include: { course: true } });
@@ -40,19 +43,19 @@ export const lessonService = {
   },
 
   // lesson.service.ts — add this method
-async update(id: string, requester: { id: string; role: string }, data: Partial<{
-  title: string; description: string; content: string; videoUrl: string;
-}>) {
-  const lesson = await prisma.lesson.findUnique({
-    where: { id },
-    include: { module: { include: { course: true } } },
-  });
-  if (!lesson) throw new ApiError(404, "Lesson not found");
-  if (requester.role !== "ADMIN" && lesson.module.course.instructorId !== requester.id) {
-    throw new ApiError(403, "You can only update lessons in your own courses");
-  }
-  return prisma.lesson.update({ where: { id }, data });
-},
+  async update(id: string, requester: { id: string; role: string }, data: Partial<{
+    title: string; description: string; content: string; videoUrl: string;
+  }>) {
+    const lesson = await prisma.lesson.findUnique({
+      where: { id },
+      include: { module: { include: { course: true } } },
+    });
+    if (!lesson) throw new ApiError(404, "Lesson not found");
+    if (requester.role !== "ADMIN" && lesson.module.course.instructorId !== requester.id) {
+      throw new ApiError(403, "You can only update lessons in your own courses");
+    }
+    return prisma.lesson.update({ where: { id }, data });
+  },
 
   async remove(id: string, requester: { id: string; role: string }) {
     const lesson = await prisma.lesson.findUnique({ where: { id }, include: { module: { include: { course: true } } } });
@@ -105,6 +108,34 @@ async update(id: string, requester: { id: string; role: string }, data: Partial<
         completedAt: isComplete ? enrollment.completedAt ?? new Date() : enrollment.completedAt,
       },
     });
+
+    // Only fire the "just completed" notifications the moment it crosses the
+    // line, not on every subsequent lesson toggle within an already-complete course.
+    const justCompleted = isComplete && !enrollment.completed;
+    if (justCompleted) {
+      const [student, course] = await Promise.all([
+        prisma.user.findUnique({ where: { id: studentId } }),
+        prisma.course.findUnique({ where: { id: courseId }, include: { instructor: true } }),
+      ]);
+
+      if (student && course) {
+        const studentEmail = emailTemplates.courseCompletionStudent(student.name, course.title);
+        void emailService.send({ to: student.email, subject: studentEmail.subject, html: studentEmail.html });
+        void notificationService.create(studentId, "COURSE_COMPLETED", "Course completed! 🎓", `You completed ${course.title}.`, `/courses/${courseId}`);
+
+        const instructorEmail = emailTemplates.courseCompletionInstructor(course.instructor.name, student.name, course.title);
+        void emailService.send({ to: course.instructor.email, subject: instructorEmail.subject, html: instructorEmail.html });
+        void notificationService.create(course.instructorId, "COURSE_COMPLETED", "A student completed your course", `${student.name} completed ${course.title}.`, `/courses/${courseId}`);
+
+        const admins = await prisma.user.findMany({ where: { role: "ADMIN" }, select: { id: true } });
+        void notificationService.createMany(
+          admins.map((a: any) => a.id),
+          "COURSE_COMPLETED",
+          "Course completion",
+          `${student.name} completed ${course.title}.`
+        );
+      }
+    }
 
     return { progress: updated.progress, completed: updated.completed, courseId };
   },

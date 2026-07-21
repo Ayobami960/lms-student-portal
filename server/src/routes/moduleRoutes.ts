@@ -12,4 +12,6 @@ moduleRoutes.post("/courses/:courseId/modules", authenticate, authorize("INSTRUC
 moduleRoutes.patch("/modules/:id", authenticate, authorize("INSTRUCTOR", "ADMIN"), validate(updateModuleSchema), moduleController.update);
 moduleRoutes.delete("/modules/:id", authenticate, authorize("INSTRUCTOR", "ADMIN"), moduleController.remove);
 
+
+
 export default moduleRoutes;

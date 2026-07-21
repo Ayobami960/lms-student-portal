@@ -10,9 +10,19 @@ userRoutes.get("/me", authenticate, userController.me);
 userRoutes.patch("/me", authenticate, userController.updateMe);
 userRoutes.post("/avatar", authenticate, upload.single("avatar"), userController.uploadAvatar);
 
+
+
 // Admin user management
 userRoutes.get("/", authenticate, authorize("ADMIN"), userController.listUsers);
 userRoutes.patch("/:id/role", authenticate, authorize("ADMIN"), userController.updateRole);
+userRoutes.patch("/:id/approve", authenticate, authorize("ADMIN"), userController.approveInstructor);
+userRoutes.patch("/:id/active", authenticate, authorize("ADMIN"), userController.setActive);
+
 userRoutes.delete("/:id", authenticate, authorize("ADMIN"), userController.deleteUser);
+
+
+
+
+
 
 export default userRoutes;

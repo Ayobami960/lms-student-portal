@@ -1,28 +1,31 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-
 import { ApiError } from "../utils/ApiError.js";
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../utils/tokens.js";
 import { prisma } from "../config/db.js";
+import { emailService } from "./email.service.js";
+import { emailTemplates } from "../../emails/templates.js";
+import { notificationService } from "./notification.service.js";
 
 const SALT_ROUNDS = 12;
 const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN ?? "7d";
+const STUDENT_APP_URL = process.env.STUDENT_APP_URL ?? "http://localhost:3000";
 
 function msFromDuration(duration: string): number {
   const match = duration ? duration.match(/^(\d+)([smhd])$/) : null;
   if (!match) return 7 * 24 * 60 * 60 * 1000;
-  
+
   const [, num, unit] = match;
-  const n = parseInt(num ?? "",  10);
-  
+  const n = parseInt(num ?? "", 10);
+
   // Explicitly typing the keys prevents the TypeScript index error
-  const multipliers: Record<'s' | 'm' | 'h' | 'd', number> = { 
-    s: 1000, 
-    m: 60000, 
-    h: 3600000, 
-    d: 86400000 
+  const multipliers: Record<'s' | 'm' | 'h' | 'd', number> = {
+    s: 1000,
+    m: 60000,
+    h: 3600000,
+    d: 86400000
   };
-  
+
   return n * multipliers[unit as keyof typeof multipliers];
 }
 
@@ -39,8 +42,13 @@ export const authService = {
         email: input.email,
         password: hashed,
         role: input.role ?? "STUDENT",
+        isVerified: (input.role ?? "STUDENT") !== "INSTRUCTOR", // instructors need admin approval before dashboard access
       },
     });
+
+    const { subject, html } = emailTemplates.welcome(user.name);
+    void emailService.send({ to: user.email, subject, html });
+    void notificationService.create(user.id, "GENERAL", "Welcome to LMS Platform", "Your account has been created successfully.");
 
     return authService.issueTokens(user.id, user.role, user.email);
   },
@@ -48,6 +56,10 @@ export const authService = {
   async login(email: string, password: string) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) throw ApiError.unauthorized("Invalid email or password");
+
+    if (!user.isActive) {
+      throw ApiError.forbidden("Your account has been deactivated. Please contact support.");
+    }
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw ApiError.unauthorized("Invalid email or password");
@@ -105,7 +117,12 @@ export const authService = {
     await prisma.passwordReset.create({
       data: { token, userId: user.id, expiresAt: new Date(Date.now() + 60 * 60 * 1000) },
     });
-    // In production this would be emailed, not returned. Returned here for local/dev testing only.
+
+    const resetUrl = `${STUDENT_APP_URL}/reset-password?token=${token}`;
+    const { subject, html } = emailTemplates.forgotPassword(user.name, resetUrl);
+    void emailService.send({ to: user.email, subject, html });
+
+    // In production this would only be emailed, not returned. Returned here for local/dev testing only.
     return { token };
   },
 
@@ -116,11 +133,14 @@ export const authService = {
     }
 
     const hashed = await bcrypt.hash(newPassword, SALT_ROUNDS);
-    await prisma.$transaction([
+    const [updatedUser] = await prisma.$transaction([
       prisma.user.update({ where: { id: reset.userId }, data: { password: hashed } }),
       prisma.passwordReset.update({ where: { id: reset.id }, data: { used: true } }),
       prisma.refreshToken.deleteMany({ where: { userId: reset.userId } }),
     ]);
+
+    const { subject, html } = emailTemplates.passwordResetConfirmation(updatedUser.name);
+    void emailService.send({ to: updatedUser.email, subject, html });
   },
 
   async me(userId: string) {

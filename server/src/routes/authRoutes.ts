@@ -15,4 +15,6 @@ authRoutes.post("/forgot-password", authLimiter, validate(forgotPasswordSchema),
 authRoutes.post("/reset-password", authLimiter, validate(resetPasswordSchema), authController.resetPassword);
 authRoutes.get("/me", authenticate, authController.me);
 
+
+
 export default authRoutes;

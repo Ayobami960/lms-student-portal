@@ -5,7 +5,7 @@ import { storage } from "../config/storage.js";
 export const submissionService = {
   async submit(assignmentId: string, studentId: string, file: Express.Multer.File | undefined, comment?: string) {
     const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId } });
-    
+
     // FIXED: Instantiated ApiError using 'new' keywords
     if (!assignment) throw new ApiError(404, "Assignment not found");
     if (!file) throw new ApiError(400, "A file upload is required");
@@ -24,6 +24,7 @@ export const submissionService = {
         submittedAt: new Date(),
         score: null,
         feedback: null,
+        approved: false,
         gradedAt: null,
       },
       create: {
@@ -59,18 +60,18 @@ export const submissionService = {
   async getById(id: string, user: { id: string; role: string }) {
     const submission = await prisma.submission.findUnique({
       where: { id },
-      include: { 
-        assignment: { include: { lesson: { include: { module: { include: { course: true } } } } } }, 
-        student: { select: { id: true, name: true, email: true } } 
+      include: {
+        assignment: { include: { lesson: { include: { module: { include: { course: true } } } } } },
+        student: { select: { id: true, name: true, email: true } }
       },
     });
+
     
-    // FIXED: Instantiated ApiError using 'new' keywords
     if (!submission) throw new ApiError(404, "Submission not found");
-    
+
     const isOwner = submission.studentId === user.id;
     const isCourseInstructor = submission.assignment.lesson.module.course.instructorId === user.id;
-    
+
     if (!isOwner && !isCourseInstructor && user.role !== "ADMIN") {
       throw new ApiError(403, "You cannot view this submission");
     }

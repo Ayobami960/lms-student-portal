@@ -23,16 +23,20 @@ export const analyticsService = {
     ]);
 
     const totalCourses = enrollments.length;
-    
+
     // Explicitly typed 'e' to satisfy strict implicitAny rules
     const completedCourses = enrollments.filter((e: any) => e.completed).length;
-    
+
     // Explicitly typed both the running accumulator 'sum' and current item 'e'
     const averageProgress = totalCourses > 0
       ? Math.round(enrollments.reduce((sum: number, e: any) => sum + e.progress, 0) / totalCourses)
       : 0;
-      
+
+    // Restored from old code: submissions that were graded but not yet approved
+    const needsRevision = submissions.filter((s: any) => s.status === "GRADED" && !s.approved).length;
+
     const pendingAssignments = submissions.filter((s: any) => s.status !== "GRADED").length +
+      needsRevision +
       await countUnsubmittedAssignments(studentId);
 
     const gradedSubmissions = submissions.filter((s: any) => s.score !== null);
@@ -49,6 +53,7 @@ export const analyticsService = {
       averageProgress,
       certificatesEarned: certificates,
       pendingAssignments,
+      needsRevision,
       learningHours: Math.round(learningMinutes / 60),
       averageScore,
     };
@@ -60,7 +65,7 @@ export const analyticsService = {
       include: { course: { select: { id: true, title: true, thumbnail: true } } },
       orderBy: { enrolledAt: "desc" },
     });
-    
+
     return enrollments.map((e: any) => ({
       courseId: e.courseId,
       courseTitle: e.course.title,
@@ -76,7 +81,7 @@ export const analyticsService = {
       include: { assignment: { select: { title: true, maxScore: true } } },
       orderBy: { gradedAt: "desc" },
     });
-    
+
     return submissions.map((s: any) => ({
       assignment: s.assignment.title,
       score: s.score,
@@ -90,7 +95,7 @@ export const analyticsService = {
       where: { instructorId },
       include: { _count: { select: { enrollments: true } } },
     });
-    
+
     // Explicitly typed map iterator argument
     const courseIds = courses.map((c: any) => c.id);
 
@@ -108,29 +113,32 @@ export const analyticsService = {
       submissionsToGrade,
       averageRating: avgRating._avg.rating ?? 0,
       // Map return layout matching explicit structure definitions
-      courses: (courses as unknown as CourseWithCount[]).map((c) => ({ 
-        id: c.id, 
-        title: c.title, 
-        students: c._count.enrollments 
+      courses: (courses as unknown as CourseWithCount[]).map((c) => ({
+        id: c.id,
+        title: c.title,
+        students: c._count.enrollments,
       })),
     };
   },
 
   async platformDashboard() {
-    const [totalUsers, totalCourses, totalEnrollments, totalCertificates, usersByRole] = await Promise.all([
-      prisma.user.count(),
-      prisma.course.count(),
-      prisma.enrollment.count(),
-      prisma.certificate.count(),
-      prisma.user.groupBy({ by: ["role"], _count: true }),
-    ]);
+    const [totalUsers, totalCourses, totalEnrollments, totalCertificates, usersByRole, pendingInstructors] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.course.count(),
+        prisma.enrollment.count(),
+        prisma.certificate.count(),
+        prisma.user.groupBy({ by: ["role"], _count: true }),
+        prisma.user.count({ where: { role: "INSTRUCTOR", isVerified: false } }),
+      ]);
 
-    return { 
-      totalUsers, 
-      totalCourses, 
-      totalEnrollments, 
-      totalCertificates, 
-      usersByRole: usersByRole as unknown as GroupByRoleResult[]
+    return {
+      totalUsers,
+      totalCourses,
+      totalEnrollments,
+      totalCertificates,
+      usersByRole: usersByRole as unknown as GroupByRoleResult[],
+      pendingInstructors,
     };
   },
 };
@@ -141,6 +149,6 @@ async function countUnsubmittedAssignments(studentId: string) {
     where: { lesson: { module: { course: { enrollments: { some: { studentId } } } } } },
     include: { submissions: { where: { studentId } } },
   });
-  
+
   return assignments.filter((a: any) => a.submissions.length === 0 && a.dueDate > new Date()).length;
 }

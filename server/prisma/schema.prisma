@@ -15,7 +15,6 @@ datasource db {
 }
 
 
-
 enum Role {
   STUDENT
   INSTRUCTOR
@@ -49,6 +48,8 @@ model User {
   role       Role     @default(STUDENT)
   avatar     String?
   isVerified Boolean  @default(false)
+  isApproved Boolean  @default(true) // instructors start false until an admin approves them
+  isActive   Boolean  @default(true) // deactivated by admin -> blocked from logging in
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -60,6 +61,9 @@ model User {
   certificates    Certificate[]
   aiConversations AIConversation[]
   passwordResets  PasswordReset[]
+  notifications   Notification[]
+  sentInvitations AdminInvitation[] @relation("InvitedBy")
+  announcements   Announcement[]
 
   @@index([role])
   @@map("users")
@@ -217,6 +221,7 @@ model Submission {
   score        Int?
   feedback     String?
   status       SubmissionStatus @default(SUBMITTED)
+  approved     Boolean          @default(false) // instructor must explicitly approve before it counts toward a certificate
   submittedAt  DateTime         @default(now())
   gradedAt     DateTime?
   updatedAt    DateTime         @updatedAt
@@ -274,4 +279,86 @@ model AIMessage {
 
   @@index([conversationId])
   @@map("ai_messages")
+}
+
+// ============================================================
+// Notifications, admin invitations, announcements, platform settings
+// ============================================================
+
+enum NotificationType {
+  ENROLLMENT
+  COURSE_PUBLISHED
+  COURSE_COMPLETED
+  ASSIGNMENT_APPROVED
+  ASSIGNMENT_REJECTED
+  CERTIFICATE_APPROVED
+  INSTRUCTOR_APPROVED
+  ACCOUNT_ACTIVATED
+  ACCOUNT_DEACTIVATED
+  ANNOUNCEMENT
+  MAINTENANCE
+  GENERAL
+}
+
+enum Audience {
+  ALL
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+model AdminInvitation {
+  id           String   @id @default(uuid())
+  email        String
+  token        String   @unique
+  invitedById  String
+  accepted     Boolean  @default(false)
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  invitedBy User @relation("InvitedBy", fields: [invitedById], references: [id])
+
+  @@index([email])
+  @@map("admin_invitations")
+}
+
+model Announcement {
+  id          String   @id @default(uuid())
+  title       String
+  message     String
+  audience    Audience @default(ALL)
+  createdById String
+  createdAt   DateTime @default(now())
+
+  createdBy User @relation(fields: [createdById], references: [id])
+
+  @@index([audience])
+  @@map("announcements")
+}
+
+// Simple singleton key/value store — used for maintenance mode today,
+// generic enough to hold other platform-wide toggles later without a migration.
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
 }

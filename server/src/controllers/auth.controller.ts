@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sendSuccess } from "../utils/apiResponse.js";
 import { authService } from "../services/auth.service.js";
@@ -28,7 +28,7 @@ export const authController = {
     setRefreshCookie(res, refreshToken);
     sendSuccess(res, {
       accessToken,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role, avatar: user.avatar },
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, avatar: user.avatar, isApproved: user.isApproved },
     }, "Login successful");
   }),
 

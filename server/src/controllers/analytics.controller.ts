@@ -13,6 +13,10 @@ export const analyticsController = {
         : await analyticsService.platformDashboard();
     sendSuccess(res, data);
   }),
+  adminDashboard: asyncHandler(async (req, res) => {
+  const data = await analyticsService.platformDashboard();
+  sendSuccess(res, data);
+}),
   progress: asyncHandler(async (req, res) => {
     const data = await analyticsService.studentProgress(req.user!.sub);
     sendSuccess(res, data);

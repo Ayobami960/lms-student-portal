@@ -42,3 +42,31 @@ export const MessageRole = {
 } as const
 
 export type MessageRole = (typeof MessageRole)[keyof typeof MessageRole]
+
+
+export const NotificationType = {
+  ENROLLMENT: 'ENROLLMENT',
+  COURSE_PUBLISHED: 'COURSE_PUBLISHED',
+  COURSE_COMPLETED: 'COURSE_COMPLETED',
+  ASSIGNMENT_APPROVED: 'ASSIGNMENT_APPROVED',
+  ASSIGNMENT_REJECTED: 'ASSIGNMENT_REJECTED',
+  CERTIFICATE_APPROVED: 'CERTIFICATE_APPROVED',
+  INSTRUCTOR_APPROVED: 'INSTRUCTOR_APPROVED',
+  ACCOUNT_ACTIVATED: 'ACCOUNT_ACTIVATED',
+  ACCOUNT_DEACTIVATED: 'ACCOUNT_DEACTIVATED',
+  ANNOUNCEMENT: 'ANNOUNCEMENT',
+  MAINTENANCE: 'MAINTENANCE',
+  GENERAL: 'GENERAL'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const Audience = {
+  ALL: 'ALL',
+  STUDENT: 'STUDENT',
+  INSTRUCTOR: 'INSTRUCTOR',
+  ADMIN: 'ADMIN'
+} as const
+
+export type Audience = (typeof Audience)[keyof typeof Audience]

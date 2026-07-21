@@ -15,7 +15,13 @@ export const gradingController = {
     sendSuccess(res, submission);
   }),
   grade: asyncHandler(async (req, res) => {
-    const submission = await gradingService.grade(req.params.id as string, { id: req.user!.sub, role: req.user!.role }, req.body.score, req.body.feedback);
-    sendSuccess(res, submission, "Submission graded");
+    const submission = await gradingService.grade(
+      req.params.id as string,
+      { id: req.user!.sub, role: req.user!.role },
+      req.body.score,
+      req.body.feedback,
+      req.body.approved
+    );
+    sendSuccess(res, submission, req.body.approved ? "Submission approved" : "Revision requested");
   }),
 };

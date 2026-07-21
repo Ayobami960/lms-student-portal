@@ -14,4 +14,5 @@ lessonRoutes.patch("/lessons/:id", authenticate, authorize("INSTRUCTOR", "ADMIN"
 lessonRoutes.delete("/lessons/:id", authenticate, authorize("INSTRUCTOR", "ADMIN"), lessonController.remove);
 lessonRoutes.post("/lessons/:id/complete", authenticate, authorize("STUDENT"), lessonController.complete);
 
+
 export default lessonRoutes;

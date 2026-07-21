@@ -11,4 +11,6 @@ aiRoutes.get("/conversations", authenticate, aiController.listConversations);
 aiRoutes.get("/conversations/:id", authenticate, aiController.getConversation);
 aiRoutes.delete("/conversations/:id", authenticate, aiController.deleteConversation);
 
+
+
 export default aiRoutes;
