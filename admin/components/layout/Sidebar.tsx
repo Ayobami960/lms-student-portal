@@ -63,7 +63,11 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-sidebar-border p-3 text-xs text-sidebar-foreground/50">
+<<<<<<< HEAD
         LMS Admin 
+=======
+        LMS Admin
+>>>>>>> 801fc54e54818929f7c526380b92f0a8312078ef
       </div>
     </div>
   );
