@@ -78,7 +78,7 @@ export default function LoginPage() {
               <GraduationCap className="text-white w-5 h-5" />
             </div>
             <span className="text-xl font-black tracking-tight text-white drop-shadow-sm">
-              Admin Console
+              Admin Power Management
             </span>
           </div>
         </div>
@@ -186,7 +186,7 @@ export default function LoginPage() {
               </>
             ) : (
               <>
-                Log In to Console
+                Log In
                 <ArrowRight size={18} />
               </>
             )}
