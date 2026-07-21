@@ -63,7 +63,7 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-sidebar-border p-3 text-xs text-sidebar-foreground/50">
-        LMS Admin Console
+        LMS Admin
       </div>
     </div>
   );
