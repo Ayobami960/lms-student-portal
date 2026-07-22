@@ -19,7 +19,7 @@ export interface CreateCoursePayload {
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Course", "User", "Certificate", "Notification", "Invitation", "Announcement"],
+  tagTypes: ["Course", "User", "Certificate", "Notification", "Invitation", "Announcement", "Assignment"],
   endpoints: (builder) => ({
     // ---------------- Auth ----------------
     register: builder.mutation<ApiSuccess<{ accessToken: string }>, { name: string; email: string; password: string; confirmPassword: string }>({
@@ -83,6 +83,45 @@ export const apiSlice = createApi({
     removeCourse: builder.mutation<ApiSuccess<null>, string>({
       query: (id) => ({ url: `/courses/${id}`, method: "DELETE" }),
       invalidatesTags: [{ type: "Course", id: "LIST" }],
+    }),
+    createModule: builder.mutation<ApiSuccess<any>, { courseId: string; data: { title: string; description?: string; order?: number } }>({
+      query: ({ courseId, data }) => ({ url: `/courses/${courseId}/modules`, method: "POST", body: data }),
+      invalidatesTags: (_r, _e, { courseId }) => [{ type: "Course", id: courseId }],
+    }),
+    createLesson: builder.mutation<ApiSuccess<any>, { moduleId: string; data: { title: string; description?: string; content?: string; videoUrl?: string; order?: number } }>({
+      query: ({ moduleId, data }) => ({ url: `/modules/${moduleId}/lessons`, method: "POST", body: data }),
+      invalidatesTags: [{ type: "Course", id: "LIST" }],
+    }),
+    updateLesson: builder.mutation<ApiSuccess<any>, { id: string; courseId?: string; data: { title?: string; description?: string; content?: string; videoUrl?: string } }>({
+      query: ({ id, data }) => ({ url: `/lessons/${id}`, method: "PATCH", body: data }),
+      invalidatesTags: (_r, _e, { courseId }) => (courseId ? [{ type: "Course", id: courseId }] : [{ type: "Course", id: "LIST" }]),
+    }),
+
+    // ---------------- Assignments ----------------
+    listAssignments: builder.query<ApiSuccess<any[]>, { courseId?: string } | void>({
+      query: (params) => ({ url: "/assignments", params: params ?? undefined }),
+      providesTags: (result) =>
+        result
+          ? [...result.data.map((a: any) => ({ type: "Assignment" as const, id: a.id })), { type: "Assignment", id: "LIST" }]
+          : [{ type: "Assignment", id: "LIST" }],
+    }),
+    createAssignment: builder.mutation<
+      ApiSuccess<any>,
+      { lessonId: string; data: { title: string; description: string; instructions?: string; dueDate: string; maxScore?: number } }
+    >({
+      query: ({ lessonId, data }) => ({ url: `/lessons/${lessonId}/assignments`, method: "POST", body: data }),
+      invalidatesTags: [{ type: "Assignment", id: "LIST" }],
+    }),
+    updateAssignment: builder.mutation<
+      ApiSuccess<any>,
+      { id: string; data: Partial<{ title: string; description: string; instructions: string; dueDate: string; maxScore: number }> }
+    >({
+      query: ({ id, data }) => ({ url: `/assignments/${id}`, method: "PATCH", body: data }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: "Assignment", id }, { type: "Assignment", id: "LIST" }],
+    }),
+    deleteAssignment: builder.mutation<ApiSuccess<null>, string>({
+      query: (id) => ({ url: `/assignments/${id}`, method: "DELETE" }),
+      invalidatesTags: [{ type: "Assignment", id: "LIST" }],
     }),
 
     // ---------------- Analytics ----------------
@@ -163,6 +202,13 @@ export const {
   useCreateCourseMutation,
   useUpdateCourseMutation,
   useRemoveCourseMutation,
+  useCreateModuleMutation,
+  useCreateLessonMutation,
+  useUpdateLessonMutation,
+  useListAssignmentsQuery,
+  useCreateAssignmentMutation,
+  useUpdateAssignmentMutation,
+  useDeleteAssignmentMutation,
   useGetDashboardAnalyticsQuery,
   useGetAdminDashboardAnalyticsQuery,
   useInviteAdminMutation,

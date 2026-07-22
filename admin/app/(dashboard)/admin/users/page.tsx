@@ -320,7 +320,7 @@ export default function AdminUsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [showInvite, setShowInvite] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
-  const [pendingToggle, setPendingToggle] = useState<{ id: string; name: string; active: boolean } | null>(null);
+  const [pendingToggle, setPendingToggle] = useState<{ id: string; name: string; active: boolean; role: string } | null>(null);
 
   const { data: meData } = useMeQuery();
   const currentUserId = meData?.data?.id;
@@ -346,7 +346,12 @@ export default function AdminUsersPage() {
 
   async function confirmToggleActive() {
     if (!pendingToggle) return;
-    const { id, name, active } = pendingToggle;
+    const { id, name, active, role } = pendingToggle;
+    if (active && role === "ADMIN") {
+      toast.error("Admin accounts can't be deactivated");
+      setPendingToggle(null);
+      return;
+    }
     if (active && id === currentUserId) {
       toast.error("You cannot deactivate your own account");
       setPendingToggle(null);
@@ -510,23 +515,25 @@ export default function AdminUsersPage() {
                         <DropdownMenuContent align="end">
                           {isActive ? (
                             <DropdownMenuItem
-                              disabled={u.id === currentUserId}
-                              title={u.id === currentUserId ? "You cannot deactivate your own account" : undefined}
+                              disabled={u.role === "ADMIN"}
+                              title={u.role === "ADMIN" ? "Admin accounts can't be deactivated" : undefined}
                               className="text-red-600 focus:text-red-600"
-                              onClick={() => setPendingToggle({ id: u.id, name: u.name, active: true })}
+                              onClick={() => setPendingToggle({ id: u.id, name: u.name, active: true, role: u.role })}
                             >
                               <Ban size={14} /> Deactivate
                             </DropdownMenuItem>
                           ) : (
                             <DropdownMenuItem
                               className="text-green-600 focus:text-green-600"
-                              onClick={() => setPendingToggle({ id: u.id, name: u.name, active: false })}
+                              onClick={() => setPendingToggle({ id: u.id, name: u.name, active: false, role: u.role })}
                             >
                               <UserCheck size={14} /> Activate
                             </DropdownMenuItem>
                           )}
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
+                            disabled={u.role === "ADMIN"}
+                            title={u.role === "ADMIN" ? "Admin accounts can't be deleted" : undefined}
                             className="text-destructive focus:text-destructive"
                             onClick={() => setPendingDelete({ id: u.id, name: u.name })}
                           >

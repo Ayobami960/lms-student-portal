@@ -81,10 +81,10 @@ export const userService = {
   },
 
   async deactivateUser(id: string, requesterId: string) {
-    if (id === requesterId) throw ApiError.badRequest("You cannot deactivate your own account");
-
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) throw ApiError.notFound("User not found");
+    if (user.role === "ADMIN") throw ApiError.badRequest("Admin accounts can't be deactivated");
+    if (id === requesterId) throw ApiError.badRequest("You cannot deactivate your own account");
     if (!user.isActive) throw ApiError.badRequest("Account is already deactivated");
 
     const [updated] = await prisma.$transaction([
@@ -93,7 +93,7 @@ export const userService = {
         data: { isActive: false },
         select: { id: true, name: true, email: true, isActive: true },
       }),
-      // Force logout everywhere — a deactivated account shouldn't keep a live session
+     
       prisma.refreshToken.updateMany({ where: { userId: id }, data: { revoked: true } }),
     ]);
 
@@ -121,6 +121,7 @@ export const userService = {
   async deleteUser(id: string) {
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) throw ApiError.notFound("User not found");
+    if (user.role === "ADMIN") throw ApiError.badRequest("Admin accounts can't be deleted");
     await prisma.user.delete({ where: { id } });
   },
 };
