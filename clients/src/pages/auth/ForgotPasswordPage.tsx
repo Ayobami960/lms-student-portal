@@ -4,7 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Link } from "react-router";
 import { School, Mail, Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
+import toast from "react-hot-toast";
 import Auth from "../../images/authImage.jpg";
+import { useForgotPasswordMutation } from "../../store/api/apiSlice";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -13,8 +15,9 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export const ForgotPasswordPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [devToken, setDevToken] = useState<string | null>(null);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
@@ -40,11 +43,14 @@ export const ForgotPasswordPage: React.FC = () => {
   });
 
   const onSubmit = async (values: FormValues) => {
-    setIsLoading(true);
-    console.log("Password reset requested for:", values.email);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsLoading(false);
-    setIsSubmitted(true);
+    try {
+      const res = await forgotPassword(values).unwrap();
+      // In dev mode the API returns the reset token directly (no email service configured).
+      setDevToken(res?.data?.token ?? null);
+      setIsSubmitted(true);
+    } catch (err: any) {
+      toast.error(err?.data?.message ?? "Something went wrong");
+    }
   };
 
   return (
@@ -64,7 +70,7 @@ export const ForgotPasswordPage: React.FC = () => {
               <div className="bg-surface-container-lowest/20 backdrop-blur-md p-md rounded-xl inline-flex items-center justify-center">
                 <School className="text-white w-16 h-16" />
               </div>
-              <h1 className="text-4xl text-white font-bold tracking-tight">EduAI Pro</h1>
+              <h1 className="text-4xl text-white font-bold tracking-tight">Skill Forge</h1>
               <p className="text-lg text-white/90">Elevate your modern learning experience.</p>
               <div className="mt-lg flex items-center gap-md">
                 <div className="h-[1px] w-12 bg-white/30"></div>
@@ -109,7 +115,7 @@ export const ForgotPasswordPage: React.FC = () => {
                       <ArrowLeft className="w-3.5 h-3.5" />
                       Back to Sign In
                     </Link>
-                    <h2 className="text-2xl font-semibold text-on-surface tracking-tight mb-2 text-center">Edu Next Explore</h2>
+                    <h2 className="text-2xl font-semibold text-on-surface tracking-tight mb-2 text-center">Skill Forge</h2>
                     <h2 className="text-xl font-semibold text-on-surface tracking-tight mb-2">Reset Password</h2>
                     <p className="text-sm text-outline">
                       Enter the email associated with your account and we&apos;ll send you a link to reset your password.
@@ -127,8 +133,10 @@ export const ForgotPasswordPage: React.FC = () => {
                           {...register("email")}
                           id="email"
                           type="email"
+                          autoComplete="email"
                           placeholder="name@example.com"
                           className="w-full pl-10 pr-4 py-2.5 bg-transparent border-0 rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-0"
+                          aria-invalid={!!errors.email}
                         />
                       </div>
                       {errors.email && (
@@ -161,6 +169,14 @@ export const ForgotPasswordPage: React.FC = () => {
                   <p className="text-sm text-outline mb-xl max-w-[320px] mx-auto">
                     If an account exists for that email, we&apos;ve sent password reset instructions to your inbox.
                   </p>
+                  {devToken && (
+                    <div className="mb-xl rounded-lg bg-surface-container p-3 text-left text-xs text-outline">
+                      <p className="mb-1 font-medium">Dev mode — no email service configured:</p>
+                      <Link to={`/reset-password?token=${devToken}`} className="break-all text-primary hover:underline">
+                        Click here to reset your password
+                      </Link>
+                    </div>
+                  )}
                   <Link
                     to="/login"
                     className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-lg shadow-md transition-all text-sm"

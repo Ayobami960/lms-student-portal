@@ -9,7 +9,7 @@ import { notificationService } from "./notification.service.js";
 
 const SALT_ROUNDS = 12;
 const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN ?? "7d";
-const STUDENT_APP_URL = process.env.STUDENT_APP_URL ?? "http://localhost:3000";
+const studentAppUrl = process.env.studentAppUrl ?? "http://localhost:5174";
 
 function msFromDuration(duration: string): number {
   const match = duration ? duration.match(/^(\d+)([smhd])$/) : null;
@@ -120,7 +120,7 @@ export const authService = {
       data: { token, userId: user.id, expiresAt: new Date(Date.now() + 60 * 60 * 1000) },
     });
 
-    const resetUrl = `${STUDENT_APP_URL}/reset-password?token=${token}`;
+    const resetUrl = `${studentAppUrl}/reset-password?token=${token}`;
     const { subject, html } = emailTemplates.forgotPassword(user.name, resetUrl);
     void emailService.send({ to: user.email, subject, html });
 
