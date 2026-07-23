@@ -1,6 +1,5 @@
 import { renderEmailLayout } from "./layout.js";
 
-
 // Each function returns { subject, html } for one transactional email.
 // Keeping every template in one place makes it trivial to audit what the
 // platform sends and keeps the visual style consistent (see layout.ts).
@@ -160,15 +159,15 @@ export const emailTemplates = {
     };
   },
 
-  accountDeactivated(name: string) {
-    return {
-      subject: `Your account has been deactivated`,
-      html: renderEmailLayout({
-        title: `Hi ${name}`,
-        bodyHtml: `<p>Your account has been deactivated by an administrator and you will not be able to log in. If you believe this is a mistake, please contact support.</p>`,
-      }),
-    };
-  },
+  accountDeactivated(name: string, reason?: string) {
+  return {
+    subject: "Your account has been deactivated",
+    html: renderEmailLayout({
+      title: `Hi ${name}`,
+      bodyHtml: `<p>Your account has been deactivated by an administrator and you will not be able to log in until it is reactivated.</p>${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ""}<p>If you believe this is a mistake, please contact support.</p>`,
+    }),
+  };
+},
 
   maintenanceStarting(message?: string) {
     return {
@@ -196,6 +195,18 @@ export const emailTemplates = {
     return {
       subject: title,
       html: renderEmailLayout({ title, bodyHtml: `<p>${message}</p>` }),
+    };
+  },
+
+  classStarting(name: string, classTitle: string) {
+    return {
+      subject: `Live now: ${classTitle}`,
+      html: renderEmailLayout({
+        title: `${classTitle} is starting`,
+        bodyHtml: `<p>Hi ${name}, your instructor just started this class. Join now — you'll need your Student ID to get in.</p>`,
+        ctaLabel: "Join class",
+        ctaUrl: `${process.env.studentAppUrl}/dashboard`,
+      }),
     };
   },
 };

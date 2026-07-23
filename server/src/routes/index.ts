@@ -14,6 +14,9 @@ import settingsRoutes from "./submissionRoutes.js";
 import adminInvitationRoutes from "./adminInvitationRoutes.js";
 import announcementRoutes from "./announcementRoutes.js";
 import notificationRoutes from "./notificationRoutes.js";
+import liveClassRoutes from "./liveClassRoutes.js";
+import auditLogRoutes from "./auditLogRoutes.js";
+import conversationRoutes from "./conversationRoutes.js";
 
 
 const router = Router();
@@ -33,5 +36,9 @@ router.use("/ai", aiRoutes);
 router.use("/admin/invitations", adminInvitationRoutes);
 router.use("/settings", settingsRoutes);
 router.use("/announcements", announcementRoutes);
+router.use("/", lessonRoutes);       // /modules/:moduleId/lessons, /lessons/:id
+router.use("/", liveClassRoutes); 
+router.use("/audit-logs", auditLogRoutes);
+router.use("/conversations", conversationRoutes);
 
 export default router;

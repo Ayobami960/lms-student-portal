@@ -12,6 +12,7 @@ interface CertificateData {
 }
 
 // Generates a simple, professional certificate PDF and saves it to local storage.
+// Swap the fs.writeFileSync target for a Cloudinary/S3 upload in production.
 export function generateCertificatePdf(data: CertificateData): Promise<string> {
   return new Promise((resolve, reject) => {
     const filename = `certificate-${data.certificateNumber}.pdf`;
@@ -44,8 +45,9 @@ export function generateCertificatePdf(data: CertificateData): Promise<string> {
 
     doc.end();
 
-    // FIXED: Resolving with just the clean filename to match controller requirements
-    stream.on("finish", () => resolve(filename));
+    // Resolve with a usable URL (not just the bare filename) so
+    // certificate.service can store certificateUrl directly.
+    stream.on("finish", () => resolve(storage.getFileUrl(filename)));
     stream.on("error", reject);
   });
 }
