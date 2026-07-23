@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Outlet, Navigate, useLocation } from "react-router";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
-import { useAppSelector } from "../../hooks/redux"; // Adjust path to hooks/redux
+
+import { useAppSelector } from "../../hooks/redux"; 
+import { PendingApproval } from "./PendingApproval";
 
 interface ProtectedLayoutProps {
   currentTheme: string;
@@ -12,14 +14,19 @@ interface ProtectedLayoutProps {
 export const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({ currentTheme, onToggleTheme }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
-  
-  // Read token from your Redux auth state
-  const { accessToken } = useAppSelector((state) => state.auth);
 
-  // If there is no active session, redirect to the login page
+ 
+  const { accessToken, user } = useAppSelector((state) => state.auth);
+
+ 
   if (!accessToken) {
-    // Save the location they tried to go to so you can redirect them back after they sign in
+    
     return <Navigate to="/" state={{ from: location }} replace />;
+  }
+
+ 
+  if (user?.role === "INSTRUCTOR" && user.isApproved === false) {
+    return <PendingApproval />;
   }
 
   return (

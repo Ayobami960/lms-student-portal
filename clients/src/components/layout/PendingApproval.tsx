@@ -4,8 +4,7 @@ import { useAppDispatch } from "../../hooks/redux";
 import { clearAuth } from "../../store/authSlice";
 import { useLogoutMutation } from "../../store/api/apiSlice";
 
-// Shown instead of the dashboard when an instructor account hasn't been
-// approved by an admin yet — they can log in, but can't access any content.
+
 export function PendingApproval() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -18,16 +17,17 @@ export function PendingApproval() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 text-center dark:bg-gray-950">
-      <div className="mb-6 flex items-center gap-2 text-xl font-bold text-primary-700 dark:text-primary-400">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-surface px-4">
+      
+      <div className="card w-full max-w-4xl p-8 text-center">
+        <div className="mb-6 flex items-center justify-center gap-2 text-xl font-bold text-black">
         <GraduationCap size={28} /> LMS Platform
       </div>
-      <div className="card max-w-md p-8">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
-          <Clock size={28} className="text-amber-600 dark:text-amber-400" />
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-warning-container">
+          <Clock size={28} className="text-warning" />
         </div>
-        <h1 className="mb-2 text-xl font-bold">Your account is awaiting approval</h1>
-        <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+        <h1 className="mb-2 text-xl font-bold text-on-surface">Your account is awaiting approval</h1>
+        <p className="mb-6 text-sm text-on-surface-variant">
           Instructor accounts need to be approved by an administrator before you can access the dashboard and create courses.
           You'll be able to log in normally once that happens — no need to register again.
         </p>

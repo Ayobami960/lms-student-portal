@@ -4,8 +4,13 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
-  role: "STUDENT" | "INSTRUCTOR" | "ADMIN";
+  role: "STUDENT" | "INSTRUCTOR" | "ADMIN"; 
   avatar?: string | null;
+  isVerified: boolean;
+  isApproved: boolean;   
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AuthState {
