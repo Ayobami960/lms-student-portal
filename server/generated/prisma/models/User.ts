@@ -34,6 +34,7 @@ export type UserMinAggregateOutputType = {
   isVerified: boolean | null
   isApproved: boolean | null
   isActive: boolean | null
+  studentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +49,7 @@ export type UserMaxAggregateOutputType = {
   isVerified: boolean | null
   isApproved: boolean | null
   isActive: boolean | null
+  studentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +64,7 @@ export type UserCountAggregateOutputType = {
   isVerified: number
   isApproved: number
   isActive: number
+  studentId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -78,6 +81,7 @@ export type UserMinAggregateInputType = {
   isVerified?: true
   isApproved?: true
   isActive?: true
+  studentId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -92,6 +96,7 @@ export type UserMaxAggregateInputType = {
   isVerified?: true
   isApproved?: true
   isActive?: true
+  studentId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +111,7 @@ export type UserCountAggregateInputType = {
   isVerified?: true
   isApproved?: true
   isActive?: true
+  studentId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -193,6 +199,7 @@ export type UserGroupByOutputType = {
   isVerified: boolean
   isApproved: boolean
   isActive: boolean
+  studentId: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -228,6 +235,7 @@ export type UserWhereInput = {
   isVerified?: Prisma.BoolFilter<"User"> | boolean
   isApproved?: Prisma.BoolFilter<"User"> | boolean
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  studentId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
@@ -241,8 +249,9 @@ export type UserWhereInput = {
   notifications?: Prisma.NotificationListRelationFilter
   sentInvitations?: Prisma.AdminInvitationListRelationFilter
   announcements?: Prisma.AnnouncementListRelationFilter
-  conversations?: Prisma.ConversationListRelationFilter
+  conversationParticipants?: Prisma.ConversationParticipantListRelationFilter
   sentChatMessages?: Prisma.ChatMessageListRelationFilter
+  instructorLiveClasses?: Prisma.LiveClassListRelationFilter
   classAttendance?: Prisma.ClassAttendanceListRelationFilter
   classChatMessages?: Prisma.ClassChatMessageListRelationFilter
 }
@@ -257,6 +266,7 @@ export type UserOrderByWithRelationInput = {
   isVerified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  studentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
@@ -270,8 +280,9 @@ export type UserOrderByWithRelationInput = {
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   sentInvitations?: Prisma.AdminInvitationOrderByRelationAggregateInput
   announcements?: Prisma.AnnouncementOrderByRelationAggregateInput
-  conversations?: Prisma.ConversationOrderByRelationAggregateInput
+  conversationParticipants?: Prisma.ConversationParticipantOrderByRelationAggregateInput
   sentChatMessages?: Prisma.ChatMessageOrderByRelationAggregateInput
+  instructorLiveClasses?: Prisma.LiveClassOrderByRelationAggregateInput
   classAttendance?: Prisma.ClassAttendanceOrderByRelationAggregateInput
   classChatMessages?: Prisma.ClassChatMessageOrderByRelationAggregateInput
 }
@@ -279,6 +290,7 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  studentId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -302,11 +314,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notifications?: Prisma.NotificationListRelationFilter
   sentInvitations?: Prisma.AdminInvitationListRelationFilter
   announcements?: Prisma.AnnouncementListRelationFilter
-  conversations?: Prisma.ConversationListRelationFilter
+  conversationParticipants?: Prisma.ConversationParticipantListRelationFilter
   sentChatMessages?: Prisma.ChatMessageListRelationFilter
+  instructorLiveClasses?: Prisma.LiveClassListRelationFilter
   classAttendance?: Prisma.ClassAttendanceListRelationFilter
   classChatMessages?: Prisma.ClassChatMessageListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "studentId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -318,6 +331,7 @@ export type UserOrderByWithAggregationInput = {
   isVerified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  studentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -338,6 +352,7 @@ export type UserScalarWhereWithAggregatesInput = {
   isVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isApproved?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  studentId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -352,6 +367,7 @@ export type UserCreateInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -365,10 +381,11 @@ export type UserCreateInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -381,6 +398,7 @@ export type UserUncheckedCreateInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -394,10 +412,11 @@ export type UserUncheckedCreateInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserUpdateInput = {
@@ -410,6 +429,7 @@ export type UserUpdateInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -423,10 +443,11 @@ export type UserUpdateInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -439,6 +460,7 @@ export type UserUncheckedUpdateInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -452,10 +474,11 @@ export type UserUncheckedUpdateInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -468,6 +491,7 @@ export type UserCreateManyInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -482,6 +506,7 @@ export type UserUpdateManyMutationInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -496,6 +521,7 @@ export type UserUncheckedUpdateManyInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -510,6 +536,7 @@ export type UserCountOrderByAggregateInput = {
   isVerified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  studentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -524,6 +551,7 @@ export type UserMaxOrderByAggregateInput = {
   isVerified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  studentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -538,6 +566,7 @@ export type UserMinOrderByAggregateInput = {
   isVerified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  studentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -721,18 +750,18 @@ export type UserUpdateOneRequiredWithoutAnnouncementsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAnnouncementsInput, Prisma.UserUpdateWithoutAnnouncementsInput>, Prisma.UserUncheckedUpdateWithoutAnnouncementsInput>
 }
 
-export type UserCreateNestedOneWithoutConversationsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutConversationsInput, Prisma.UserUncheckedCreateWithoutConversationsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutConversationsInput
+export type UserCreateNestedOneWithoutConversationParticipantsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutConversationParticipantsInput, Prisma.UserUncheckedCreateWithoutConversationParticipantsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutConversationParticipantsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutConversationsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutConversationsInput, Prisma.UserUncheckedCreateWithoutConversationsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutConversationsInput
-  upsert?: Prisma.UserUpsertWithoutConversationsInput
+export type UserUpdateOneRequiredWithoutConversationParticipantsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutConversationParticipantsInput, Prisma.UserUncheckedCreateWithoutConversationParticipantsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutConversationParticipantsInput
+  upsert?: Prisma.UserUpsertWithoutConversationParticipantsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutConversationsInput, Prisma.UserUpdateWithoutConversationsInput>, Prisma.UserUncheckedUpdateWithoutConversationsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutConversationParticipantsInput, Prisma.UserUpdateWithoutConversationParticipantsInput>, Prisma.UserUncheckedUpdateWithoutConversationParticipantsInput>
 }
 
 export type UserCreateNestedOneWithoutSentChatMessagesInput = {
@@ -747,6 +776,20 @@ export type UserUpdateOneRequiredWithoutSentChatMessagesNestedInput = {
   upsert?: Prisma.UserUpsertWithoutSentChatMessagesInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSentChatMessagesInput, Prisma.UserUpdateWithoutSentChatMessagesInput>, Prisma.UserUncheckedUpdateWithoutSentChatMessagesInput>
+}
+
+export type UserCreateNestedOneWithoutInstructorLiveClassesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInstructorLiveClassesInput, Prisma.UserUncheckedCreateWithoutInstructorLiveClassesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInstructorLiveClassesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInstructorLiveClassesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInstructorLiveClassesInput, Prisma.UserUncheckedCreateWithoutInstructorLiveClassesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInstructorLiveClassesInput
+  upsert?: Prisma.UserUpsertWithoutInstructorLiveClassesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInstructorLiveClassesInput, Prisma.UserUpdateWithoutInstructorLiveClassesInput>, Prisma.UserUncheckedUpdateWithoutInstructorLiveClassesInput>
 }
 
 export type UserCreateNestedOneWithoutClassAttendanceInput = {
@@ -787,6 +830,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   coursesTaught?: Prisma.CourseCreateNestedManyWithoutInstructorInput
@@ -799,10 +843,11 @@ export type UserCreateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -815,6 +860,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   coursesTaught?: Prisma.CourseUncheckedCreateNestedManyWithoutInstructorInput
@@ -827,10 +873,11 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -859,6 +906,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coursesTaught?: Prisma.CourseUpdateManyWithoutInstructorNestedInput
@@ -871,10 +919,11 @@ export type UserUpdateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -887,6 +936,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coursesTaught?: Prisma.CourseUncheckedUpdateManyWithoutInstructorNestedInput
@@ -899,10 +949,11 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutPasswordResetsInput = {
@@ -915,6 +966,7 @@ export type UserCreateWithoutPasswordResetsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -927,10 +979,11 @@ export type UserCreateWithoutPasswordResetsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutPasswordResetsInput = {
@@ -943,6 +996,7 @@ export type UserUncheckedCreateWithoutPasswordResetsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -955,10 +1009,11 @@ export type UserUncheckedCreateWithoutPasswordResetsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutPasswordResetsInput = {
@@ -987,6 +1042,7 @@ export type UserUpdateWithoutPasswordResetsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -999,10 +1055,11 @@ export type UserUpdateWithoutPasswordResetsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPasswordResetsInput = {
@@ -1015,6 +1072,7 @@ export type UserUncheckedUpdateWithoutPasswordResetsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1027,10 +1085,11 @@ export type UserUncheckedUpdateWithoutPasswordResetsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutCoursesTaughtInput = {
@@ -1043,6 +1102,7 @@ export type UserCreateWithoutCoursesTaughtInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1055,10 +1115,11 @@ export type UserCreateWithoutCoursesTaughtInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutCoursesTaughtInput = {
@@ -1071,6 +1132,7 @@ export type UserUncheckedCreateWithoutCoursesTaughtInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1083,10 +1145,11 @@ export type UserUncheckedCreateWithoutCoursesTaughtInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutCoursesTaughtInput = {
@@ -1115,6 +1178,7 @@ export type UserUpdateWithoutCoursesTaughtInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1127,10 +1191,11 @@ export type UserUpdateWithoutCoursesTaughtInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCoursesTaughtInput = {
@@ -1143,6 +1208,7 @@ export type UserUncheckedUpdateWithoutCoursesTaughtInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1155,10 +1221,11 @@ export type UserUncheckedUpdateWithoutCoursesTaughtInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutEnrollmentsInput = {
@@ -1171,6 +1238,7 @@ export type UserCreateWithoutEnrollmentsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1183,10 +1251,11 @@ export type UserCreateWithoutEnrollmentsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutEnrollmentsInput = {
@@ -1199,6 +1268,7 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1211,10 +1281,11 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutEnrollmentsInput = {
@@ -1243,6 +1314,7 @@ export type UserUpdateWithoutEnrollmentsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1255,10 +1327,11 @@ export type UserUpdateWithoutEnrollmentsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEnrollmentsInput = {
@@ -1271,6 +1344,7 @@ export type UserUncheckedUpdateWithoutEnrollmentsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1283,10 +1357,11 @@ export type UserUncheckedUpdateWithoutEnrollmentsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutLessonProgressInput = {
@@ -1299,6 +1374,7 @@ export type UserCreateWithoutLessonProgressInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1311,10 +1387,11 @@ export type UserCreateWithoutLessonProgressInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutLessonProgressInput = {
@@ -1327,6 +1404,7 @@ export type UserUncheckedCreateWithoutLessonProgressInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1339,10 +1417,11 @@ export type UserUncheckedCreateWithoutLessonProgressInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutLessonProgressInput = {
@@ -1371,6 +1450,7 @@ export type UserUpdateWithoutLessonProgressInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1383,10 +1463,11 @@ export type UserUpdateWithoutLessonProgressInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLessonProgressInput = {
@@ -1399,6 +1480,7 @@ export type UserUncheckedUpdateWithoutLessonProgressInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1411,10 +1493,11 @@ export type UserUncheckedUpdateWithoutLessonProgressInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutSubmissionsInput = {
@@ -1427,6 +1510,7 @@ export type UserCreateWithoutSubmissionsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1439,10 +1523,11 @@ export type UserCreateWithoutSubmissionsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionsInput = {
@@ -1455,6 +1540,7 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1467,10 +1553,11 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionsInput = {
@@ -1499,6 +1586,7 @@ export type UserUpdateWithoutSubmissionsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1511,10 +1599,11 @@ export type UserUpdateWithoutSubmissionsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionsInput = {
@@ -1527,6 +1616,7 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1539,10 +1629,11 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutCertificatesInput = {
@@ -1555,6 +1646,7 @@ export type UserCreateWithoutCertificatesInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1567,10 +1659,11 @@ export type UserCreateWithoutCertificatesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutCertificatesInput = {
@@ -1583,6 +1676,7 @@ export type UserUncheckedCreateWithoutCertificatesInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1595,10 +1689,11 @@ export type UserUncheckedCreateWithoutCertificatesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutCertificatesInput = {
@@ -1627,6 +1722,7 @@ export type UserUpdateWithoutCertificatesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1639,10 +1735,11 @@ export type UserUpdateWithoutCertificatesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCertificatesInput = {
@@ -1655,6 +1752,7 @@ export type UserUncheckedUpdateWithoutCertificatesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1667,10 +1765,11 @@ export type UserUncheckedUpdateWithoutCertificatesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutAiConversationsInput = {
@@ -1683,6 +1782,7 @@ export type UserCreateWithoutAiConversationsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1695,10 +1795,11 @@ export type UserCreateWithoutAiConversationsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutAiConversationsInput = {
@@ -1711,6 +1812,7 @@ export type UserUncheckedCreateWithoutAiConversationsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1723,10 +1825,11 @@ export type UserUncheckedCreateWithoutAiConversationsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutAiConversationsInput = {
@@ -1755,6 +1858,7 @@ export type UserUpdateWithoutAiConversationsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1767,10 +1871,11 @@ export type UserUpdateWithoutAiConversationsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAiConversationsInput = {
@@ -1783,6 +1888,7 @@ export type UserUncheckedUpdateWithoutAiConversationsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1795,10 +1901,11 @@ export type UserUncheckedUpdateWithoutAiConversationsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -1811,6 +1918,7 @@ export type UserCreateWithoutNotificationsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1823,10 +1931,11 @@ export type UserCreateWithoutNotificationsInput = {
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -1839,6 +1948,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1851,10 +1961,11 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -1883,6 +1994,7 @@ export type UserUpdateWithoutNotificationsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1895,10 +2007,11 @@ export type UserUpdateWithoutNotificationsInput = {
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -1911,6 +2024,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1923,10 +2037,11 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutSentInvitationsInput = {
@@ -1939,6 +2054,7 @@ export type UserCreateWithoutSentInvitationsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1951,10 +2067,11 @@ export type UserCreateWithoutSentInvitationsInput = {
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -1967,6 +2084,7 @@ export type UserUncheckedCreateWithoutSentInvitationsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1979,10 +2097,11 @@ export type UserUncheckedCreateWithoutSentInvitationsInput = {
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -2011,6 +2130,7 @@ export type UserUpdateWithoutSentInvitationsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2023,10 +2143,11 @@ export type UserUpdateWithoutSentInvitationsInput = {
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -2039,6 +2160,7 @@ export type UserUncheckedUpdateWithoutSentInvitationsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2051,10 +2173,11 @@ export type UserUncheckedUpdateWithoutSentInvitationsInput = {
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutAnnouncementsInput = {
@@ -2067,6 +2190,7 @@ export type UserCreateWithoutAnnouncementsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2079,10 +2203,11 @@ export type UserCreateWithoutAnnouncementsInput = {
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutAnnouncementsInput = {
@@ -2095,6 +2220,7 @@ export type UserUncheckedCreateWithoutAnnouncementsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2107,10 +2233,11 @@ export type UserUncheckedCreateWithoutAnnouncementsInput = {
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutAnnouncementsInput = {
@@ -2139,6 +2266,7 @@ export type UserUpdateWithoutAnnouncementsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2151,10 +2279,11 @@ export type UserUpdateWithoutAnnouncementsInput = {
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAnnouncementsInput = {
@@ -2167,6 +2296,7 @@ export type UserUncheckedUpdateWithoutAnnouncementsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2179,13 +2309,14 @@ export type UserUncheckedUpdateWithoutAnnouncementsInput = {
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
-export type UserCreateWithoutConversationsInput = {
+export type UserCreateWithoutConversationParticipantsInput = {
   id?: string
   name: string
   email: string
@@ -2195,6 +2326,7 @@ export type UserCreateWithoutConversationsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2209,11 +2341,12 @@ export type UserCreateWithoutConversationsInput = {
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
-export type UserUncheckedCreateWithoutConversationsInput = {
+export type UserUncheckedCreateWithoutConversationParticipantsInput = {
   id?: string
   name: string
   email: string
@@ -2223,6 +2356,7 @@ export type UserUncheckedCreateWithoutConversationsInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2237,27 +2371,28 @@ export type UserUncheckedCreateWithoutConversationsInput = {
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
-export type UserCreateOrConnectWithoutConversationsInput = {
+export type UserCreateOrConnectWithoutConversationParticipantsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutConversationsInput, Prisma.UserUncheckedCreateWithoutConversationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutConversationParticipantsInput, Prisma.UserUncheckedCreateWithoutConversationParticipantsInput>
 }
 
-export type UserUpsertWithoutConversationsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutConversationsInput, Prisma.UserUncheckedUpdateWithoutConversationsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutConversationsInput, Prisma.UserUncheckedCreateWithoutConversationsInput>
+export type UserUpsertWithoutConversationParticipantsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutConversationParticipantsInput, Prisma.UserUncheckedUpdateWithoutConversationParticipantsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutConversationParticipantsInput, Prisma.UserUncheckedCreateWithoutConversationParticipantsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutConversationsInput = {
+export type UserUpdateToOneWithWhereWithoutConversationParticipantsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutConversationsInput, Prisma.UserUncheckedUpdateWithoutConversationsInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutConversationParticipantsInput, Prisma.UserUncheckedUpdateWithoutConversationParticipantsInput>
 }
 
-export type UserUpdateWithoutConversationsInput = {
+export type UserUpdateWithoutConversationParticipantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2267,6 +2402,7 @@ export type UserUpdateWithoutConversationsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2281,11 +2417,12 @@ export type UserUpdateWithoutConversationsInput = {
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
-export type UserUncheckedUpdateWithoutConversationsInput = {
+export type UserUncheckedUpdateWithoutConversationParticipantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2295,6 +2432,7 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2309,8 +2447,9 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutSentChatMessagesInput = {
@@ -2323,6 +2462,7 @@ export type UserCreateWithoutSentChatMessagesInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2336,9 +2476,10 @@ export type UserCreateWithoutSentChatMessagesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
 export type UserUncheckedCreateWithoutSentChatMessagesInput = {
@@ -2351,6 +2492,7 @@ export type UserUncheckedCreateWithoutSentChatMessagesInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2364,9 +2506,10 @@ export type UserUncheckedCreateWithoutSentChatMessagesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutSentChatMessagesInput = {
@@ -2395,6 +2538,7 @@ export type UserUpdateWithoutSentChatMessagesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2408,9 +2552,10 @@ export type UserUpdateWithoutSentChatMessagesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentChatMessagesInput = {
@@ -2423,6 +2568,7 @@ export type UserUncheckedUpdateWithoutSentChatMessagesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2436,12 +2582,13 @@ export type UserUncheckedUpdateWithoutSentChatMessagesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
-export type UserCreateWithoutClassAttendanceInput = {
+export type UserCreateWithoutInstructorLiveClassesInput = {
   id?: string
   name: string
   email: string
@@ -2451,6 +2598,7 @@ export type UserCreateWithoutClassAttendanceInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2464,12 +2612,13 @@ export type UserCreateWithoutClassAttendanceInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
-  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutUserInput
+  classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
 }
 
-export type UserUncheckedCreateWithoutClassAttendanceInput = {
+export type UserUncheckedCreateWithoutInstructorLiveClassesInput = {
   id?: string
   name: string
   email: string
@@ -2479,6 +2628,7 @@ export type UserUncheckedCreateWithoutClassAttendanceInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2492,9 +2642,146 @@ export type UserUncheckedCreateWithoutClassAttendanceInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutUserInput
+  classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
+}
+
+export type UserCreateOrConnectWithoutInstructorLiveClassesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInstructorLiveClassesInput, Prisma.UserUncheckedCreateWithoutInstructorLiveClassesInput>
+}
+
+export type UserUpsertWithoutInstructorLiveClassesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInstructorLiveClassesInput, Prisma.UserUncheckedUpdateWithoutInstructorLiveClassesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInstructorLiveClassesInput, Prisma.UserUncheckedCreateWithoutInstructorLiveClassesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInstructorLiveClassesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInstructorLiveClassesInput, Prisma.UserUncheckedUpdateWithoutInstructorLiveClassesInput>
+}
+
+export type UserUpdateWithoutInstructorLiveClassesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  coursesTaught?: Prisma.CourseUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUpdateManyWithoutStudentNestedInput
+  lessonProgress?: Prisma.LessonProgressUpdateManyWithoutStudentNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutStudentNestedInput
+  certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
+  aiConversations?: Prisma.AIConversationUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
+  announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
+  sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInstructorLiveClassesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  coursesTaught?: Prisma.CourseUncheckedUpdateManyWithoutInstructorNestedInput
+  enrollments?: Prisma.EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+  lessonProgress?: Prisma.LessonProgressUncheckedUpdateManyWithoutStudentNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
+  aiConversations?: Prisma.AIConversationUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+  announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
+  sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+}
+
+export type UserCreateWithoutClassAttendanceInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  avatar?: string | null
+  isVerified?: boolean
+  isApproved?: boolean
+  isActive?: boolean
+  studentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  coursesTaught?: Prisma.CourseCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentCreateNestedManyWithoutStudentInput
+  lessonProgress?: Prisma.LessonProgressCreateNestedManyWithoutStudentInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutStudentInput
+  certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
+  aiConversations?: Prisma.AIConversationCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
+  announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
+  sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
+  classChatMessages?: Prisma.ClassChatMessageCreateNestedManyWithoutSenderInput
+}
+
+export type UserUncheckedCreateWithoutClassAttendanceInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  avatar?: string | null
+  isVerified?: boolean
+  isApproved?: boolean
+  isActive?: boolean
+  studentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  coursesTaught?: Prisma.CourseUncheckedCreateNestedManyWithoutInstructorInput
+  enrollments?: Prisma.EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  lessonProgress?: Prisma.LessonProgressUncheckedCreateNestedManyWithoutStudentInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutStudentInput
+  certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
+  aiConversations?: Prisma.AIConversationUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+  announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
+  sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
 export type UserCreateOrConnectWithoutClassAttendanceInput = {
@@ -2523,6 +2810,7 @@ export type UserUpdateWithoutClassAttendanceInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2536,9 +2824,10 @@ export type UserUpdateWithoutClassAttendanceInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutUserNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUpdateManyWithoutSenderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClassAttendanceInput = {
@@ -2551,6 +2840,7 @@ export type UserUncheckedUpdateWithoutClassAttendanceInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2564,9 +2854,10 @@ export type UserUncheckedUpdateWithoutClassAttendanceInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
-  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
+  classChatMessages?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutClassChatMessagesInput = {
@@ -2579,6 +2870,7 @@ export type UserCreateWithoutClassChatMessagesInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2592,8 +2884,9 @@ export type UserCreateWithoutClassChatMessagesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceCreateNestedManyWithoutStudentInput
 }
 
@@ -2607,6 +2900,7 @@ export type UserUncheckedCreateWithoutClassChatMessagesInput = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2620,8 +2914,9 @@ export type UserUncheckedCreateWithoutClassChatMessagesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   sentInvitations?: Prisma.AdminInvitationUncheckedCreateNestedManyWithoutInvitedByInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutStudentInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutUserInput
   sentChatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedCreateNestedManyWithoutInstructorInput
   classAttendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutStudentInput
 }
 
@@ -2651,6 +2946,7 @@ export type UserUpdateWithoutClassChatMessagesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2664,8 +2960,9 @@ export type UserUpdateWithoutClassChatMessagesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUpdateManyWithoutStudentNestedInput
 }
 
@@ -2679,6 +2976,7 @@ export type UserUncheckedUpdateWithoutClassChatMessagesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  studentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2692,8 +2990,9 @@ export type UserUncheckedUpdateWithoutClassChatMessagesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   sentInvitations?: Prisma.AdminInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutStudentNestedInput
+  conversationParticipants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutUserNestedInput
   sentChatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+  instructorLiveClasses?: Prisma.LiveClassUncheckedUpdateManyWithoutInstructorNestedInput
   classAttendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutStudentNestedInput
 }
 
@@ -2714,8 +3013,9 @@ export type UserCountOutputType = {
   notifications: number
   sentInvitations: number
   announcements: number
-  conversations: number
+  conversationParticipants: number
   sentChatMessages: number
+  instructorLiveClasses: number
   classAttendance: number
   classChatMessages: number
 }
@@ -2732,8 +3032,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
   announcements?: boolean | UserCountOutputTypeCountAnnouncementsArgs
-  conversations?: boolean | UserCountOutputTypeCountConversationsArgs
+  conversationParticipants?: boolean | UserCountOutputTypeCountConversationParticipantsArgs
   sentChatMessages?: boolean | UserCountOutputTypeCountSentChatMessagesArgs
+  instructorLiveClasses?: boolean | UserCountOutputTypeCountInstructorLiveClassesArgs
   classAttendance?: boolean | UserCountOutputTypeCountClassAttendanceArgs
   classChatMessages?: boolean | UserCountOutputTypeCountClassChatMessagesArgs
 }
@@ -2828,8 +3129,8 @@ export type UserCountOutputTypeCountAnnouncementsArgs<ExtArgs extends runtime.Ty
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ConversationWhereInput
+export type UserCountOutputTypeCountConversationParticipantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ConversationParticipantWhereInput
 }
 
 /**
@@ -2837,6 +3138,13 @@ export type UserCountOutputTypeCountConversationsArgs<ExtArgs extends runtime.Ty
  */
 export type UserCountOutputTypeCountSentChatMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ChatMessageWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountInstructorLiveClassesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LiveClassWhereInput
 }
 
 /**
@@ -2864,6 +3172,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
@@ -2877,8 +3186,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   sentInvitations?: boolean | Prisma.User$sentInvitationsArgs<ExtArgs>
   announcements?: boolean | Prisma.User$announcementsArgs<ExtArgs>
-  conversations?: boolean | Prisma.User$conversationsArgs<ExtArgs>
+  conversationParticipants?: boolean | Prisma.User$conversationParticipantsArgs<ExtArgs>
   sentChatMessages?: boolean | Prisma.User$sentChatMessagesArgs<ExtArgs>
+  instructorLiveClasses?: boolean | Prisma.User$instructorLiveClassesArgs<ExtArgs>
   classAttendance?: boolean | Prisma.User$classAttendanceArgs<ExtArgs>
   classChatMessages?: boolean | Prisma.User$classChatMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -2894,6 +3204,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2908,6 +3219,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2922,11 +3234,12 @@ export type UserSelectScalar = {
   isVerified?: boolean
   isApproved?: boolean
   isActive?: boolean
+  studentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "avatar" | "isVerified" | "isApproved" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "avatar" | "isVerified" | "isApproved" | "isActive" | "studentId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   coursesTaught?: boolean | Prisma.User$coursesTaughtArgs<ExtArgs>
@@ -2939,8 +3252,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   sentInvitations?: boolean | Prisma.User$sentInvitationsArgs<ExtArgs>
   announcements?: boolean | Prisma.User$announcementsArgs<ExtArgs>
-  conversations?: boolean | Prisma.User$conversationsArgs<ExtArgs>
+  conversationParticipants?: boolean | Prisma.User$conversationParticipantsArgs<ExtArgs>
   sentChatMessages?: boolean | Prisma.User$sentChatMessagesArgs<ExtArgs>
+  instructorLiveClasses?: boolean | Prisma.User$instructorLiveClassesArgs<ExtArgs>
   classAttendance?: boolean | Prisma.User$classAttendanceArgs<ExtArgs>
   classChatMessages?: boolean | Prisma.User$classChatMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -2962,8 +3276,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     sentInvitations: Prisma.$AdminInvitationPayload<ExtArgs>[]
     announcements: Prisma.$AnnouncementPayload<ExtArgs>[]
-    conversations: Prisma.$ConversationPayload<ExtArgs>[]
+    conversationParticipants: Prisma.$ConversationParticipantPayload<ExtArgs>[]
     sentChatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
+    instructorLiveClasses: Prisma.$LiveClassPayload<ExtArgs>[]
     classAttendance: Prisma.$ClassAttendancePayload<ExtArgs>[]
     classChatMessages: Prisma.$ClassChatMessagePayload<ExtArgs>[]
   }
@@ -2977,6 +3292,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isVerified: boolean
     isApproved: boolean
     isActive: boolean
+    studentId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -3384,8 +3700,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sentInvitations<T extends Prisma.User$sentInvitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AdminInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   announcements<T extends Prisma.User$announcementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$announcementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  conversations<T extends Prisma.User$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  conversationParticipants<T extends Prisma.User$conversationParticipantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$conversationParticipantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sentChatMessages<T extends Prisma.User$sentChatMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentChatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  instructorLiveClasses<T extends Prisma.User$instructorLiveClassesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$instructorLiveClassesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LiveClassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   classAttendance<T extends Prisma.User$classAttendanceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$classAttendanceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassAttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   classChatMessages<T extends Prisma.User$classChatMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$classChatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -3426,6 +3743,7 @@ export interface UserFieldRefs {
   readonly isVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly isApproved: Prisma.FieldRef<"User", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
+  readonly studentId: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -4085,27 +4403,27 @@ export type User$announcementsArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * User.conversations
+ * User.conversationParticipants
  */
-export type User$conversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$conversationParticipantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Conversation
+   * Select specific fields to fetch from the ConversationParticipant
    */
-  select?: Prisma.ConversationSelect<ExtArgs> | null
+  select?: Prisma.ConversationParticipantSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Conversation
+   * Omit specific fields from the ConversationParticipant
    */
-  omit?: Prisma.ConversationOmit<ExtArgs> | null
+  omit?: Prisma.ConversationParticipantOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ConversationInclude<ExtArgs> | null
-  where?: Prisma.ConversationWhereInput
-  orderBy?: Prisma.ConversationOrderByWithRelationInput | Prisma.ConversationOrderByWithRelationInput[]
-  cursor?: Prisma.ConversationWhereUniqueInput
+  include?: Prisma.ConversationParticipantInclude<ExtArgs> | null
+  where?: Prisma.ConversationParticipantWhereInput
+  orderBy?: Prisma.ConversationParticipantOrderByWithRelationInput | Prisma.ConversationParticipantOrderByWithRelationInput[]
+  cursor?: Prisma.ConversationParticipantWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.ConversationScalarFieldEnum | Prisma.ConversationScalarFieldEnum[]
+  distinct?: Prisma.ConversationParticipantScalarFieldEnum | Prisma.ConversationParticipantScalarFieldEnum[]
 }
 
 /**
@@ -4130,6 +4448,30 @@ export type User$sentChatMessagesArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.ChatMessageScalarFieldEnum | Prisma.ChatMessageScalarFieldEnum[]
+}
+
+/**
+ * User.instructorLiveClasses
+ */
+export type User$instructorLiveClassesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LiveClass
+   */
+  select?: Prisma.LiveClassSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LiveClass
+   */
+  omit?: Prisma.LiveClassOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LiveClassInclude<ExtArgs> | null
+  where?: Prisma.LiveClassWhereInput
+  orderBy?: Prisma.LiveClassOrderByWithRelationInput | Prisma.LiveClassOrderByWithRelationInput[]
+  cursor?: Prisma.LiveClassWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LiveClassScalarFieldEnum | Prisma.LiveClassScalarFieldEnum[]
 }
 
 /**

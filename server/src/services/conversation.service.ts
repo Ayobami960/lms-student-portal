@@ -2,15 +2,17 @@ import { prisma } from "../config/db.js";
 import { ApiError } from "../utils/ApiError.js";
 import { notificationService } from "./notification.service.js";
 
+const participantsWithUser = {
+  include: { user: { select: { id: true, name: true, role: true } } },
+} as const;
+
 async function firstAdminId(): Promise<string | null> {
   const admin = await prisma.user.findFirst({ where: { role: "ADMIN" }, orderBy: { createdAt: "asc" } });
   return admin?.id ?? null;
 }
 
 export const conversationService = {
-  // Students start a SUPPORT thread (goes to any/all admins). Instructors start
-  // an INSTRUCTOR_DM to one specific student, and it must be for a student
-  // actually enrolled in one of that instructor's courses.
+ 
   async create(sender: { id: string; role: string }, input: {
     subject: string; message: string; type: "SUPPORT" | "INSTRUCTOR_DM"; recipientId?: string; courseId?: string;
   }) {
@@ -18,8 +20,6 @@ export const conversationService = {
 
     if (input.type === "SUPPORT") {
       if (sender.role !== "STUDENT") throw ApiError.forbidden("Only students can open a support conversation");
-      const adminId = await firstAdminId();
-      if (adminId) participantIds.push(adminId);
       // All current admins get added as participants so any of them can reply
       const admins = await prisma.user.findMany({ where: { role: "ADMIN" }, select: { id: true } });
       participantIds = [sender.id, ...admins.map((a) => a.id)];
@@ -38,11 +38,11 @@ export const conversationService = {
       data: {
         type: input.type,
         subject: input.subject,
-        courseId: input.courseId,
+        courseId: input.courseId ?? null,
         participants: { create: participantIds.map((userId) => ({ userId })) },
         messages: { create: { senderId: sender.id, content: input.message } },
       },
-      include: { messages: true, participants: { include: { user: { select: { id: true, name: true, role: true } } } } },
+      include: { messages: true, participants: participantsWithUser },
     });
 
     for (const p of conversation.participants) {
@@ -58,7 +58,7 @@ export const conversationService = {
     return prisma.conversation.findMany({
       where: { participants: { some: { userId } } },
       include: {
-        participants: { include: { user: { select: { id: true, name: true, role: true } } } },
+        participants: participantsWithUser,
         messages: { orderBy: { createdAt: "desc" }, take: 1 },
         _count: { select: { messages: true } },
       },
@@ -70,7 +70,7 @@ export const conversationService = {
     const conversation = await prisma.conversation.findUnique({
       where: { id },
       include: {
-        participants: { include: { user: { select: { id: true, name: true, role: true } } } },
+        participants: participantsWithUser,
         messages: { orderBy: { createdAt: "asc" }, include: { sender: { select: { id: true, name: true, role: true } } } },
       },
     });
@@ -80,7 +80,10 @@ export const conversationService = {
   },
 
   async sendMessage(conversationId: string, senderId: string, content: string) {
-    const conversation = await prisma.conversation.findUnique({ where: { id: conversationId }, include: { participants: true } });
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+      include: { participants: true },
+    });
     if (!conversation) throw ApiError.notFound("Conversation not found");
     if (!conversation.participants.some((p) => p.userId === senderId)) throw ApiError.forbidden("You are not part of this conversation");
 

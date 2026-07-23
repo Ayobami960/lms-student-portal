@@ -4,7 +4,6 @@ import { notificationService } from "./notification.service.js";
 import { emailService } from "./email.service.js";
 import { emailTemplates } from "../../emails/templates.js";
 
-
 export const liveClassService = {
   async create(courseId: string, instructor: { id: string; role: string }, data: { title: string; description?: string; scheduledAt: string }) {
     const course = await prisma.course.findUnique({ where: { id: courseId } });
@@ -14,7 +13,13 @@ export const liveClassService = {
     }
 
     const liveClass = await prisma.liveClass.create({
-      data: { courseId, instructorId: course.instructorId, title: data.title, description: data.description, scheduledAt: new Date(data.scheduledAt) },
+      data: {
+        courseId,
+        instructorId: course.instructorId,
+        title: data.title,
+        description: data.description ?? null,
+        scheduledAt: new Date(data.scheduledAt),
+      },
     });
 
     // Notify every enrolled student a class was scheduled.
@@ -63,7 +68,6 @@ export const liveClassService = {
     return liveClass;
   },
 
-  
   async join(id: string, user: { id: string; role: string }, suppliedStudentId?: string) {
     const liveClass = await prisma.liveClass.findUnique({ where: { id } });
     if (!liveClass) throw ApiError.notFound("Class not found");

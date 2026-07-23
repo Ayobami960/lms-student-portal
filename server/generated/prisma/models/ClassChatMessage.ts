@@ -27,7 +27,8 @@ export type AggregateClassChatMessage = {
 export type ClassChatMessageMinAggregateOutputType = {
   id: string | null
   liveClassId: string | null
-  userId: string | null
+  senderId: string | null
+  senderName: string | null
   content: string | null
   createdAt: Date | null
 }
@@ -35,7 +36,8 @@ export type ClassChatMessageMinAggregateOutputType = {
 export type ClassChatMessageMaxAggregateOutputType = {
   id: string | null
   liveClassId: string | null
-  userId: string | null
+  senderId: string | null
+  senderName: string | null
   content: string | null
   createdAt: Date | null
 }
@@ -43,7 +45,8 @@ export type ClassChatMessageMaxAggregateOutputType = {
 export type ClassChatMessageCountAggregateOutputType = {
   id: number
   liveClassId: number
-  userId: number
+  senderId: number
+  senderName: number
   content: number
   createdAt: number
   _all: number
@@ -53,7 +56,8 @@ export type ClassChatMessageCountAggregateOutputType = {
 export type ClassChatMessageMinAggregateInputType = {
   id?: true
   liveClassId?: true
-  userId?: true
+  senderId?: true
+  senderName?: true
   content?: true
   createdAt?: true
 }
@@ -61,7 +65,8 @@ export type ClassChatMessageMinAggregateInputType = {
 export type ClassChatMessageMaxAggregateInputType = {
   id?: true
   liveClassId?: true
-  userId?: true
+  senderId?: true
+  senderName?: true
   content?: true
   createdAt?: true
 }
@@ -69,7 +74,8 @@ export type ClassChatMessageMaxAggregateInputType = {
 export type ClassChatMessageCountAggregateInputType = {
   id?: true
   liveClassId?: true
-  userId?: true
+  senderId?: true
+  senderName?: true
   content?: true
   createdAt?: true
   _all?: true
@@ -150,7 +156,8 @@ export type ClassChatMessageGroupByArgs<ExtArgs extends runtime.Types.Extensions
 export type ClassChatMessageGroupByOutputType = {
   id: string
   liveClassId: string
-  userId: string
+  senderId: string
+  senderName: string
   content: string
   createdAt: Date
   _count: ClassChatMessageCountAggregateOutputType | null
@@ -179,21 +186,23 @@ export type ClassChatMessageWhereInput = {
   NOT?: Prisma.ClassChatMessageWhereInput | Prisma.ClassChatMessageWhereInput[]
   id?: Prisma.StringFilter<"ClassChatMessage"> | string
   liveClassId?: Prisma.StringFilter<"ClassChatMessage"> | string
-  userId?: Prisma.StringFilter<"ClassChatMessage"> | string
+  senderId?: Prisma.StringFilter<"ClassChatMessage"> | string
+  senderName?: Prisma.StringFilter<"ClassChatMessage"> | string
   content?: Prisma.StringFilter<"ClassChatMessage"> | string
   createdAt?: Prisma.DateTimeFilter<"ClassChatMessage"> | Date | string
   liveClass?: Prisma.XOR<Prisma.LiveClassScalarRelationFilter, Prisma.LiveClassWhereInput>
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  sender?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type ClassChatMessageOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  senderId?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   liveClass?: Prisma.LiveClassOrderByWithRelationInput
-  user?: Prisma.UserOrderByWithRelationInput
+  sender?: Prisma.UserOrderByWithRelationInput
 }
 
 export type ClassChatMessageWhereUniqueInput = Prisma.AtLeast<{
@@ -202,17 +211,19 @@ export type ClassChatMessageWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ClassChatMessageWhereInput[]
   NOT?: Prisma.ClassChatMessageWhereInput | Prisma.ClassChatMessageWhereInput[]
   liveClassId?: Prisma.StringFilter<"ClassChatMessage"> | string
-  userId?: Prisma.StringFilter<"ClassChatMessage"> | string
+  senderId?: Prisma.StringFilter<"ClassChatMessage"> | string
+  senderName?: Prisma.StringFilter<"ClassChatMessage"> | string
   content?: Prisma.StringFilter<"ClassChatMessage"> | string
   createdAt?: Prisma.DateTimeFilter<"ClassChatMessage"> | Date | string
   liveClass?: Prisma.XOR<Prisma.LiveClassScalarRelationFilter, Prisma.LiveClassWhereInput>
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  sender?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
 export type ClassChatMessageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  senderId?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ClassChatMessageCountOrderByAggregateInput
@@ -226,39 +237,44 @@ export type ClassChatMessageScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ClassChatMessageScalarWhereWithAggregatesInput | Prisma.ClassChatMessageScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ClassChatMessage"> | string
   liveClassId?: Prisma.StringWithAggregatesFilter<"ClassChatMessage"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"ClassChatMessage"> | string
+  senderId?: Prisma.StringWithAggregatesFilter<"ClassChatMessage"> | string
+  senderName?: Prisma.StringWithAggregatesFilter<"ClassChatMessage"> | string
   content?: Prisma.StringWithAggregatesFilter<"ClassChatMessage"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ClassChatMessage"> | Date | string
 }
 
 export type ClassChatMessageCreateInput = {
   id?: string
+  senderName: string
   content: string
   createdAt?: Date | string
   liveClass: Prisma.LiveClassCreateNestedOneWithoutChatInput
-  user: Prisma.UserCreateNestedOneWithoutClassChatMessagesInput
+  sender: Prisma.UserCreateNestedOneWithoutClassChatMessagesInput
 }
 
 export type ClassChatMessageUncheckedCreateInput = {
   id?: string
   liveClassId: string
-  userId: string
+  senderId: string
+  senderName: string
   content: string
   createdAt?: Date | string
 }
 
 export type ClassChatMessageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveClass?: Prisma.LiveClassUpdateOneRequiredWithoutChatNestedInput
-  user?: Prisma.UserUpdateOneRequiredWithoutClassChatMessagesNestedInput
+  sender?: Prisma.UserUpdateOneRequiredWithoutClassChatMessagesNestedInput
 }
 
 export type ClassChatMessageUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   liveClassId?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -266,13 +282,15 @@ export type ClassChatMessageUncheckedUpdateInput = {
 export type ClassChatMessageCreateManyInput = {
   id?: string
   liveClassId: string
-  userId: string
+  senderId: string
+  senderName: string
   content: string
   createdAt?: Date | string
 }
 
 export type ClassChatMessageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -280,7 +298,8 @@ export type ClassChatMessageUpdateManyMutationInput = {
 export type ClassChatMessageUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   liveClassId?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -298,7 +317,8 @@ export type ClassChatMessageOrderByRelationAggregateInput = {
 export type ClassChatMessageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  senderId?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -306,7 +326,8 @@ export type ClassChatMessageCountOrderByAggregateInput = {
 export type ClassChatMessageMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  senderId?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -314,50 +335,51 @@ export type ClassChatMessageMaxOrderByAggregateInput = {
 export type ClassChatMessageMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  senderId?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
-export type ClassChatMessageCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutUserInput, Prisma.ClassChatMessageUncheckedCreateWithoutUserInput> | Prisma.ClassChatMessageCreateWithoutUserInput[] | Prisma.ClassChatMessageUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.ClassChatMessageCreateOrConnectWithoutUserInput | Prisma.ClassChatMessageCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.ClassChatMessageCreateManyUserInputEnvelope
+export type ClassChatMessageCreateNestedManyWithoutSenderInput = {
+  create?: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutSenderInput, Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput> | Prisma.ClassChatMessageCreateWithoutSenderInput[] | Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput[]
+  connectOrCreate?: Prisma.ClassChatMessageCreateOrConnectWithoutSenderInput | Prisma.ClassChatMessageCreateOrConnectWithoutSenderInput[]
+  createMany?: Prisma.ClassChatMessageCreateManySenderInputEnvelope
   connect?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
 }
 
-export type ClassChatMessageUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutUserInput, Prisma.ClassChatMessageUncheckedCreateWithoutUserInput> | Prisma.ClassChatMessageCreateWithoutUserInput[] | Prisma.ClassChatMessageUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.ClassChatMessageCreateOrConnectWithoutUserInput | Prisma.ClassChatMessageCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.ClassChatMessageCreateManyUserInputEnvelope
+export type ClassChatMessageUncheckedCreateNestedManyWithoutSenderInput = {
+  create?: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutSenderInput, Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput> | Prisma.ClassChatMessageCreateWithoutSenderInput[] | Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput[]
+  connectOrCreate?: Prisma.ClassChatMessageCreateOrConnectWithoutSenderInput | Prisma.ClassChatMessageCreateOrConnectWithoutSenderInput[]
+  createMany?: Prisma.ClassChatMessageCreateManySenderInputEnvelope
   connect?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
 }
 
-export type ClassChatMessageUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutUserInput, Prisma.ClassChatMessageUncheckedCreateWithoutUserInput> | Prisma.ClassChatMessageCreateWithoutUserInput[] | Prisma.ClassChatMessageUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.ClassChatMessageCreateOrConnectWithoutUserInput | Prisma.ClassChatMessageCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.ClassChatMessageUpsertWithWhereUniqueWithoutUserInput | Prisma.ClassChatMessageUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.ClassChatMessageCreateManyUserInputEnvelope
+export type ClassChatMessageUpdateManyWithoutSenderNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutSenderInput, Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput> | Prisma.ClassChatMessageCreateWithoutSenderInput[] | Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput[]
+  connectOrCreate?: Prisma.ClassChatMessageCreateOrConnectWithoutSenderInput | Prisma.ClassChatMessageCreateOrConnectWithoutSenderInput[]
+  upsert?: Prisma.ClassChatMessageUpsertWithWhereUniqueWithoutSenderInput | Prisma.ClassChatMessageUpsertWithWhereUniqueWithoutSenderInput[]
+  createMany?: Prisma.ClassChatMessageCreateManySenderInputEnvelope
   set?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
   disconnect?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
   delete?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
   connect?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
-  update?: Prisma.ClassChatMessageUpdateWithWhereUniqueWithoutUserInput | Prisma.ClassChatMessageUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.ClassChatMessageUpdateManyWithWhereWithoutUserInput | Prisma.ClassChatMessageUpdateManyWithWhereWithoutUserInput[]
+  update?: Prisma.ClassChatMessageUpdateWithWhereUniqueWithoutSenderInput | Prisma.ClassChatMessageUpdateWithWhereUniqueWithoutSenderInput[]
+  updateMany?: Prisma.ClassChatMessageUpdateManyWithWhereWithoutSenderInput | Prisma.ClassChatMessageUpdateManyWithWhereWithoutSenderInput[]
   deleteMany?: Prisma.ClassChatMessageScalarWhereInput | Prisma.ClassChatMessageScalarWhereInput[]
 }
 
-export type ClassChatMessageUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutUserInput, Prisma.ClassChatMessageUncheckedCreateWithoutUserInput> | Prisma.ClassChatMessageCreateWithoutUserInput[] | Prisma.ClassChatMessageUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.ClassChatMessageCreateOrConnectWithoutUserInput | Prisma.ClassChatMessageCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.ClassChatMessageUpsertWithWhereUniqueWithoutUserInput | Prisma.ClassChatMessageUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.ClassChatMessageCreateManyUserInputEnvelope
+export type ClassChatMessageUncheckedUpdateManyWithoutSenderNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutSenderInput, Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput> | Prisma.ClassChatMessageCreateWithoutSenderInput[] | Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput[]
+  connectOrCreate?: Prisma.ClassChatMessageCreateOrConnectWithoutSenderInput | Prisma.ClassChatMessageCreateOrConnectWithoutSenderInput[]
+  upsert?: Prisma.ClassChatMessageUpsertWithWhereUniqueWithoutSenderInput | Prisma.ClassChatMessageUpsertWithWhereUniqueWithoutSenderInput[]
+  createMany?: Prisma.ClassChatMessageCreateManySenderInputEnvelope
   set?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
   disconnect?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
   delete?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
   connect?: Prisma.ClassChatMessageWhereUniqueInput | Prisma.ClassChatMessageWhereUniqueInput[]
-  update?: Prisma.ClassChatMessageUpdateWithWhereUniqueWithoutUserInput | Prisma.ClassChatMessageUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.ClassChatMessageUpdateManyWithWhereWithoutUserInput | Prisma.ClassChatMessageUpdateManyWithWhereWithoutUserInput[]
+  update?: Prisma.ClassChatMessageUpdateWithWhereUniqueWithoutSenderInput | Prisma.ClassChatMessageUpdateWithWhereUniqueWithoutSenderInput[]
+  updateMany?: Prisma.ClassChatMessageUpdateManyWithWhereWithoutSenderInput | Prisma.ClassChatMessageUpdateManyWithWhereWithoutSenderInput[]
   deleteMany?: Prisma.ClassChatMessageScalarWhereInput | Prisma.ClassChatMessageScalarWhereInput[]
 }
 
@@ -403,44 +425,46 @@ export type ClassChatMessageUncheckedUpdateManyWithoutLiveClassNestedInput = {
   deleteMany?: Prisma.ClassChatMessageScalarWhereInput | Prisma.ClassChatMessageScalarWhereInput[]
 }
 
-export type ClassChatMessageCreateWithoutUserInput = {
+export type ClassChatMessageCreateWithoutSenderInput = {
   id?: string
+  senderName: string
   content: string
   createdAt?: Date | string
   liveClass: Prisma.LiveClassCreateNestedOneWithoutChatInput
 }
 
-export type ClassChatMessageUncheckedCreateWithoutUserInput = {
+export type ClassChatMessageUncheckedCreateWithoutSenderInput = {
   id?: string
   liveClassId: string
+  senderName: string
   content: string
   createdAt?: Date | string
 }
 
-export type ClassChatMessageCreateOrConnectWithoutUserInput = {
+export type ClassChatMessageCreateOrConnectWithoutSenderInput = {
   where: Prisma.ClassChatMessageWhereUniqueInput
-  create: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutUserInput, Prisma.ClassChatMessageUncheckedCreateWithoutUserInput>
+  create: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutSenderInput, Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput>
 }
 
-export type ClassChatMessageCreateManyUserInputEnvelope = {
-  data: Prisma.ClassChatMessageCreateManyUserInput | Prisma.ClassChatMessageCreateManyUserInput[]
+export type ClassChatMessageCreateManySenderInputEnvelope = {
+  data: Prisma.ClassChatMessageCreateManySenderInput | Prisma.ClassChatMessageCreateManySenderInput[]
   skipDuplicates?: boolean
 }
 
-export type ClassChatMessageUpsertWithWhereUniqueWithoutUserInput = {
+export type ClassChatMessageUpsertWithWhereUniqueWithoutSenderInput = {
   where: Prisma.ClassChatMessageWhereUniqueInput
-  update: Prisma.XOR<Prisma.ClassChatMessageUpdateWithoutUserInput, Prisma.ClassChatMessageUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutUserInput, Prisma.ClassChatMessageUncheckedCreateWithoutUserInput>
+  update: Prisma.XOR<Prisma.ClassChatMessageUpdateWithoutSenderInput, Prisma.ClassChatMessageUncheckedUpdateWithoutSenderInput>
+  create: Prisma.XOR<Prisma.ClassChatMessageCreateWithoutSenderInput, Prisma.ClassChatMessageUncheckedCreateWithoutSenderInput>
 }
 
-export type ClassChatMessageUpdateWithWhereUniqueWithoutUserInput = {
+export type ClassChatMessageUpdateWithWhereUniqueWithoutSenderInput = {
   where: Prisma.ClassChatMessageWhereUniqueInput
-  data: Prisma.XOR<Prisma.ClassChatMessageUpdateWithoutUserInput, Prisma.ClassChatMessageUncheckedUpdateWithoutUserInput>
+  data: Prisma.XOR<Prisma.ClassChatMessageUpdateWithoutSenderInput, Prisma.ClassChatMessageUncheckedUpdateWithoutSenderInput>
 }
 
-export type ClassChatMessageUpdateManyWithWhereWithoutUserInput = {
+export type ClassChatMessageUpdateManyWithWhereWithoutSenderInput = {
   where: Prisma.ClassChatMessageScalarWhereInput
-  data: Prisma.XOR<Prisma.ClassChatMessageUpdateManyMutationInput, Prisma.ClassChatMessageUncheckedUpdateManyWithoutUserInput>
+  data: Prisma.XOR<Prisma.ClassChatMessageUpdateManyMutationInput, Prisma.ClassChatMessageUncheckedUpdateManyWithoutSenderInput>
 }
 
 export type ClassChatMessageScalarWhereInput = {
@@ -449,21 +473,24 @@ export type ClassChatMessageScalarWhereInput = {
   NOT?: Prisma.ClassChatMessageScalarWhereInput | Prisma.ClassChatMessageScalarWhereInput[]
   id?: Prisma.StringFilter<"ClassChatMessage"> | string
   liveClassId?: Prisma.StringFilter<"ClassChatMessage"> | string
-  userId?: Prisma.StringFilter<"ClassChatMessage"> | string
+  senderId?: Prisma.StringFilter<"ClassChatMessage"> | string
+  senderName?: Prisma.StringFilter<"ClassChatMessage"> | string
   content?: Prisma.StringFilter<"ClassChatMessage"> | string
   createdAt?: Prisma.DateTimeFilter<"ClassChatMessage"> | Date | string
 }
 
 export type ClassChatMessageCreateWithoutLiveClassInput = {
   id?: string
+  senderName: string
   content: string
   createdAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutClassChatMessagesInput
+  sender: Prisma.UserCreateNestedOneWithoutClassChatMessagesInput
 }
 
 export type ClassChatMessageUncheckedCreateWithoutLiveClassInput = {
   id?: string
-  userId: string
+  senderId: string
+  senderName: string
   content: string
   createdAt?: Date | string
 }
@@ -494,58 +521,66 @@ export type ClassChatMessageUpdateManyWithWhereWithoutLiveClassInput = {
   data: Prisma.XOR<Prisma.ClassChatMessageUpdateManyMutationInput, Prisma.ClassChatMessageUncheckedUpdateManyWithoutLiveClassInput>
 }
 
-export type ClassChatMessageCreateManyUserInput = {
+export type ClassChatMessageCreateManySenderInput = {
   id?: string
   liveClassId: string
+  senderName: string
   content: string
   createdAt?: Date | string
 }
 
-export type ClassChatMessageUpdateWithoutUserInput = {
+export type ClassChatMessageUpdateWithoutSenderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   liveClass?: Prisma.LiveClassUpdateOneRequiredWithoutChatNestedInput
 }
 
-export type ClassChatMessageUncheckedUpdateWithoutUserInput = {
+export type ClassChatMessageUncheckedUpdateWithoutSenderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   liveClassId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type ClassChatMessageUncheckedUpdateManyWithoutUserInput = {
+export type ClassChatMessageUncheckedUpdateManyWithoutSenderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   liveClassId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassChatMessageCreateManyLiveClassInput = {
   id?: string
-  userId: string
+  senderId: string
+  senderName: string
   content: string
   createdAt?: Date | string
 }
 
 export type ClassChatMessageUpdateWithoutLiveClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutClassChatMessagesNestedInput
+  sender?: Prisma.UserUpdateOneRequiredWithoutClassChatMessagesNestedInput
 }
 
 export type ClassChatMessageUncheckedUpdateWithoutLiveClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassChatMessageUncheckedUpdateManyWithoutLiveClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -555,65 +590,70 @@ export type ClassChatMessageUncheckedUpdateManyWithoutLiveClassInput = {
 export type ClassChatMessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   liveClassId?: boolean
-  userId?: boolean
+  senderId?: boolean
+  senderName?: boolean
   content?: boolean
   createdAt?: boolean
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classChatMessage"]>
 
 export type ClassChatMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   liveClassId?: boolean
-  userId?: boolean
+  senderId?: boolean
+  senderName?: boolean
   content?: boolean
   createdAt?: boolean
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classChatMessage"]>
 
 export type ClassChatMessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   liveClassId?: boolean
-  userId?: boolean
+  senderId?: boolean
+  senderName?: boolean
   content?: boolean
   createdAt?: boolean
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classChatMessage"]>
 
 export type ClassChatMessageSelectScalar = {
   id?: boolean
   liveClassId?: boolean
-  userId?: boolean
+  senderId?: boolean
+  senderName?: boolean
   content?: boolean
   createdAt?: boolean
 }
 
-export type ClassChatMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "liveClassId" | "userId" | "content" | "createdAt", ExtArgs["result"]["classChatMessage"]>
+export type ClassChatMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "liveClassId" | "senderId" | "senderName" | "content" | "createdAt", ExtArgs["result"]["classChatMessage"]>
 export type ClassChatMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type ClassChatMessageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type ClassChatMessageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $ClassChatMessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ClassChatMessage"
   objects: {
     liveClass: Prisma.$LiveClassPayload<ExtArgs>
-    user: Prisma.$UserPayload<ExtArgs>
+    sender: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     liveClassId: string
-    userId: string
+    senderId: string
+    senderName: string
     content: string
     createdAt: Date
   }, ExtArgs["result"]["classChatMessage"]>
@@ -1011,7 +1051,7 @@ readonly fields: ClassChatMessageFieldRefs;
 export interface Prisma__ClassChatMessageClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   liveClass<T extends Prisma.LiveClassDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LiveClassDefaultArgs<ExtArgs>>): Prisma.Prisma__LiveClassClient<runtime.Types.Result.GetResult<Prisma.$LiveClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  sender<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1043,7 +1083,8 @@ export interface Prisma__ClassChatMessageClient<T, Null = never, ExtArgs extends
 export interface ClassChatMessageFieldRefs {
   readonly id: Prisma.FieldRef<"ClassChatMessage", 'String'>
   readonly liveClassId: Prisma.FieldRef<"ClassChatMessage", 'String'>
-  readonly userId: Prisma.FieldRef<"ClassChatMessage", 'String'>
+  readonly senderId: Prisma.FieldRef<"ClassChatMessage", 'String'>
+  readonly senderName: Prisma.FieldRef<"ClassChatMessage", 'String'>
   readonly content: Prisma.FieldRef<"ClassChatMessage", 'String'>
   readonly createdAt: Prisma.FieldRef<"ClassChatMessage", 'DateTime'>
 }

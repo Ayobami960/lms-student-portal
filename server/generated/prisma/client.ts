@@ -137,6 +137,11 @@ export type AuditLog = Prisma.AuditLogModel
  */
 export type Conversation = Prisma.ConversationModel
 /**
+ * Model ConversationParticipant
+ * 
+ */
+export type ConversationParticipant = Prisma.ConversationParticipantModel
+/**
  * Model ChatMessage
  * 
  */

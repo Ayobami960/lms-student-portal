@@ -20,58 +20,94 @@ export type ClassAttendanceModel = runtime.Types.Result.DefaultSelection<Prisma.
 
 export type AggregateClassAttendance = {
   _count: ClassAttendanceCountAggregateOutputType | null
+  _avg: ClassAttendanceAvgAggregateOutputType | null
+  _sum: ClassAttendanceSumAggregateOutputType | null
   _min: ClassAttendanceMinAggregateOutputType | null
   _max: ClassAttendanceMaxAggregateOutputType | null
+}
+
+export type ClassAttendanceAvgAggregateOutputType = {
+  durationSecs: number | null
+}
+
+export type ClassAttendanceSumAggregateOutputType = {
+  durationSecs: number | null
 }
 
 export type ClassAttendanceMinAggregateOutputType = {
   id: string | null
   liveClassId: string | null
   studentId: string | null
+  studentName: string | null
+  studentCode: string | null
   joinedAt: Date | null
   leftAt: Date | null
+  durationSecs: number | null
 }
 
 export type ClassAttendanceMaxAggregateOutputType = {
   id: string | null
   liveClassId: string | null
   studentId: string | null
+  studentName: string | null
+  studentCode: string | null
   joinedAt: Date | null
   leftAt: Date | null
+  durationSecs: number | null
 }
 
 export type ClassAttendanceCountAggregateOutputType = {
   id: number
   liveClassId: number
   studentId: number
+  studentName: number
+  studentCode: number
   joinedAt: number
   leftAt: number
+  durationSecs: number
   _all: number
 }
 
+
+export type ClassAttendanceAvgAggregateInputType = {
+  durationSecs?: true
+}
+
+export type ClassAttendanceSumAggregateInputType = {
+  durationSecs?: true
+}
 
 export type ClassAttendanceMinAggregateInputType = {
   id?: true
   liveClassId?: true
   studentId?: true
+  studentName?: true
+  studentCode?: true
   joinedAt?: true
   leftAt?: true
+  durationSecs?: true
 }
 
 export type ClassAttendanceMaxAggregateInputType = {
   id?: true
   liveClassId?: true
   studentId?: true
+  studentName?: true
+  studentCode?: true
   joinedAt?: true
   leftAt?: true
+  durationSecs?: true
 }
 
 export type ClassAttendanceCountAggregateInputType = {
   id?: true
   liveClassId?: true
   studentId?: true
+  studentName?: true
+  studentCode?: true
   joinedAt?: true
   leftAt?: true
+  durationSecs?: true
   _all?: true
 }
 
@@ -113,6 +149,18 @@ export type ClassAttendanceAggregateArgs<ExtArgs extends runtime.Types.Extension
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ClassAttendanceAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ClassAttendanceSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ClassAttendanceMinAggregateInputType
@@ -143,6 +191,8 @@ export type ClassAttendanceGroupByArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   _count?: ClassAttendanceCountAggregateInputType | true
+  _avg?: ClassAttendanceAvgAggregateInputType
+  _sum?: ClassAttendanceSumAggregateInputType
   _min?: ClassAttendanceMinAggregateInputType
   _max?: ClassAttendanceMaxAggregateInputType
 }
@@ -151,9 +201,14 @@ export type ClassAttendanceGroupByOutputType = {
   id: string
   liveClassId: string
   studentId: string
+  studentName: string
+  studentCode: string | null
   joinedAt: Date
   leftAt: Date | null
+  durationSecs: number | null
   _count: ClassAttendanceCountAggregateOutputType | null
+  _avg: ClassAttendanceAvgAggregateOutputType | null
+  _sum: ClassAttendanceSumAggregateOutputType | null
   _min: ClassAttendanceMinAggregateOutputType | null
   _max: ClassAttendanceMaxAggregateOutputType | null
 }
@@ -180,8 +235,11 @@ export type ClassAttendanceWhereInput = {
   id?: Prisma.StringFilter<"ClassAttendance"> | string
   liveClassId?: Prisma.StringFilter<"ClassAttendance"> | string
   studentId?: Prisma.StringFilter<"ClassAttendance"> | string
+  studentName?: Prisma.StringFilter<"ClassAttendance"> | string
+  studentCode?: Prisma.StringNullableFilter<"ClassAttendance"> | string | null
   joinedAt?: Prisma.DateTimeFilter<"ClassAttendance"> | Date | string
   leftAt?: Prisma.DateTimeNullableFilter<"ClassAttendance"> | Date | string | null
+  durationSecs?: Prisma.IntNullableFilter<"ClassAttendance"> | number | null
   liveClass?: Prisma.XOR<Prisma.LiveClassScalarRelationFilter, Prisma.LiveClassWhereInput>
   student?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -190,35 +248,45 @@ export type ClassAttendanceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  studentName?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   leftAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  durationSecs?: Prisma.SortOrderInput | Prisma.SortOrder
   liveClass?: Prisma.LiveClassOrderByWithRelationInput
   student?: Prisma.UserOrderByWithRelationInput
 }
 
 export type ClassAttendanceWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  liveClassId_studentId?: Prisma.ClassAttendanceLiveClassIdStudentIdCompoundUniqueInput
   AND?: Prisma.ClassAttendanceWhereInput | Prisma.ClassAttendanceWhereInput[]
   OR?: Prisma.ClassAttendanceWhereInput[]
   NOT?: Prisma.ClassAttendanceWhereInput | Prisma.ClassAttendanceWhereInput[]
   liveClassId?: Prisma.StringFilter<"ClassAttendance"> | string
   studentId?: Prisma.StringFilter<"ClassAttendance"> | string
+  studentName?: Prisma.StringFilter<"ClassAttendance"> | string
+  studentCode?: Prisma.StringNullableFilter<"ClassAttendance"> | string | null
   joinedAt?: Prisma.DateTimeFilter<"ClassAttendance"> | Date | string
   leftAt?: Prisma.DateTimeNullableFilter<"ClassAttendance"> | Date | string | null
+  durationSecs?: Prisma.IntNullableFilter<"ClassAttendance"> | number | null
   liveClass?: Prisma.XOR<Prisma.LiveClassScalarRelationFilter, Prisma.LiveClassWhereInput>
   student?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "liveClassId_studentId">
+}, "id">
 
 export type ClassAttendanceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  studentName?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   leftAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  durationSecs?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ClassAttendanceCountOrderByAggregateInput
+  _avg?: Prisma.ClassAttendanceAvgOrderByAggregateInput
   _max?: Prisma.ClassAttendanceMaxOrderByAggregateInput
   _min?: Prisma.ClassAttendanceMinOrderByAggregateInput
+  _sum?: Prisma.ClassAttendanceSumOrderByAggregateInput
 }
 
 export type ClassAttendanceScalarWhereWithAggregatesInput = {
@@ -228,14 +296,20 @@ export type ClassAttendanceScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ClassAttendance"> | string
   liveClassId?: Prisma.StringWithAggregatesFilter<"ClassAttendance"> | string
   studentId?: Prisma.StringWithAggregatesFilter<"ClassAttendance"> | string
+  studentName?: Prisma.StringWithAggregatesFilter<"ClassAttendance"> | string
+  studentCode?: Prisma.StringNullableWithAggregatesFilter<"ClassAttendance"> | string | null
   joinedAt?: Prisma.DateTimeWithAggregatesFilter<"ClassAttendance"> | Date | string
   leftAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ClassAttendance"> | Date | string | null
+  durationSecs?: Prisma.IntNullableWithAggregatesFilter<"ClassAttendance"> | number | null
 }
 
 export type ClassAttendanceCreateInput = {
   id?: string
+  studentName: string
+  studentCode?: string | null
   joinedAt?: Date | string
   leftAt?: Date | string | null
+  durationSecs?: number | null
   liveClass: Prisma.LiveClassCreateNestedOneWithoutAttendanceInput
   student: Prisma.UserCreateNestedOneWithoutClassAttendanceInput
 }
@@ -244,14 +318,20 @@ export type ClassAttendanceUncheckedCreateInput = {
   id?: string
   liveClassId: string
   studentId: string
+  studentName: string
+  studentCode?: string | null
   joinedAt?: Date | string
   leftAt?: Date | string | null
+  durationSecs?: number | null
 }
 
 export type ClassAttendanceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   liveClass?: Prisma.LiveClassUpdateOneRequiredWithoutAttendanceNestedInput
   student?: Prisma.UserUpdateOneRequiredWithoutClassAttendanceNestedInput
 }
@@ -260,30 +340,42 @@ export type ClassAttendanceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   liveClassId?: Prisma.StringFieldUpdateOperationsInput | string
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ClassAttendanceCreateManyInput = {
   id?: string
   liveClassId: string
   studentId: string
+  studentName: string
+  studentCode?: string | null
   joinedAt?: Date | string
   leftAt?: Date | string | null
+  durationSecs?: number | null
 }
 
 export type ClassAttendanceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ClassAttendanceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   liveClassId?: Prisma.StringFieldUpdateOperationsInput | string
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ClassAttendanceListRelationFilter = {
@@ -296,33 +388,45 @@ export type ClassAttendanceOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type ClassAttendanceLiveClassIdStudentIdCompoundUniqueInput = {
-  liveClassId: string
-  studentId: string
-}
-
 export type ClassAttendanceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  studentName?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   leftAt?: Prisma.SortOrder
+  durationSecs?: Prisma.SortOrder
+}
+
+export type ClassAttendanceAvgOrderByAggregateInput = {
+  durationSecs?: Prisma.SortOrder
 }
 
 export type ClassAttendanceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  studentName?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   leftAt?: Prisma.SortOrder
+  durationSecs?: Prisma.SortOrder
 }
 
 export type ClassAttendanceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   liveClassId?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
+  studentName?: Prisma.SortOrder
+  studentCode?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   leftAt?: Prisma.SortOrder
+  durationSecs?: Prisma.SortOrder
+}
+
+export type ClassAttendanceSumOrderByAggregateInput = {
+  durationSecs?: Prisma.SortOrder
 }
 
 export type ClassAttendanceCreateNestedManyWithoutStudentInput = {
@@ -411,16 +515,22 @@ export type ClassAttendanceUncheckedUpdateManyWithoutLiveClassNestedInput = {
 
 export type ClassAttendanceCreateWithoutStudentInput = {
   id?: string
+  studentName: string
+  studentCode?: string | null
   joinedAt?: Date | string
   leftAt?: Date | string | null
+  durationSecs?: number | null
   liveClass: Prisma.LiveClassCreateNestedOneWithoutAttendanceInput
 }
 
 export type ClassAttendanceUncheckedCreateWithoutStudentInput = {
   id?: string
   liveClassId: string
+  studentName: string
+  studentCode?: string | null
   joinedAt?: Date | string
   leftAt?: Date | string | null
+  durationSecs?: number | null
 }
 
 export type ClassAttendanceCreateOrConnectWithoutStudentInput = {
@@ -456,22 +566,31 @@ export type ClassAttendanceScalarWhereInput = {
   id?: Prisma.StringFilter<"ClassAttendance"> | string
   liveClassId?: Prisma.StringFilter<"ClassAttendance"> | string
   studentId?: Prisma.StringFilter<"ClassAttendance"> | string
+  studentName?: Prisma.StringFilter<"ClassAttendance"> | string
+  studentCode?: Prisma.StringNullableFilter<"ClassAttendance"> | string | null
   joinedAt?: Prisma.DateTimeFilter<"ClassAttendance"> | Date | string
   leftAt?: Prisma.DateTimeNullableFilter<"ClassAttendance"> | Date | string | null
+  durationSecs?: Prisma.IntNullableFilter<"ClassAttendance"> | number | null
 }
 
 export type ClassAttendanceCreateWithoutLiveClassInput = {
   id?: string
+  studentName: string
+  studentCode?: string | null
   joinedAt?: Date | string
   leftAt?: Date | string | null
+  durationSecs?: number | null
   student: Prisma.UserCreateNestedOneWithoutClassAttendanceInput
 }
 
 export type ClassAttendanceUncheckedCreateWithoutLiveClassInput = {
   id?: string
   studentId: string
+  studentName: string
+  studentCode?: string | null
   joinedAt?: Date | string
   leftAt?: Date | string | null
+  durationSecs?: number | null
 }
 
 export type ClassAttendanceCreateOrConnectWithoutLiveClassInput = {
@@ -503,57 +622,81 @@ export type ClassAttendanceUpdateManyWithWhereWithoutLiveClassInput = {
 export type ClassAttendanceCreateManyStudentInput = {
   id?: string
   liveClassId: string
+  studentName: string
+  studentCode?: string | null
   joinedAt?: Date | string
   leftAt?: Date | string | null
+  durationSecs?: number | null
 }
 
 export type ClassAttendanceUpdateWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   liveClass?: Prisma.LiveClassUpdateOneRequiredWithoutAttendanceNestedInput
 }
 
 export type ClassAttendanceUncheckedUpdateWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   liveClassId?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ClassAttendanceUncheckedUpdateManyWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   liveClassId?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ClassAttendanceCreateManyLiveClassInput = {
   id?: string
   studentId: string
+  studentName: string
+  studentCode?: string | null
   joinedAt?: Date | string
   leftAt?: Date | string | null
+  durationSecs?: number | null
 }
 
 export type ClassAttendanceUpdateWithoutLiveClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   student?: Prisma.UserUpdateOneRequiredWithoutClassAttendanceNestedInput
 }
 
 export type ClassAttendanceUncheckedUpdateWithoutLiveClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ClassAttendanceUncheckedUpdateManyWithoutLiveClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
+  studentName?: Prisma.StringFieldUpdateOperationsInput | string
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leftAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  durationSecs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 
@@ -562,8 +705,11 @@ export type ClassAttendanceSelect<ExtArgs extends runtime.Types.Extensions.Inter
   id?: boolean
   liveClassId?: boolean
   studentId?: boolean
+  studentName?: boolean
+  studentCode?: boolean
   joinedAt?: boolean
   leftAt?: boolean
+  durationSecs?: boolean
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
   student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classAttendance"]>
@@ -572,8 +718,11 @@ export type ClassAttendanceSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   liveClassId?: boolean
   studentId?: boolean
+  studentName?: boolean
+  studentCode?: boolean
   joinedAt?: boolean
   leftAt?: boolean
+  durationSecs?: boolean
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
   student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classAttendance"]>
@@ -582,8 +731,11 @@ export type ClassAttendanceSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   liveClassId?: boolean
   studentId?: boolean
+  studentName?: boolean
+  studentCode?: boolean
   joinedAt?: boolean
   leftAt?: boolean
+  durationSecs?: boolean
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
   student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classAttendance"]>
@@ -592,11 +744,14 @@ export type ClassAttendanceSelectScalar = {
   id?: boolean
   liveClassId?: boolean
   studentId?: boolean
+  studentName?: boolean
+  studentCode?: boolean
   joinedAt?: boolean
   leftAt?: boolean
+  durationSecs?: boolean
 }
 
-export type ClassAttendanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "liveClassId" | "studentId" | "joinedAt" | "leftAt", ExtArgs["result"]["classAttendance"]>
+export type ClassAttendanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "liveClassId" | "studentId" | "studentName" | "studentCode" | "joinedAt" | "leftAt" | "durationSecs", ExtArgs["result"]["classAttendance"]>
 export type ClassAttendanceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   liveClass?: boolean | Prisma.LiveClassDefaultArgs<ExtArgs>
   student?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -620,8 +775,11 @@ export type $ClassAttendancePayload<ExtArgs extends runtime.Types.Extensions.Int
     id: string
     liveClassId: string
     studentId: string
+    studentName: string
+    studentCode: string | null
     joinedAt: Date
     leftAt: Date | null
+    durationSecs: number | null
   }, ExtArgs["result"]["classAttendance"]>
   composites: {}
 }
@@ -1050,8 +1208,11 @@ export interface ClassAttendanceFieldRefs {
   readonly id: Prisma.FieldRef<"ClassAttendance", 'String'>
   readonly liveClassId: Prisma.FieldRef<"ClassAttendance", 'String'>
   readonly studentId: Prisma.FieldRef<"ClassAttendance", 'String'>
+  readonly studentName: Prisma.FieldRef<"ClassAttendance", 'String'>
+  readonly studentCode: Prisma.FieldRef<"ClassAttendance", 'String'>
   readonly joinedAt: Prisma.FieldRef<"ClassAttendance", 'DateTime'>
   readonly leftAt: Prisma.FieldRef<"ClassAttendance", 'DateTime'>
+  readonly durationSecs: Prisma.FieldRef<"ClassAttendance", 'Int'>
 }
     
 

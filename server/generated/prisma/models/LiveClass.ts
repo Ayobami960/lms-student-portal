@@ -27,7 +27,9 @@ export type AggregateLiveClass = {
 export type LiveClassMinAggregateOutputType = {
   id: string | null
   courseId: string | null
+  instructorId: string | null
   title: string | null
+  description: string | null
   scheduledAt: Date | null
   startedAt: Date | null
   endedAt: Date | null
@@ -38,7 +40,9 @@ export type LiveClassMinAggregateOutputType = {
 export type LiveClassMaxAggregateOutputType = {
   id: string | null
   courseId: string | null
+  instructorId: string | null
   title: string | null
+  description: string | null
   scheduledAt: Date | null
   startedAt: Date | null
   endedAt: Date | null
@@ -49,7 +53,9 @@ export type LiveClassMaxAggregateOutputType = {
 export type LiveClassCountAggregateOutputType = {
   id: number
   courseId: number
+  instructorId: number
   title: number
+  description: number
   scheduledAt: number
   startedAt: number
   endedAt: number
@@ -62,7 +68,9 @@ export type LiveClassCountAggregateOutputType = {
 export type LiveClassMinAggregateInputType = {
   id?: true
   courseId?: true
+  instructorId?: true
   title?: true
+  description?: true
   scheduledAt?: true
   startedAt?: true
   endedAt?: true
@@ -73,7 +81,9 @@ export type LiveClassMinAggregateInputType = {
 export type LiveClassMaxAggregateInputType = {
   id?: true
   courseId?: true
+  instructorId?: true
   title?: true
+  description?: true
   scheduledAt?: true
   startedAt?: true
   endedAt?: true
@@ -84,7 +94,9 @@ export type LiveClassMaxAggregateInputType = {
 export type LiveClassCountAggregateInputType = {
   id?: true
   courseId?: true
+  instructorId?: true
   title?: true
+  description?: true
   scheduledAt?: true
   startedAt?: true
   endedAt?: true
@@ -168,7 +180,9 @@ export type LiveClassGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 export type LiveClassGroupByOutputType = {
   id: string
   courseId: string
+  instructorId: string
   title: string
+  description: string | null
   scheduledAt: Date
   startedAt: Date | null
   endedAt: Date | null
@@ -200,13 +214,16 @@ export type LiveClassWhereInput = {
   NOT?: Prisma.LiveClassWhereInput | Prisma.LiveClassWhereInput[]
   id?: Prisma.StringFilter<"LiveClass"> | string
   courseId?: Prisma.StringFilter<"LiveClass"> | string
+  instructorId?: Prisma.StringFilter<"LiveClass"> | string
   title?: Prisma.StringFilter<"LiveClass"> | string
+  description?: Prisma.StringNullableFilter<"LiveClass"> | string | null
   scheduledAt?: Prisma.DateTimeFilter<"LiveClass"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"LiveClass"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"LiveClass"> | Date | string | null
   status?: Prisma.EnumLiveClassStatusFilter<"LiveClass"> | $Enums.LiveClassStatus
   createdAt?: Prisma.DateTimeFilter<"LiveClass"> | Date | string
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>
+  instructor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   attendance?: Prisma.ClassAttendanceListRelationFilter
   chat?: Prisma.ClassChatMessageListRelationFilter
 }
@@ -214,13 +231,16 @@ export type LiveClassWhereInput = {
 export type LiveClassOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
+  instructorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   course?: Prisma.CourseOrderByWithRelationInput
+  instructor?: Prisma.UserOrderByWithRelationInput
   attendance?: Prisma.ClassAttendanceOrderByRelationAggregateInput
   chat?: Prisma.ClassChatMessageOrderByRelationAggregateInput
 }
@@ -231,13 +251,16 @@ export type LiveClassWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.LiveClassWhereInput[]
   NOT?: Prisma.LiveClassWhereInput | Prisma.LiveClassWhereInput[]
   courseId?: Prisma.StringFilter<"LiveClass"> | string
+  instructorId?: Prisma.StringFilter<"LiveClass"> | string
   title?: Prisma.StringFilter<"LiveClass"> | string
+  description?: Prisma.StringNullableFilter<"LiveClass"> | string | null
   scheduledAt?: Prisma.DateTimeFilter<"LiveClass"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"LiveClass"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"LiveClass"> | Date | string | null
   status?: Prisma.EnumLiveClassStatusFilter<"LiveClass"> | $Enums.LiveClassStatus
   createdAt?: Prisma.DateTimeFilter<"LiveClass"> | Date | string
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>
+  instructor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   attendance?: Prisma.ClassAttendanceListRelationFilter
   chat?: Prisma.ClassChatMessageListRelationFilter
 }, "id">
@@ -245,7 +268,9 @@ export type LiveClassWhereUniqueInput = Prisma.AtLeast<{
 export type LiveClassOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
+  instructorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -262,7 +287,9 @@ export type LiveClassScalarWhereWithAggregatesInput = {
   NOT?: Prisma.LiveClassScalarWhereWithAggregatesInput | Prisma.LiveClassScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"LiveClass"> | string
   courseId?: Prisma.StringWithAggregatesFilter<"LiveClass"> | string
+  instructorId?: Prisma.StringWithAggregatesFilter<"LiveClass"> | string
   title?: Prisma.StringWithAggregatesFilter<"LiveClass"> | string
+  description?: Prisma.StringNullableWithAggregatesFilter<"LiveClass"> | string | null
   scheduledAt?: Prisma.DateTimeWithAggregatesFilter<"LiveClass"> | Date | string
   startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveClass"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LiveClass"> | Date | string | null
@@ -273,12 +300,14 @@ export type LiveClassScalarWhereWithAggregatesInput = {
 export type LiveClassCreateInput = {
   id?: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
   status?: $Enums.LiveClassStatus
   createdAt?: Date | string
   course: Prisma.CourseCreateNestedOneWithoutLiveClassesInput
+  instructor: Prisma.UserCreateNestedOneWithoutInstructorLiveClassesInput
   attendance?: Prisma.ClassAttendanceCreateNestedManyWithoutLiveClassInput
   chat?: Prisma.ClassChatMessageCreateNestedManyWithoutLiveClassInput
 }
@@ -286,7 +315,9 @@ export type LiveClassCreateInput = {
 export type LiveClassUncheckedCreateInput = {
   id?: string
   courseId: string
+  instructorId: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
@@ -299,12 +330,14 @@ export type LiveClassUncheckedCreateInput = {
 export type LiveClassUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumLiveClassStatusFieldUpdateOperationsInput | $Enums.LiveClassStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   course?: Prisma.CourseUpdateOneRequiredWithoutLiveClassesNestedInput
+  instructor?: Prisma.UserUpdateOneRequiredWithoutInstructorLiveClassesNestedInput
   attendance?: Prisma.ClassAttendanceUpdateManyWithoutLiveClassNestedInput
   chat?: Prisma.ClassChatMessageUpdateManyWithoutLiveClassNestedInput
 }
@@ -312,7 +345,9 @@ export type LiveClassUpdateInput = {
 export type LiveClassUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -325,7 +360,9 @@ export type LiveClassUncheckedUpdateInput = {
 export type LiveClassCreateManyInput = {
   id?: string
   courseId: string
+  instructorId: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
@@ -336,6 +373,7 @@ export type LiveClassCreateManyInput = {
 export type LiveClassUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -346,7 +384,9 @@ export type LiveClassUpdateManyMutationInput = {
 export type LiveClassUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -367,7 +407,9 @@ export type LiveClassOrderByRelationAggregateInput = {
 export type LiveClassCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
+  instructorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
@@ -378,7 +420,9 @@ export type LiveClassCountOrderByAggregateInput = {
 export type LiveClassMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
+  instructorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
@@ -389,7 +433,9 @@ export type LiveClassMaxOrderByAggregateInput = {
 export type LiveClassMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
+  instructorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
@@ -400,6 +446,48 @@ export type LiveClassMinOrderByAggregateInput = {
 export type LiveClassScalarRelationFilter = {
   is?: Prisma.LiveClassWhereInput
   isNot?: Prisma.LiveClassWhereInput
+}
+
+export type LiveClassCreateNestedManyWithoutInstructorInput = {
+  create?: Prisma.XOR<Prisma.LiveClassCreateWithoutInstructorInput, Prisma.LiveClassUncheckedCreateWithoutInstructorInput> | Prisma.LiveClassCreateWithoutInstructorInput[] | Prisma.LiveClassUncheckedCreateWithoutInstructorInput[]
+  connectOrCreate?: Prisma.LiveClassCreateOrConnectWithoutInstructorInput | Prisma.LiveClassCreateOrConnectWithoutInstructorInput[]
+  createMany?: Prisma.LiveClassCreateManyInstructorInputEnvelope
+  connect?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+}
+
+export type LiveClassUncheckedCreateNestedManyWithoutInstructorInput = {
+  create?: Prisma.XOR<Prisma.LiveClassCreateWithoutInstructorInput, Prisma.LiveClassUncheckedCreateWithoutInstructorInput> | Prisma.LiveClassCreateWithoutInstructorInput[] | Prisma.LiveClassUncheckedCreateWithoutInstructorInput[]
+  connectOrCreate?: Prisma.LiveClassCreateOrConnectWithoutInstructorInput | Prisma.LiveClassCreateOrConnectWithoutInstructorInput[]
+  createMany?: Prisma.LiveClassCreateManyInstructorInputEnvelope
+  connect?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+}
+
+export type LiveClassUpdateManyWithoutInstructorNestedInput = {
+  create?: Prisma.XOR<Prisma.LiveClassCreateWithoutInstructorInput, Prisma.LiveClassUncheckedCreateWithoutInstructorInput> | Prisma.LiveClassCreateWithoutInstructorInput[] | Prisma.LiveClassUncheckedCreateWithoutInstructorInput[]
+  connectOrCreate?: Prisma.LiveClassCreateOrConnectWithoutInstructorInput | Prisma.LiveClassCreateOrConnectWithoutInstructorInput[]
+  upsert?: Prisma.LiveClassUpsertWithWhereUniqueWithoutInstructorInput | Prisma.LiveClassUpsertWithWhereUniqueWithoutInstructorInput[]
+  createMany?: Prisma.LiveClassCreateManyInstructorInputEnvelope
+  set?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+  disconnect?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+  delete?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+  connect?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+  update?: Prisma.LiveClassUpdateWithWhereUniqueWithoutInstructorInput | Prisma.LiveClassUpdateWithWhereUniqueWithoutInstructorInput[]
+  updateMany?: Prisma.LiveClassUpdateManyWithWhereWithoutInstructorInput | Prisma.LiveClassUpdateManyWithWhereWithoutInstructorInput[]
+  deleteMany?: Prisma.LiveClassScalarWhereInput | Prisma.LiveClassScalarWhereInput[]
+}
+
+export type LiveClassUncheckedUpdateManyWithoutInstructorNestedInput = {
+  create?: Prisma.XOR<Prisma.LiveClassCreateWithoutInstructorInput, Prisma.LiveClassUncheckedCreateWithoutInstructorInput> | Prisma.LiveClassCreateWithoutInstructorInput[] | Prisma.LiveClassUncheckedCreateWithoutInstructorInput[]
+  connectOrCreate?: Prisma.LiveClassCreateOrConnectWithoutInstructorInput | Prisma.LiveClassCreateOrConnectWithoutInstructorInput[]
+  upsert?: Prisma.LiveClassUpsertWithWhereUniqueWithoutInstructorInput | Prisma.LiveClassUpsertWithWhereUniqueWithoutInstructorInput[]
+  createMany?: Prisma.LiveClassCreateManyInstructorInputEnvelope
+  set?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+  disconnect?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+  delete?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+  connect?: Prisma.LiveClassWhereUniqueInput | Prisma.LiveClassWhereUniqueInput[]
+  update?: Prisma.LiveClassUpdateWithWhereUniqueWithoutInstructorInput | Prisma.LiveClassUpdateWithWhereUniqueWithoutInstructorInput[]
+  updateMany?: Prisma.LiveClassUpdateManyWithWhereWithoutInstructorInput | Prisma.LiveClassUpdateManyWithWhereWithoutInstructorInput[]
+  deleteMany?: Prisma.LiveClassScalarWhereInput | Prisma.LiveClassScalarWhereInput[]
 }
 
 export type LiveClassCreateNestedManyWithoutCourseInput = {
@@ -476,21 +564,95 @@ export type LiveClassUpdateOneRequiredWithoutChatNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LiveClassUpdateToOneWithWhereWithoutChatInput, Prisma.LiveClassUpdateWithoutChatInput>, Prisma.LiveClassUncheckedUpdateWithoutChatInput>
 }
 
-export type LiveClassCreateWithoutCourseInput = {
+export type LiveClassCreateWithoutInstructorInput = {
   id?: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
   status?: $Enums.LiveClassStatus
   createdAt?: Date | string
+  course: Prisma.CourseCreateNestedOneWithoutLiveClassesInput
+  attendance?: Prisma.ClassAttendanceCreateNestedManyWithoutLiveClassInput
+  chat?: Prisma.ClassChatMessageCreateNestedManyWithoutLiveClassInput
+}
+
+export type LiveClassUncheckedCreateWithoutInstructorInput = {
+  id?: string
+  courseId: string
+  title: string
+  description?: string | null
+  scheduledAt: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  status?: $Enums.LiveClassStatus
+  createdAt?: Date | string
+  attendance?: Prisma.ClassAttendanceUncheckedCreateNestedManyWithoutLiveClassInput
+  chat?: Prisma.ClassChatMessageUncheckedCreateNestedManyWithoutLiveClassInput
+}
+
+export type LiveClassCreateOrConnectWithoutInstructorInput = {
+  where: Prisma.LiveClassWhereUniqueInput
+  create: Prisma.XOR<Prisma.LiveClassCreateWithoutInstructorInput, Prisma.LiveClassUncheckedCreateWithoutInstructorInput>
+}
+
+export type LiveClassCreateManyInstructorInputEnvelope = {
+  data: Prisma.LiveClassCreateManyInstructorInput | Prisma.LiveClassCreateManyInstructorInput[]
+  skipDuplicates?: boolean
+}
+
+export type LiveClassUpsertWithWhereUniqueWithoutInstructorInput = {
+  where: Prisma.LiveClassWhereUniqueInput
+  update: Prisma.XOR<Prisma.LiveClassUpdateWithoutInstructorInput, Prisma.LiveClassUncheckedUpdateWithoutInstructorInput>
+  create: Prisma.XOR<Prisma.LiveClassCreateWithoutInstructorInput, Prisma.LiveClassUncheckedCreateWithoutInstructorInput>
+}
+
+export type LiveClassUpdateWithWhereUniqueWithoutInstructorInput = {
+  where: Prisma.LiveClassWhereUniqueInput
+  data: Prisma.XOR<Prisma.LiveClassUpdateWithoutInstructorInput, Prisma.LiveClassUncheckedUpdateWithoutInstructorInput>
+}
+
+export type LiveClassUpdateManyWithWhereWithoutInstructorInput = {
+  where: Prisma.LiveClassScalarWhereInput
+  data: Prisma.XOR<Prisma.LiveClassUpdateManyMutationInput, Prisma.LiveClassUncheckedUpdateManyWithoutInstructorInput>
+}
+
+export type LiveClassScalarWhereInput = {
+  AND?: Prisma.LiveClassScalarWhereInput | Prisma.LiveClassScalarWhereInput[]
+  OR?: Prisma.LiveClassScalarWhereInput[]
+  NOT?: Prisma.LiveClassScalarWhereInput | Prisma.LiveClassScalarWhereInput[]
+  id?: Prisma.StringFilter<"LiveClass"> | string
+  courseId?: Prisma.StringFilter<"LiveClass"> | string
+  instructorId?: Prisma.StringFilter<"LiveClass"> | string
+  title?: Prisma.StringFilter<"LiveClass"> | string
+  description?: Prisma.StringNullableFilter<"LiveClass"> | string | null
+  scheduledAt?: Prisma.DateTimeFilter<"LiveClass"> | Date | string
+  startedAt?: Prisma.DateTimeNullableFilter<"LiveClass"> | Date | string | null
+  endedAt?: Prisma.DateTimeNullableFilter<"LiveClass"> | Date | string | null
+  status?: Prisma.EnumLiveClassStatusFilter<"LiveClass"> | $Enums.LiveClassStatus
+  createdAt?: Prisma.DateTimeFilter<"LiveClass"> | Date | string
+}
+
+export type LiveClassCreateWithoutCourseInput = {
+  id?: string
+  title: string
+  description?: string | null
+  scheduledAt: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  status?: $Enums.LiveClassStatus
+  createdAt?: Date | string
+  instructor: Prisma.UserCreateNestedOneWithoutInstructorLiveClassesInput
   attendance?: Prisma.ClassAttendanceCreateNestedManyWithoutLiveClassInput
   chat?: Prisma.ClassChatMessageCreateNestedManyWithoutLiveClassInput
 }
 
 export type LiveClassUncheckedCreateWithoutCourseInput = {
   id?: string
+  instructorId: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
@@ -526,36 +688,26 @@ export type LiveClassUpdateManyWithWhereWithoutCourseInput = {
   data: Prisma.XOR<Prisma.LiveClassUpdateManyMutationInput, Prisma.LiveClassUncheckedUpdateManyWithoutCourseInput>
 }
 
-export type LiveClassScalarWhereInput = {
-  AND?: Prisma.LiveClassScalarWhereInput | Prisma.LiveClassScalarWhereInput[]
-  OR?: Prisma.LiveClassScalarWhereInput[]
-  NOT?: Prisma.LiveClassScalarWhereInput | Prisma.LiveClassScalarWhereInput[]
-  id?: Prisma.StringFilter<"LiveClass"> | string
-  courseId?: Prisma.StringFilter<"LiveClass"> | string
-  title?: Prisma.StringFilter<"LiveClass"> | string
-  scheduledAt?: Prisma.DateTimeFilter<"LiveClass"> | Date | string
-  startedAt?: Prisma.DateTimeNullableFilter<"LiveClass"> | Date | string | null
-  endedAt?: Prisma.DateTimeNullableFilter<"LiveClass"> | Date | string | null
-  status?: Prisma.EnumLiveClassStatusFilter<"LiveClass"> | $Enums.LiveClassStatus
-  createdAt?: Prisma.DateTimeFilter<"LiveClass"> | Date | string
-}
-
 export type LiveClassCreateWithoutAttendanceInput = {
   id?: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
   status?: $Enums.LiveClassStatus
   createdAt?: Date | string
   course: Prisma.CourseCreateNestedOneWithoutLiveClassesInput
+  instructor: Prisma.UserCreateNestedOneWithoutInstructorLiveClassesInput
   chat?: Prisma.ClassChatMessageCreateNestedManyWithoutLiveClassInput
 }
 
 export type LiveClassUncheckedCreateWithoutAttendanceInput = {
   id?: string
   courseId: string
+  instructorId: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
@@ -583,19 +735,23 @@ export type LiveClassUpdateToOneWithWhereWithoutAttendanceInput = {
 export type LiveClassUpdateWithoutAttendanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumLiveClassStatusFieldUpdateOperationsInput | $Enums.LiveClassStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   course?: Prisma.CourseUpdateOneRequiredWithoutLiveClassesNestedInput
+  instructor?: Prisma.UserUpdateOneRequiredWithoutInstructorLiveClassesNestedInput
   chat?: Prisma.ClassChatMessageUpdateManyWithoutLiveClassNestedInput
 }
 
 export type LiveClassUncheckedUpdateWithoutAttendanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -607,19 +763,23 @@ export type LiveClassUncheckedUpdateWithoutAttendanceInput = {
 export type LiveClassCreateWithoutChatInput = {
   id?: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
   status?: $Enums.LiveClassStatus
   createdAt?: Date | string
   course: Prisma.CourseCreateNestedOneWithoutLiveClassesInput
+  instructor: Prisma.UserCreateNestedOneWithoutInstructorLiveClassesInput
   attendance?: Prisma.ClassAttendanceCreateNestedManyWithoutLiveClassInput
 }
 
 export type LiveClassUncheckedCreateWithoutChatInput = {
   id?: string
   courseId: string
+  instructorId: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
@@ -647,19 +807,23 @@ export type LiveClassUpdateToOneWithWhereWithoutChatInput = {
 export type LiveClassUpdateWithoutChatInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumLiveClassStatusFieldUpdateOperationsInput | $Enums.LiveClassStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   course?: Prisma.CourseUpdateOneRequiredWithoutLiveClassesNestedInput
+  instructor?: Prisma.UserUpdateOneRequiredWithoutInstructorLiveClassesNestedInput
   attendance?: Prisma.ClassAttendanceUpdateManyWithoutLiveClassNestedInput
 }
 
 export type LiveClassUncheckedUpdateWithoutChatInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -668,9 +832,63 @@ export type LiveClassUncheckedUpdateWithoutChatInput = {
   attendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutLiveClassNestedInput
 }
 
+export type LiveClassCreateManyInstructorInput = {
+  id?: string
+  courseId: string
+  title: string
+  description?: string | null
+  scheduledAt: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  status?: $Enums.LiveClassStatus
+  createdAt?: Date | string
+}
+
+export type LiveClassUpdateWithoutInstructorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumLiveClassStatusFieldUpdateOperationsInput | $Enums.LiveClassStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  course?: Prisma.CourseUpdateOneRequiredWithoutLiveClassesNestedInput
+  attendance?: Prisma.ClassAttendanceUpdateManyWithoutLiveClassNestedInput
+  chat?: Prisma.ClassChatMessageUpdateManyWithoutLiveClassNestedInput
+}
+
+export type LiveClassUncheckedUpdateWithoutInstructorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumLiveClassStatusFieldUpdateOperationsInput | $Enums.LiveClassStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendance?: Prisma.ClassAttendanceUncheckedUpdateManyWithoutLiveClassNestedInput
+  chat?: Prisma.ClassChatMessageUncheckedUpdateManyWithoutLiveClassNestedInput
+}
+
+export type LiveClassUncheckedUpdateManyWithoutInstructorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  courseId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumLiveClassStatusFieldUpdateOperationsInput | $Enums.LiveClassStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type LiveClassCreateManyCourseInput = {
   id?: string
+  instructorId: string
   title: string
+  description?: string | null
   scheduledAt: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
@@ -681,18 +899,22 @@ export type LiveClassCreateManyCourseInput = {
 export type LiveClassUpdateWithoutCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumLiveClassStatusFieldUpdateOperationsInput | $Enums.LiveClassStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  instructor?: Prisma.UserUpdateOneRequiredWithoutInstructorLiveClassesNestedInput
   attendance?: Prisma.ClassAttendanceUpdateManyWithoutLiveClassNestedInput
   chat?: Prisma.ClassChatMessageUpdateManyWithoutLiveClassNestedInput
 }
 
 export type LiveClassUncheckedUpdateWithoutCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -704,7 +926,9 @@ export type LiveClassUncheckedUpdateWithoutCourseInput = {
 
 export type LiveClassUncheckedUpdateManyWithoutCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -755,13 +979,16 @@ export type LiveClassCountOutputTypeCountChatArgs<ExtArgs extends runtime.Types.
 export type LiveClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   courseId?: boolean
+  instructorId?: boolean
   title?: boolean
+  description?: boolean
   scheduledAt?: boolean
   startedAt?: boolean
   endedAt?: boolean
   status?: boolean
   createdAt?: boolean
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  instructor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   attendance?: boolean | Prisma.LiveClass$attendanceArgs<ExtArgs>
   chat?: boolean | Prisma.LiveClass$chatArgs<ExtArgs>
   _count?: boolean | Prisma.LiveClassCountOutputTypeDefaultArgs<ExtArgs>
@@ -770,31 +997,39 @@ export type LiveClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type LiveClassSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   courseId?: boolean
+  instructorId?: boolean
   title?: boolean
+  description?: boolean
   scheduledAt?: boolean
   startedAt?: boolean
   endedAt?: boolean
   status?: boolean
   createdAt?: boolean
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  instructor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["liveClass"]>
 
 export type LiveClassSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   courseId?: boolean
+  instructorId?: boolean
   title?: boolean
+  description?: boolean
   scheduledAt?: boolean
   startedAt?: boolean
   endedAt?: boolean
   status?: boolean
   createdAt?: boolean
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  instructor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["liveClass"]>
 
 export type LiveClassSelectScalar = {
   id?: boolean
   courseId?: boolean
+  instructorId?: boolean
   title?: boolean
+  description?: boolean
   scheduledAt?: boolean
   startedAt?: boolean
   endedAt?: boolean
@@ -802,31 +1037,37 @@ export type LiveClassSelectScalar = {
   createdAt?: boolean
 }
 
-export type LiveClassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "courseId" | "title" | "scheduledAt" | "startedAt" | "endedAt" | "status" | "createdAt", ExtArgs["result"]["liveClass"]>
+export type LiveClassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "courseId" | "instructorId" | "title" | "description" | "scheduledAt" | "startedAt" | "endedAt" | "status" | "createdAt", ExtArgs["result"]["liveClass"]>
 export type LiveClassInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  instructor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   attendance?: boolean | Prisma.LiveClass$attendanceArgs<ExtArgs>
   chat?: boolean | Prisma.LiveClass$chatArgs<ExtArgs>
   _count?: boolean | Prisma.LiveClassCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LiveClassIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  instructor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type LiveClassIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
+  instructor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $LiveClassPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "LiveClass"
   objects: {
     course: Prisma.$CoursePayload<ExtArgs>
+    instructor: Prisma.$UserPayload<ExtArgs>
     attendance: Prisma.$ClassAttendancePayload<ExtArgs>[]
     chat: Prisma.$ClassChatMessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     courseId: string
+    instructorId: string
     title: string
+    description: string | null
     scheduledAt: Date
     startedAt: Date | null
     endedAt: Date | null
@@ -1227,6 +1468,7 @@ readonly fields: LiveClassFieldRefs;
 export interface Prisma__LiveClassClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   course<T extends Prisma.CourseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CourseDefaultArgs<ExtArgs>>): Prisma.Prisma__CourseClient<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  instructor<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   attendance<T extends Prisma.LiveClass$attendanceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LiveClass$attendanceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassAttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   chat<T extends Prisma.LiveClass$chatArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LiveClass$chatArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1260,7 +1502,9 @@ export interface Prisma__LiveClassClient<T, Null = never, ExtArgs extends runtim
 export interface LiveClassFieldRefs {
   readonly id: Prisma.FieldRef<"LiveClass", 'String'>
   readonly courseId: Prisma.FieldRef<"LiveClass", 'String'>
+  readonly instructorId: Prisma.FieldRef<"LiveClass", 'String'>
   readonly title: Prisma.FieldRef<"LiveClass", 'String'>
+  readonly description: Prisma.FieldRef<"LiveClass", 'String'>
   readonly scheduledAt: Prisma.FieldRef<"LiveClass", 'DateTime'>
   readonly startedAt: Prisma.FieldRef<"LiveClass", 'DateTime'>
   readonly endedAt: Prisma.FieldRef<"LiveClass", 'DateTime'>

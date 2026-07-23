@@ -70,6 +70,7 @@ export const ModelName = {
   Setting: 'Setting',
   AuditLog: 'AuditLog',
   Conversation: 'Conversation',
+  ConversationParticipant: 'ConversationParticipant',
   ChatMessage: 'ChatMessage',
   LiveClass: 'LiveClass',
   ClassAttendance: 'ClassAttendance',
@@ -102,6 +103,7 @@ export const UserScalarFieldEnum = {
   isVerified: 'isVerified',
   isApproved: 'isApproved',
   isActive: 'isActive',
+  studentId: 'studentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -325,13 +327,14 @@ export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeo
 
 export const AuditLogScalarFieldEnum = {
   id: 'id',
+  action: 'action',
   actorId: 'actorId',
   actorName: 'actorName',
   actorRole: 'actorRole',
-  action: 'action',
-  message: 'message',
-  entityType: 'entityType',
-  entityId: 'entityId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  description: 'description',
+  metadata: 'metadata',
   createdAt: 'createdAt'
 } as const
 
@@ -340,13 +343,25 @@ export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typ
 
 export const ConversationScalarFieldEnum = {
   id: 'id',
-  studentId: 'studentId',
+  type: 'type',
+  subject: 'subject',
+  courseId: 'courseId',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+export const ConversationParticipantScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ConversationParticipantScalarFieldEnum = (typeof ConversationParticipantScalarFieldEnum)[keyof typeof ConversationParticipantScalarFieldEnum]
 
 
 export const ChatMessageScalarFieldEnum = {
@@ -363,7 +378,9 @@ export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[key
 export const LiveClassScalarFieldEnum = {
   id: 'id',
   courseId: 'courseId',
+  instructorId: 'instructorId',
   title: 'title',
+  description: 'description',
   scheduledAt: 'scheduledAt',
   startedAt: 'startedAt',
   endedAt: 'endedAt',
@@ -378,8 +395,11 @@ export const ClassAttendanceScalarFieldEnum = {
   id: 'id',
   liveClassId: 'liveClassId',
   studentId: 'studentId',
+  studentName: 'studentName',
+  studentCode: 'studentCode',
   joinedAt: 'joinedAt',
-  leftAt: 'leftAt'
+  leftAt: 'leftAt',
+  durationSecs: 'durationSecs'
 } as const
 
 export type ClassAttendanceScalarFieldEnum = (typeof ClassAttendanceScalarFieldEnum)[keyof typeof ClassAttendanceScalarFieldEnum]
@@ -388,7 +408,8 @@ export type ClassAttendanceScalarFieldEnum = (typeof ClassAttendanceScalarFieldE
 export const ClassChatMessageScalarFieldEnum = {
   id: 'id',
   liveClassId: 'liveClassId',
-  userId: 'userId',
+  senderId: 'senderId',
+  senderName: 'senderName',
   content: 'content',
   createdAt: 'createdAt'
 } as const
@@ -402,6 +423,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -418,4 +447,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

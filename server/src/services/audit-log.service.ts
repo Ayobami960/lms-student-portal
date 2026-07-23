@@ -14,13 +14,13 @@ export const auditLogService = {
       await prisma.auditLog.create({
         data: {
           action,
-          actorId: actor?.id,
+          actorId: actor?.id ?? null,
           actorName: actor?.name ?? "System",
-          actorRole: (actor?.role as any) ?? null,
-          targetType,
-          targetId,
+          actorRole: actor?.role ?? null,
+          targetType: targetType ?? null,
+          targetId: targetId ?? null,
           description,
-          metadata: metadata as any,
+          metadata: metadata ? (metadata as any) : undefined,
         },
       });
     } catch {

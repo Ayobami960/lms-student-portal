@@ -53,6 +53,14 @@ export const LiveClassStatus = {
 export type LiveClassStatus = (typeof LiveClassStatus)[keyof typeof LiveClassStatus]
 
 
+export const ConversationType = {
+  SUPPORT: 'SUPPORT',
+  INSTRUCTOR_DM: 'INSTRUCTOR_DM'
+} as const
+
+export type ConversationType = (typeof ConversationType)[keyof typeof ConversationType]
+
+
 export const NotificationType = {
   ENROLLMENT: 'ENROLLMENT',
   COURSE_PUBLISHED: 'COURSE_PUBLISHED',

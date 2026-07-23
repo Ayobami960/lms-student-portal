@@ -403,6 +403,7 @@ export const ModelName = {
   Setting: 'Setting',
   AuditLog: 'AuditLog',
   Conversation: 'Conversation',
+  ConversationParticipant: 'ConversationParticipant',
   ChatMessage: 'ChatMessage',
   LiveClass: 'LiveClass',
   ClassAttendance: 'ClassAttendance',
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshToken" | "passwordReset" | "course" | "enrollment" | "module" | "lesson" | "lessonProgress" | "assignment" | "submission" | "certificate" | "aIConversation" | "aIMessage" | "notification" | "adminInvitation" | "announcement" | "setting" | "auditLog" | "conversation" | "chatMessage" | "liveClass" | "classAttendance" | "classChatMessage"
+    modelProps: "user" | "refreshToken" | "passwordReset" | "course" | "enrollment" | "module" | "lesson" | "lessonProgress" | "assignment" | "submission" | "certificate" | "aIConversation" | "aIMessage" | "notification" | "adminInvitation" | "announcement" | "setting" | "auditLog" | "conversation" | "conversationParticipant" | "chatMessage" | "liveClass" | "classAttendance" | "classChatMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1832,6 +1833,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ConversationParticipant: {
+      payload: Prisma.$ConversationParticipantPayload<ExtArgs>
+      fields: Prisma.ConversationParticipantFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ConversationParticipantFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ConversationParticipantFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload>
+        }
+        findFirst: {
+          args: Prisma.ConversationParticipantFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ConversationParticipantFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload>
+        }
+        findMany: {
+          args: Prisma.ConversationParticipantFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload>[]
+        }
+        create: {
+          args: Prisma.ConversationParticipantCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload>
+        }
+        createMany: {
+          args: Prisma.ConversationParticipantCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ConversationParticipantCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload>[]
+        }
+        delete: {
+          args: Prisma.ConversationParticipantDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload>
+        }
+        update: {
+          args: Prisma.ConversationParticipantUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload>
+        }
+        deleteMany: {
+          args: Prisma.ConversationParticipantDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ConversationParticipantUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ConversationParticipantUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload>[]
+        }
+        upsert: {
+          args: Prisma.ConversationParticipantUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationParticipantPayload>
+        }
+        aggregate: {
+          args: Prisma.ConversationParticipantAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateConversationParticipant>
+        }
+        groupBy: {
+          args: Prisma.ConversationParticipantGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConversationParticipantGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ConversationParticipantCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConversationParticipantCountAggregateOutputType> | number
+        }
+      }
+    }
     ChatMessage: {
       payload: Prisma.$ChatMessagePayload<ExtArgs>
       fields: Prisma.ChatMessageFieldRefs
@@ -2177,6 +2252,7 @@ export const UserScalarFieldEnum = {
   isVerified: 'isVerified',
   isApproved: 'isApproved',
   isActive: 'isActive',
+  studentId: 'studentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2400,13 +2476,14 @@ export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeo
 
 export const AuditLogScalarFieldEnum = {
   id: 'id',
+  action: 'action',
   actorId: 'actorId',
   actorName: 'actorName',
   actorRole: 'actorRole',
-  action: 'action',
-  message: 'message',
-  entityType: 'entityType',
-  entityId: 'entityId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  description: 'description',
+  metadata: 'metadata',
   createdAt: 'createdAt'
 } as const
 
@@ -2415,13 +2492,25 @@ export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typ
 
 export const ConversationScalarFieldEnum = {
   id: 'id',
-  studentId: 'studentId',
+  type: 'type',
+  subject: 'subject',
+  courseId: 'courseId',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+export const ConversationParticipantScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ConversationParticipantScalarFieldEnum = (typeof ConversationParticipantScalarFieldEnum)[keyof typeof ConversationParticipantScalarFieldEnum]
 
 
 export const ChatMessageScalarFieldEnum = {
@@ -2438,7 +2527,9 @@ export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[key
 export const LiveClassScalarFieldEnum = {
   id: 'id',
   courseId: 'courseId',
+  instructorId: 'instructorId',
   title: 'title',
+  description: 'description',
   scheduledAt: 'scheduledAt',
   startedAt: 'startedAt',
   endedAt: 'endedAt',
@@ -2453,8 +2544,11 @@ export const ClassAttendanceScalarFieldEnum = {
   id: 'id',
   liveClassId: 'liveClassId',
   studentId: 'studentId',
+  studentName: 'studentName',
+  studentCode: 'studentCode',
   joinedAt: 'joinedAt',
-  leftAt: 'leftAt'
+  leftAt: 'leftAt',
+  durationSecs: 'durationSecs'
 } as const
 
 export type ClassAttendanceScalarFieldEnum = (typeof ClassAttendanceScalarFieldEnum)[keyof typeof ClassAttendanceScalarFieldEnum]
@@ -2463,7 +2557,8 @@ export type ClassAttendanceScalarFieldEnum = (typeof ClassAttendanceScalarFieldE
 export const ClassChatMessageScalarFieldEnum = {
   id: 'id',
   liveClassId: 'liveClassId',
-  userId: 'userId',
+  senderId: 'senderId',
+  senderName: 'senderName',
   content: 'content',
   createdAt: 'createdAt'
 } as const
@@ -2477,6 +2572,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -2493,6 +2596,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -2649,6 +2761,34 @@ export type ListEnumAudienceFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'ConversationType'
+ */
+export type EnumConversationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConversationType'>
+    
+
+
+/**
+ * Reference to a field of type 'ConversationType[]'
+ */
+export type ListEnumConversationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConversationType[]'>
+    
+
+
+/**
  * Reference to a field of type 'LiveClassStatus'
  */
 export type EnumLiveClassStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveClassStatus'>
@@ -2790,6 +2930,7 @@ export type GlobalOmitConfig = {
   setting?: Prisma.SettingOmit
   auditLog?: Prisma.AuditLogOmit
   conversation?: Prisma.ConversationOmit
+  conversationParticipant?: Prisma.ConversationParticipantOmit
   chatMessage?: Prisma.ChatMessageOmit
   liveClass?: Prisma.LiveClassOmit
   classAttendance?: Prisma.ClassAttendanceOmit
