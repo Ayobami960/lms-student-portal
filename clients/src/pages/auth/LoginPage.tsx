@@ -123,7 +123,7 @@ export const LoginPage: React.FC = () => {
             {/* Form content — centered vertically inside the full-height card, scrollable if it ever overflows on short screens */}
             <div className="relative z-10 flex-1 flex flex-col justify-center overflow-y-auto">
               <div className="mb-lg">
-                <h2 className="text-2xl font-semibold text-on-surface tracking-tight mb-2 text-center">Edu Next Explore</h2>
+                <h2 className="text-2xl font-semibold text-on-surface tracking-tight mb-2 text-center">Skill Forge</h2>
                 <h2 className="text-xl font-semibold text-on-surface tracking-tight mb-2">Welcome Back</h2>
                 <p className="text-sm text-outline">Please sign in to access your digital environment</p>
               </div>
