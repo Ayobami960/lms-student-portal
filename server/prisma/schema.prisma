@@ -38,6 +38,12 @@ enum MessageRole {
   ASSISTANT
 }
 
+enum LiveClassStatus {
+  SCHEDULED
+  LIVE
+  ENDED
+}
+
 // ------------------------- MODELS -------------------------
 
 model User {
@@ -48,22 +54,26 @@ model User {
   role       Role     @default(STUDENT)
   avatar     String?
   isVerified Boolean  @default(false)
-  isApproved Boolean  @default(true) // instructors start false until an admin approves them
+  isApproved Boolean  @default(false) // instructors start false until an admin approves them
   isActive   Boolean  @default(true) // deactivated by admin -> blocked from logging in
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  refreshTokens   RefreshToken[]
-  coursesTaught   Course[]         @relation("InstructorCourses")
-  enrollments     Enrollment[]
-  lessonProgress  LessonProgress[]
-  submissions     Submission[]
-  certificates    Certificate[]
-  aiConversations AIConversation[]
-  passwordResets  PasswordReset[]
-  notifications   Notification[]
-  sentInvitations AdminInvitation[] @relation("InvitedBy")
-  announcements   Announcement[]
+  refreshTokens     RefreshToken[]
+  coursesTaught     Course[]           @relation("InstructorCourses")
+  enrollments       Enrollment[]
+  lessonProgress    LessonProgress[]
+  submissions       Submission[]
+  certificates      Certificate[]
+  aiConversations   AIConversation[]
+  passwordResets    PasswordReset[]
+  notifications     Notification[]
+  sentInvitations   AdminInvitation[]  @relation("InvitedBy")
+  announcements     Announcement[]
+  conversations     Conversation[]     @relation("StudentConversations")
+  sentChatMessages  ChatMessage[]      @relation("SentChatMessages")
+  classAttendance   ClassAttendance[]  @relation("ClassAttendance")
+  classChatMessages ClassChatMessage[] @relation("ClassChatMessages")
 
   @@index([role])
   @@map("users")
@@ -112,10 +122,11 @@ model Course {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  instructor  User         @relation("InstructorCourses", fields: [instructorId], references: [id])
-  modules     Module[]
-  enrollments Enrollment[]
+  instructor   User          @relation("InstructorCourses", fields: [instructorId], references: [id])
+  modules      Module[]
+  enrollments  Enrollment[]
   certificates Certificate[]
+  liveClasses  LiveClass[]
 
   @@index([category])
   @@index([level])
@@ -169,8 +180,8 @@ model Lesson {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  module     Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  progress   LessonProgress[]
+  module      Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress    LessonProgress[]
   assignments Assignment[]
 
   @@index([moduleId])
@@ -297,6 +308,8 @@ enum NotificationType {
   ACCOUNT_DEACTIVATED
   ANNOUNCEMENT
   MAINTENANCE
+  MESSAGE
+  CLASS_STARTING
   GENERAL
 }
 
@@ -325,13 +338,13 @@ model Notification {
 }
 
 model AdminInvitation {
-  id           String   @id @default(uuid())
-  email        String
-  token        String   @unique
-  invitedById  String
-  accepted     Boolean  @default(false)
-  expiresAt    DateTime
-  createdAt    DateTime @default(now())
+  id          String   @id @default(uuid())
+  email       String
+  token       String   @unique
+  invitedById String
+  accepted    Boolean  @default(false)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
 
   invitedBy User @relation("InvitedBy", fields: [invitedById], references: [id])
 
@@ -361,4 +374,109 @@ model Setting {
   updatedAt DateTime @updatedAt
 
   @@map("settings")
+}
+
+// ============================================================
+// Admin audit trail
+// ============================================================
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String
+  actorName  String
+  actorRole  String
+  action     String
+  message    String
+  entityType String?
+  entityId   String?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ============================================================
+// Student <-> instructor/support direct messaging
+// ============================================================
+
+model Conversation {
+  id        String   @id @default(uuid())
+  studentId String
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student  User          @relation("StudentConversations", fields: [studentId], references: [id], onDelete: Cascade)
+  messages ChatMessage[]
+
+  @@index([studentId])
+  @@map("conversations")
+}
+
+model ChatMessage {
+  id             String   @id @default(uuid())
+  conversationId String
+  senderId       String
+  content        String
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("SentChatMessages", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@map("chat_messages")
+}
+
+// ============================================================
+// Live classes
+// ============================================================
+
+model LiveClass {
+  id          String           @id @default(uuid())
+  courseId    String
+  title       String
+  scheduledAt DateTime
+  startedAt   DateTime?
+  endedAt     DateTime?
+  status      LiveClassStatus  @default(SCHEDULED)
+  createdAt   DateTime         @default(now())
+
+  course     Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  attendance ClassAttendance[]
+  chat       ClassChatMessage[]
+
+  @@index([courseId])
+  @@map("live_classes")
+}
+
+model ClassAttendance {
+  id          String    @id @default(uuid())
+  liveClassId String
+  studentId   String
+  joinedAt    DateTime  @default(now())
+  leftAt      DateTime?
+
+  liveClass LiveClass @relation(fields: [liveClassId], references: [id], onDelete: Cascade)
+  student   User      @relation("ClassAttendance", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([liveClassId, studentId])
+  @@index([liveClassId])
+  @@index([studentId])
+  @@map("class_attendance")
+}
+
+model ClassChatMessage {
+  id          String   @id @default(uuid())
+  liveClassId String
+  userId      String
+  content     String
+  createdAt   DateTime @default(now())
+
+  liveClass LiveClass @relation(fields: [liveClassId], references: [id], onDelete: Cascade)
+  user      User      @relation("ClassChatMessages", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([liveClassId])
+  @@map("class_chat_messages")
 }

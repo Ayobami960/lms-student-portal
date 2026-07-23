@@ -44,6 +44,15 @@ export const MessageRole = {
 export type MessageRole = (typeof MessageRole)[keyof typeof MessageRole]
 
 
+export const LiveClassStatus = {
+  SCHEDULED: 'SCHEDULED',
+  LIVE: 'LIVE',
+  ENDED: 'ENDED'
+} as const
+
+export type LiveClassStatus = (typeof LiveClassStatus)[keyof typeof LiveClassStatus]
+
+
 export const NotificationType = {
   ENROLLMENT: 'ENROLLMENT',
   COURSE_PUBLISHED: 'COURSE_PUBLISHED',
@@ -56,6 +65,8 @@ export const NotificationType = {
   ACCOUNT_DEACTIVATED: 'ACCOUNT_DEACTIVATED',
   ANNOUNCEMENT: 'ANNOUNCEMENT',
   MAINTENANCE: 'MAINTENANCE',
+  MESSAGE: 'MESSAGE',
+  CLASS_STARTING: 'CLASS_STARTING',
   GENERAL: 'GENERAL'
 } as const
 

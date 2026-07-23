@@ -102,3 +102,33 @@ export type Announcement = Prisma.AnnouncementModel
  * 
  */
 export type Setting = Prisma.SettingModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model Conversation
+ * 
+ */
+export type Conversation = Prisma.ConversationModel
+/**
+ * Model ChatMessage
+ * 
+ */
+export type ChatMessage = Prisma.ChatMessageModel
+/**
+ * Model LiveClass
+ * 
+ */
+export type LiveClass = Prisma.LiveClassModel
+/**
+ * Model ClassAttendance
+ * 
+ */
+export type ClassAttendance = Prisma.ClassAttendanceModel
+/**
+ * Model ClassChatMessage
+ * 
+ */
+export type ClassChatMessage = Prisma.ClassChatMessageModel

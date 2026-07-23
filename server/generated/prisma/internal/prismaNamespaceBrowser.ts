@@ -67,7 +67,13 @@ export const ModelName = {
   Notification: 'Notification',
   AdminInvitation: 'AdminInvitation',
   Announcement: 'Announcement',
-  Setting: 'Setting'
+  Setting: 'Setting',
+  AuditLog: 'AuditLog',
+  Conversation: 'Conversation',
+  ChatMessage: 'ChatMessage',
+  LiveClass: 'LiveClass',
+  ClassAttendance: 'ClassAttendance',
+  ClassChatMessage: 'ClassChatMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -315,6 +321,79 @@ export const SettingScalarFieldEnum = {
 } as const
 
 export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  actorName: 'actorName',
+  actorRole: 'actorRole',
+  action: 'action',
+  message: 'message',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const ConversationScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  senderId: 'senderId',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+
+
+export const LiveClassScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  title: 'title',
+  scheduledAt: 'scheduledAt',
+  startedAt: 'startedAt',
+  endedAt: 'endedAt',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type LiveClassScalarFieldEnum = (typeof LiveClassScalarFieldEnum)[keyof typeof LiveClassScalarFieldEnum]
+
+
+export const ClassAttendanceScalarFieldEnum = {
+  id: 'id',
+  liveClassId: 'liveClassId',
+  studentId: 'studentId',
+  joinedAt: 'joinedAt',
+  leftAt: 'leftAt'
+} as const
+
+export type ClassAttendanceScalarFieldEnum = (typeof ClassAttendanceScalarFieldEnum)[keyof typeof ClassAttendanceScalarFieldEnum]
+
+
+export const ClassChatMessageScalarFieldEnum = {
+  id: 'id',
+  liveClassId: 'liveClassId',
+  userId: 'userId',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type ClassChatMessageScalarFieldEnum = (typeof ClassChatMessageScalarFieldEnum)[keyof typeof ClassChatMessageScalarFieldEnum]
 
 
 export const SortOrder = {
