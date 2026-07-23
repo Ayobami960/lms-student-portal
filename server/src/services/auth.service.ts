@@ -111,22 +111,25 @@ export const authService = {
   },
 
   async forgotPassword(email: string) {
-    const user = await prisma.user.findUnique({ where: { email } });
-    // Always behave the same way whether or not the user exists (avoid email enumeration)
-    if (!user) return { token: null };
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) return { token: null };
 
-    const token = crypto.randomBytes(32).toString("hex");
-    await prisma.passwordReset.create({
-      data: { token, userId: user.id, expiresAt: new Date(Date.now() + 60 * 60 * 1000) },
-    });
+  const token = crypto.randomBytes(32).toString("hex");
+  await prisma.passwordReset.create({
+    data: { token, userId: user.id, expiresAt: new Date(Date.now() + 60 * 60 * 1000) },
+  });
 
-    const resetUrl = `${studentAppUrl}/reset-password?token=${token}`;
-    const { subject, html } = emailTemplates.forgotPassword(user.name, resetUrl);
-    void emailService.send({ to: user.email, subject, html });
+  const resetUrl = `${studentAppUrl}/reset-password?token=${token}`;
+  const { subject, html } = emailTemplates.forgotPassword(user.name, resetUrl);
 
-    // In production this would only be emailed, not returned. Returned here for local/dev testing only.
-    return { token };
-  },
+  try {
+    await emailService.send({ to: user.email, subject, html });
+  } catch (err) {
+    console.error("[forgotPassword] Failed to send reset email:", err);
+  }
+
+  return { token };
+},
 
   async resetPassword(token: string, newPassword: string) {
     const reset = await prisma.passwordReset.findUnique({ where: { token } });

@@ -17,7 +17,6 @@ type FormValues = z.infer<typeof schema>;
 export const ForgotPasswordPage: React.FC = () => {
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [devToken, setDevToken] = useState<string | null>(null);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
@@ -42,16 +41,15 @@ export const ForgotPasswordPage: React.FC = () => {
     defaultValues: { email: "" },
   });
 
-  const onSubmit = async (values: FormValues) => {
-    try {
-      const res = await forgotPassword(values).unwrap();
-      // In dev mode the API returns the reset token directly (no email service configured).
-      setDevToken(res?.data?.token ?? null);
-      setIsSubmitted(true);
-    } catch (err: any) {
-      toast.error(err?.data?.message ?? "Something went wrong");
-    }
-  };
+ const onSubmit = async (values: FormValues) => {
+  try {
+    await forgotPassword(values).unwrap();
+    setIsSubmitted(true);
+  } catch (err: any) {
+    toast.error(err?.data?.message ?? "Something went wrong");
+  }
+};
+
 
   return (
     <div className="h-screen w-full flex bg-surface-container-lowest text-on-surface overflow-hidden">
@@ -169,14 +167,7 @@ export const ForgotPasswordPage: React.FC = () => {
                   <p className="text-sm text-outline mb-xl max-w-[320px] mx-auto">
                     If an account exists for that email, we&apos;ve sent password reset instructions to your inbox.
                   </p>
-                  {devToken && (
-                    <div className="mb-xl rounded-lg bg-surface-container p-3 text-left text-xs text-outline">
-                      <p className="mb-1 font-medium">Dev mode — no email service configured:</p>
-                      <Link to={`/reset-password?token=${devToken}`} className="break-all text-primary hover:underline">
-                        Click here to reset your password
-                      </Link>
-                    </div>
-                  )}
+                  
                   <Link
                     to="/login"
                     className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-lg shadow-md transition-all text-sm"

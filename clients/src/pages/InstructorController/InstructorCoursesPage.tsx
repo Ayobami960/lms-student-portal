@@ -116,6 +116,7 @@ const InstructorCoursesPage = () => {
             : undefined
         }
         size="sm"
+        
       >
         <div className="flex justify-end gap-3">
           <Button variant="secondary" onClick={() => setCourseToDelete(null)} disabled={isDeleting}>

@@ -134,9 +134,19 @@ export default function App() {
           } 
         />
 
+         <Route 
+          path="/reset-password" 
+          element={
+            <PublicRoute>
+              <ResetPasswordPage />
+            </PublicRoute>
+          } 
+        />
+
+
+
         {/* Protected layout wraps the dashboard and course routes */}
         <Route element={<ProtectedLayout currentTheme={theme} onToggleTheme={toggleTheme} />}>
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:id" element={<CoursesDetail />} />
