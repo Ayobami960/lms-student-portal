@@ -6,6 +6,7 @@ export interface AuthUser {
   email: string;
   role: "STUDENT" | "INSTRUCTOR" | "ADMIN"; 
   avatar?: string | null;
+  studentId: string;
   isVerified: boolean;
   isApproved: boolean;   
   isActive: boolean;

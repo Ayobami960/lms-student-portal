@@ -168,8 +168,8 @@ export function NewCourseModal({ onClose }: NewCourseModalProps) {
             Course details
           </h3>
 
-          <div className="grid grid-cols-2 gap-3">
-            <Input label="Title" id="title" {...register("title")} error={errors.title?.message} />
+          <div className="">
+            <Input label="Title" id="title"  {...register("title")} error={errors.title?.message} />
             {/* <Input label="Slug" id="slug" {...register("slug")} error={errors.slug?.message} /> */}
           </div>
 

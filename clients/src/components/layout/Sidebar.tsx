@@ -7,7 +7,9 @@ import {
   BookOpen,
   Sparkles,
   LogOut,
-  X
+  X,
+  MessageSquare,
+  Users2,
 } from "lucide-react";
 
 import { clearAuth } from "../../store/authSlice";
@@ -15,13 +17,12 @@ import { useLogoutMutation } from "../../store/api/apiSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import type { MenuItem, SidebarProps } from "../../types";
 
-
-
 const STUDENT_LINKS: MenuItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/courses", label: "Courses", icon: BookOpen },
   { to: "/assignments", label: "Assignments", icon: ClipboardList },
   { to: "/certificates", label: "Certificates", icon: Award },
+  { to: "/messages", label: "Messages", icon: MessageSquare },
   { to: "/ai-assistant", label: "AI Assistant", icon: Sparkles },
 ];
 
@@ -29,12 +30,14 @@ const INSTRUCTOR_LINKS: MenuItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/my-courses", label: "My Courses", icon: BookOpen },
   { to: "/grading", label: "Grading", icon: ClipboardList },
+  { to: "/messages", label: "Messages", icon: MessageSquare },
   { to: "/ai-assistant", label: "AI Assistant", icon: Sparkles },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const dispatch = useAppDispatch();
   const role = useAppSelector((s) => s.auth.user?.role);
+  const studentId = useAppSelector((s) => s.auth.user?.studentId);
   const links = role === "INSTRUCTOR" ? INSTRUCTOR_LINKS : STUDENT_LINKS;
 
   const [logout] = useLogoutMutation();
@@ -70,17 +73,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <GraduationCap className="w-5 h-5" fill="currentColor" strokeWidth={1} />
             </div>
             <div>
-              <h1 className="text-xl font-bold leading-tight">EduAI Pro</h1>
+              <h1 className="text-xl font-bold leading-tight">Skill Forge</h1>
               <p className="text-xs font-semibold text-outline tracking-wider">Learning Portal</p>
             </div>
           </div>
-          <button className="lg:hidden text-outline hover:text-on-surface" onClick={onClose}>
+          <button className="lg:hidden text-outline hover:text-on-surface" onClick={onClose} aria-label="Close menu">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Role-based Navigation Menu */}
-        <nav className="flex-1 flex flex-col gap-1 overflow-y-auto">
+        <nav className="flex-1 flex flex-col gap-1 overflow-y-auto" aria-label="Main navigation">
           {links.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
@@ -102,6 +105,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
         {/* Sidebar Footer Elements */}
         <div className="mt-auto pt-md border-t border-outline-variant flex flex-col gap-1">
+          <div className="flex items-center gap-2 px-4 py-1 text-xs text-outline">
+            <Users2 className="w-3.5 h-3.5" /> {role === "INSTRUCTOR" ? "Instructor view" : "Student view"}
+          </div>
+          {studentId && (
+            <p
+              className="px-4 font-mono text-[11px] text-outline"
+              title="Your Student ID — required to join live classes"
+            >
+              {studentId}
+            </p>
+          )}
           <button
             type="button"
             onClick={handleLogout}
