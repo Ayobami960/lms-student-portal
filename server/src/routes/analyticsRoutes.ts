@@ -9,5 +9,6 @@ analyticsRoutes.get("/dashboard", authenticate, analyticsController.dashboard);
 analyticsRoutes.get("/progress", authenticate, analyticsController.progress);
 analyticsRoutes.get("/admin/dashboard", authenticate, authorize("ADMIN"), analyticsController.adminDashboard);
 analyticsRoutes.get("/performance", authenticate, analyticsController.performance);
+analyticsRoutes.get("/charts", authenticate, authorize("ADMIN"), analyticsController.charts);
 
 export default analyticsRoutes;

@@ -5,6 +5,7 @@ import { slugify } from "../utils/slugify.js";
 import { emailService } from "./email.service.js";
 import { emailTemplates } from "../../emails/templates.js";
 import { notificationService } from "./notification.service.js";
+import { auditLogService } from "./audit-log.service.js";
 
 interface ListCoursesParams {
   search?: string;
@@ -169,25 +170,85 @@ export const courseService = {
     await prisma.course.delete({ where: { id } });
   },
 
-  async enroll(courseId: string, studentId: string) {
+  async enroll(courseId: string, studentId: string, actor?: { id: string; name: string; role: string }) {
     const course = await prisma.course.findUnique({ where: { id: courseId } });
-    if (!course) throw new ApiError(404, "Course not found");
-    if (!course.published) throw new ApiError(404, "Course not found");
+    if (!course) throw ApiError.notFound("Course not found");
+
+    const student = await prisma.user.findUnique({ where: { id: studentId } });
+    if (!student || student.role !== "STUDENT") throw ApiError.badRequest("That user is not a student account");
 
     const existing = await prisma.enrollment.findUnique({
       where: { studentId_courseId: { studentId, courseId } },
     });
-    if (existing) throw new ApiError(409, "You are already enrolled in this course");
+    if (existing) throw ApiError.conflict(`${student.name} is already enrolled in this course`);
 
     const enrollment = await prisma.enrollment.create({ data: { studentId, courseId } });
 
-    const student = await prisma.user.findUnique({ where: { id: studentId } });
-    if (student) {
-      const { subject, html } = emailTemplates.enrollmentConfirmation(student.name, course.title, course.id);
-      void emailService.send({ to: student.email, subject, html });
-      void notificationService.create(studentId, "ENROLLMENT", "Enrollment confirmed", `You're enrolled in ${course.title}.`, `/courses/${course.id}`);
+    const { subject, html } = emailTemplates.enrollmentConfirmation(student.name, course.title, course.id);
+    void emailService.send({ to: student.email, subject, html });
+    void notificationService.create(studentId, "ENROLLMENT", "Enrollment confirmed", `You're enrolled in ${course.title}.`, `/courses/${course.id}`);
+
+    // Only logged as an explicit audit event when an admin enrolled someone on
+    // their behalf — a student enrolling themselves is normal usage, not an
+    // administrative action worth auditing.
+    if (actor && actor.role === "ADMIN") {
+      void auditLogService.log(actor, "ADMIN_ENROLLED_STUDENT", `Enrolled ${student.name} in "${course.title}"`, "Enrollment", enrollment.id);
     }
 
     return enrollment;
+  },
+
+  async unenroll(enrollmentId: string, actor: { id: string; name: string; role: string }) {
+    const enrollment = await prisma.enrollment.findUnique({
+      where: { id: enrollmentId },
+      include: { student: true, course: true },
+    });
+    if (!enrollment) throw ApiError.notFound("Enrollment not found");
+    if (actor.role !== "ADMIN" && enrollment.course.instructorId !== actor.id) {
+      throw ApiError.forbidden("You can only manage enrollments for your own courses");
+    }
+
+    await prisma.enrollment.delete({ where: { id: enrollmentId } });
+
+    void notificationService.create(enrollment.studentId, "GENERAL", "Removed from course", `You were unenrolled from ${enrollment.course.title}.`);
+    void auditLogService.log(actor, "STUDENT_UNENROLLED", `Removed ${enrollment.student.name} from "${enrollment.course.title}"`, "Enrollment", enrollmentId);
+  },
+
+  
+  async getCourseRoster(courseId: string, requester: { id: string; role: string }) {
+    const course = await prisma.course.findUnique({ where: { id: courseId } });
+    if (!course) throw ApiError.notFound("Course not found");
+    if (requester.role !== "ADMIN" && course.instructorId !== requester.id) {
+      throw ApiError.forbidden("You do not teach this course");
+    }
+
+    const enrollments = await prisma.enrollment.findMany({
+      where: { courseId },
+      include: {
+        student: { select: { id: true, name: true, email: true, studentId: true } },
+      },
+      orderBy: { enrolledAt: "desc" },
+    });
+
+    const studentIds = enrollments.map((e) => e.studentId);
+    const submissions = await prisma.submission.findMany({
+      where: { studentId: { in: studentIds }, assignment: { lesson: { module: { courseId } } } },
+      select: { studentId: true, status: true, approved: true },
+    });
+
+    return enrollments.map((e) => {
+      const mySubs = submissions.filter((s) => s.studentId === e.studentId);
+      return {
+        enrollmentId: e.id,
+        student: e.student,
+        progress: e.progress,
+        completed: e.completed,
+        enrolledAt: e.enrolledAt,
+        completedAt: e.completedAt,
+        assignmentsSubmitted: mySubs.length,
+        assignmentsApproved: mySubs.filter((s) => s.status === "GRADED" && s.approved).length,
+        assignmentsNeedingRevision: mySubs.filter((s) => s.status === "GRADED" && !s.approved).length,
+      };
+    });
   },
 };

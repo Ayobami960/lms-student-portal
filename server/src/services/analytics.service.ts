@@ -141,9 +141,52 @@ export const analyticsService = {
       pendingInstructors,
     };
   },
+
+
+  async getPlatformCharts() {
+    const [courses, usersByRole, enrollmentsRaw] = await Promise.all([
+      prisma.course.findMany({
+        select: { id: true, title: true, _count: { select: { enrollments: true } } },
+        orderBy: { enrollments: { _count: "desc" } },
+        take: 10,
+      }),
+      prisma.user.groupBy({ by: ["role"], _count: true }),
+      prisma.enrollment.findMany({ select: { enrolledAt: true } }),
+    ]);
+
+    
+    const instructorCourses = await prisma.course.findMany({
+      select: { instructorId: true, instructor: { select: { name: true } }, _count: { select: { enrollments: true } } },
+    });
+    const byInstructor = new Map<string, { name: string; count: number }>();
+    for (const c of instructorCourses) {
+      const entry = byInstructor.get(c.instructorId) ?? { name: c.instructor.name, count: 0 };
+      entry.count += c._count.enrollments;
+      byInstructor.set(c.instructorId, entry);
+    }
+
+    // Monthly enrollment trend for the last 6 months.
+    const now = new Date();
+    const months: { label: string; year: number; month: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ label: d.toLocaleString("default", { month: "short" }), year: d.getFullYear(), month: d.getMonth() });
+    }
+    const monthlyEnrollments = months.map(({ label, year, month }) => ({
+      month: label,
+      count: enrollmentsRaw.filter((e) => e.enrolledAt.getFullYear() === year && e.enrolledAt.getMonth() === month).length,
+    }));
+
+    return {
+      enrollmentsByInstructor: Array.from(byInstructor.values()).map((v) => ({ instructor: v.name, students: v.count })),
+      enrollmentsByCourse: courses.map((c) => ({ course: c.title, students: c._count.enrollments })),
+      usersByRole: usersByRole.map((r) => ({ role: r.role, count: r._count })),
+      monthlyEnrollments,
+    };
+  },
 };
 
-// Fixed top-level input type parameter mapping context
+
 async function countUnsubmittedAssignments(studentId: string) {
   const assignments = await prisma.assignment.findMany({
     where: { lesson: { module: { course: { enrollments: { some: { studentId } } } } } },

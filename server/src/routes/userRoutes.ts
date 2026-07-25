@@ -14,8 +14,11 @@ userRoutes.post("/avatar", authenticate, upload.single("avatar"), userController
 
 
 userRoutes.get("/", authenticate, authorize("ADMIN"), userController.listUsers);
+userRoutes.get("/:id/activity", authenticate, authorize("ADMIN"), userController.getActivity);
+
 userRoutes.patch("/:id/role", authenticate, authorize("ADMIN"), userController.updateRole);
 userRoutes.patch("/:id/approve", authenticate, authorize("ADMIN"), userController.approveInstructor);
+userRoutes.patch("/:id/student-id", authenticate, authorize("ADMIN"), userController.assignStudentId);
 userRoutes.patch("/:id/activate", authenticate, authorize("ADMIN"), userController.activateUser);
 userRoutes.patch("/:id/deactivate", authenticate, authorize("ADMIN"), userController.deactivateUser);
 

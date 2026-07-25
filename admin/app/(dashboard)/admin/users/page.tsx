@@ -19,6 +19,7 @@ import {
   useDeleteUserMutation,
   useSetUserActivateMutation,
   useSetUserDeactivateMutation,
+  useAssignStudentIdMutation,
   useInviteAdminMutation,
   useListPendingInvitationsQuery,
   useMeQuery,
@@ -71,7 +72,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Users, Trash2, UserCheck, Clock, Ban, UserPlus, Mail, ShieldCheck, MoreVertical } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Users, Trash2, UserCheck, Clock, Ban, UserPlus, Mail, ShieldCheck, MoreVertical, IdCard } from "lucide-react";
 
 const ROLES = ["STUDENT", "INSTRUCTOR", "ADMIN"] as const;
 
@@ -95,9 +97,6 @@ function roleBadgeClass(role: string) {
   }
 }
 
-/* ------------------------------------------------------------------ */
-/* Pending instructor approvals                                        */
-/* ------------------------------------------------------------------ */
 
 function PendingInstructors() {
   const { data, isLoading } = useListUsersQuery({ role: "INSTRUCTOR", pending: true, limit: 50 });
@@ -146,9 +145,8 @@ function PendingInstructors() {
   );
 }
 
-/* ------------------------------------------------------------------ */
+
 /* Invite admin                                                        */
-/* ------------------------------------------------------------------ */
 
 const inviteSchema = z.object({ email: z.string().email("Enter a valid email address") });
 type InviteForm = z.infer<typeof inviteSchema>;
@@ -236,9 +234,89 @@ function PendingInvitations() {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Pagination bar                                                       */
-/* ------------------------------------------------------------------ */
+/* Assign Student ID*/
+
+function AssignStudentIdDialog({
+  user,
+  onOpenChange,
+}: {
+  user: { id: string; name: string } | null;
+  onOpenChange: (v: boolean) => void;
+}) {
+  const [mode, setMode] = useState<"auto" | "custom">("auto");
+  const [customId, setCustomId] = useState("");
+  const [assignStudentId, { isLoading }] = useAssignStudentIdMutation();
+
+  async function handleAssign() {
+    if (!user) return;
+    try {
+      const res = await assignStudentId({
+        id: user.id,
+        studentId: mode === "custom" ? customId.trim() : undefined,
+      }).unwrap();
+      toast.success(`Assigned ${res.data.studentId} to ${user.name}`);
+      setMode("auto");
+      setCustomId("");
+      onOpenChange(false);
+    } catch (e: any) {
+      toast.error(e?.data?.message ?? "Failed to assign Student ID");
+    }
+  }
+
+  return (
+    <Dialog open={!!user} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-full bg-primary-soft text-primary">
+            <IdCard size={18} />
+          </div>
+          <DialogTitle>Assign Student ID — {user?.name}</DialogTitle>
+          <DialogDescription>
+            This ID is required before {user?.name?.split(" ")[0]} can join a live class. It can only be assigned once.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <RadioGroup value={mode} onValueChange={(v) => setMode(v as "auto" | "custom")} className="flex gap-3">
+            <label className="flex flex-1 items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
+              <RadioGroupItem value="auto" id="mode-auto" />
+              Auto-generate
+            </label>
+            <label className="flex flex-1 items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
+              <RadioGroupItem value="custom" id="mode-custom" />
+              Custom
+            </label>
+          </RadioGroup>
+          {mode === "custom" && (
+            <div className="space-y-1.5">
+              <Label htmlFor="customStudentId">Student ID</Label>
+              <Input
+                id="customStudentId"
+                placeholder="STD-2026-000123"
+                value={customId}
+                onChange={(e) => setCustomId(e.target.value)}
+                autoFocus
+              />
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleAssign}
+            disabled={isLoading || (mode === "custom" && !customId.trim())}
+          >
+            {isLoading ? "Assigning…" : "Assign ID"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
+/* Pagination bar*/
 
 function pageRange(current: number, total: number): (number | "ellipsis")[] {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
@@ -311,9 +389,8 @@ function UsersPagination({
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Page                                                                  */
-/* ------------------------------------------------------------------ */
+
+/* Page*/
 
 export default function AdminUsersPage() {
   const [page, setPage] = useState(1);
@@ -321,6 +398,7 @@ export default function AdminUsersPage() {
   const [showInvite, setShowInvite] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
   const [pendingToggle, setPendingToggle] = useState<{ id: string; name: string; active: boolean; role: string } | null>(null);
+  const [assignIdFor, setAssignIdFor] = useState<{ id: string; name: string } | null>(null);
 
   const { data: meData } = useMeQuery();
   const currentUserId = meData?.data?.id;
@@ -457,8 +535,19 @@ export default function AdminUsersPage() {
                           {initials(u.name)}
                         </div>
                         <div>
+                           
                           <p className="font-medium leading-none">{u.name}</p>
-                          <p className="mt-1 text-xs text-muted-foreground">{u.email}</p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {u.email}
+                           
+                          </p>
+                          {u.role === "STUDENT" && (
+                              u.studentId ? (
+                                <span className="ml-2 font-mono text-[11px] text-muted-foreground/80">{u.studentId}</span>
+                              ) : (
+                                <span className="ml-2 text-[11px] text-amber-500">no ID yet</span>
+                              )
+                            )}
                         </div>
                       </div>
                     </TableCell>
@@ -506,41 +595,55 @@ export default function AdminUsersPage() {
                       {new Date(u.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" aria-label={`Actions for ${u.name}`}>
-                            <MoreVertical size={16} />
+                      <div className="flex items-center justify-end gap-1">
+                        {u.role === "STUDENT" && !u.studentId && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-primary hover:bg-primary-soft"
+                            aria-label={`Assign Student ID to ${u.name}`}
+                            title="Assign Student ID"
+                            onClick={() => setAssignIdFor({ id: u.id, name: u.name })}
+                          >
+                            <IdCard size={16} />
                           </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          {isActive ? (
+                        )}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" aria-label={`Actions for ${u.name}`}>
+                              <MoreVertical size={16} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {isActive ? (
+                              <DropdownMenuItem
+                                disabled={u.role === "ADMIN"}
+                                title={u.role === "ADMIN" ? "Admin accounts can't be deactivated" : undefined}
+                                className="text-red-600 focus:text-red-600"
+                                onClick={() => setPendingToggle({ id: u.id, name: u.name, active: true, role: u.role })}
+                              >
+                                <Ban size={14} /> Deactivate
+                              </DropdownMenuItem>
+                            ) : (
+                              <DropdownMenuItem
+                                className="text-green-600 focus:text-green-600"
+                                onClick={() => setPendingToggle({ id: u.id, name: u.name, active: false, role: u.role })}
+                              >
+                                <UserCheck size={14} /> Activate
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem
                               disabled={u.role === "ADMIN"}
-                              title={u.role === "ADMIN" ? "Admin accounts can't be deactivated" : undefined}
-                              className="text-red-600 focus:text-red-600"
-                              onClick={() => setPendingToggle({ id: u.id, name: u.name, active: true, role: u.role })}
+                              title={u.role === "ADMIN" ? "Admin accounts can't be deleted" : undefined}
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => setPendingDelete({ id: u.id, name: u.name })}
                             >
-                              <Ban size={14} /> Deactivate
+                              <Trash2 size={14} /> Delete
                             </DropdownMenuItem>
-                          ) : (
-                            <DropdownMenuItem
-                              className="text-green-600 focus:text-green-600"
-                              onClick={() => setPendingToggle({ id: u.id, name: u.name, active: false, role: u.role })}
-                            >
-                              <UserCheck size={14} /> Activate
-                            </DropdownMenuItem>
-                          )}
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            disabled={u.role === "ADMIN"}
-                            title={u.role === "ADMIN" ? "Admin accounts can't be deleted" : undefined}
-                            className="text-destructive focus:text-destructive"
-                            onClick={() => setPendingDelete({ id: u.id, name: u.name })}
-                          >
-                            <Trash2 size={14} /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -561,6 +664,7 @@ export default function AdminUsersPage() {
       )}
 
       <InviteAdminDialog open={showInvite} onOpenChange={setShowInvite} />
+      <AssignStudentIdDialog user={assignIdFor} onOpenChange={(v) => !v && setAssignIdFor(null)} />
 
       {/* Deactivate / activate confirmation */}
       <AlertDialog open={!!pendingToggle} onOpenChange={(v) => !v && setPendingToggle(null)}>

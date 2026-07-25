@@ -60,6 +60,12 @@ export const userController = {
     sendSuccess(res, user, "Account deactivated");
   }),
 
+
+  assignStudentId: asyncHandler(async (req, res) => {
+      const user = await userService.assignStudentId(req.params.id as string, actorFrom(req), req.body.studentId);
+      sendSuccess(res, user, "Student ID assigned");
+  }),
+
   updateRole: asyncHandler(async (req: Request, res: Response) => {
     const roleInput = req.body.role;
 

@@ -9,10 +9,7 @@ export const courseController = {
     const limit = parseInt((req.query.limit as string) ?? "12", 10);
     const role = req.user?.role;
     const isAdmin = role === "ADMIN";
-    // "mine=true" is what the instructor's My Courses page sends. Without
-    // it, an authenticated instructor browsing the public catalog should
-    // see the same published-only results everyone else does — not be
-    // silently restricted to just their own courses.
+
     const wantsMine = req.query.mine === "true";
     const isOwnerView = role === "INSTRUCTOR" && wantsMine;
 
@@ -23,7 +20,7 @@ export const courseController = {
       publishedOnly: !isAdmin && !isOwnerView,
     };
 
-   
+
     if (req.query.search) {
       listParams.search = req.query.search as string;
     }
@@ -56,13 +53,13 @@ export const courseController = {
   }),
 
   create: asyncHandler(async (req: Request, res: Response) => {
-  const isAdmin = req.user!.role === "ADMIN";
-  const { instructorId: bodyInstructorId, ...courseData } = req.body;
-  const instructorId = isAdmin && bodyInstructorId ? bodyInstructorId : req.user!.sub;
+    const isAdmin = req.user!.role === "ADMIN";
+    const { instructorId: bodyInstructorId, ...courseData } = req.body;
+    const instructorId = isAdmin && bodyInstructorId ? bodyInstructorId : req.user!.sub;
 
-  const course = await courseService.create(instructorId, courseData);
-  sendSuccess(res, course, "Course created", 201);
-}),
+    const course = await courseService.create(instructorId, courseData);
+    sendSuccess(res, course, "Course created", 201);
+  }),
 
   update: asyncHandler(async (req: Request, res: Response) => {
     const course = await courseService.update(req.params.id as string, { id: req.user!.sub, role: req.user!.role }, req.body);
@@ -74,8 +71,21 @@ export const courseController = {
     sendSuccess(res, null, "Course deleted");
   }),
 
-  enroll: asyncHandler(async (req: Request, res: Response) => {
-    const enrollment = await courseService.enroll(req.params.id as string, req.user!.sub);
+  enroll: asyncHandler(async (req, res) => {
+    const targetStudentId = req.user!.role === "ADMIN" && req.body?.studentId ? req.body.studentId : req.user!.sub;
+    const actor = { id: req.user!.sub, name: req.user!.email, role: req.user!.role };
+    const enrollment = await courseService.enroll(req.params.id as string, targetStudentId, actor);
     sendSuccess(res, enrollment, "Enrolled successfully", 201);
+  }),
+
+  unenroll: asyncHandler(async (req, res) => {
+    const actor = { id: req.user!.sub, name: req.user!.email, role: req.user!.role };
+    await courseService.unenroll(req.params.enrollmentId as string, actor);
+    sendSuccess(res, null, "Student removed from course");
+  }),
+
+  roster: asyncHandler(async (req, res) => {
+    const roster = await courseService.getCourseRoster(req.params.id as string, { id: req.user!.sub, role: req.user!.role });
+    sendSuccess(res, roster);
   }),
 };

@@ -13,7 +13,7 @@ export default function AdminDashboardPage() {
     <div>
       <div className="mb-6 rounded-xl gradient-primary p-6 text-primary-foreground shadow-lg shadow-primary/20 sm:p-8">
         <p className="text-sm font-medium text-primary-foreground/80">Platform Overview</p>
-        <h1 className="mt-1 text-2xl font-bold sm:text-3xl">Welcome to the admin </h1>
+        <h1 className="mt-1 text-2xl font-bold sm:text-3xl">Welcome Back </h1>
         <p className="mt-2 max-w-xl text-sm text-primary-foreground/90">
           Global analytics, user management, and course oversight across the entire LMS platform.
         </p>

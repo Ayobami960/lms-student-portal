@@ -18,6 +18,8 @@ html {
     --font-heading: var(--font-playfair), Georgia, serif;
 
     /* Theme colors & variables */
+    --color-info-foreground: var(--info-foreground);
+    --color-info: var(--info);
     --color-warning-foreground: var(--warning-foreground);
     --color-warning: var(--warning);
     --color-success-foreground: var(--success-foreground);
@@ -71,10 +73,12 @@ html {
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
 
-     --color-warning-foreground: var(--warning-foreground);
-    --color-warning: var(--warning);
-    --color-success-foreground: var(--success-foreground);
-    --color-success: var(--success);
+    --success: #16a34a;
+    --success-foreground: #ffffff;
+    --warning: #d97706;
+    --warning-foreground: #ffffff;
+    --info: #2563eb;
+    --info-foreground: #ffffff;
 
     /* Accent — tomato, carried over from the marketing site for brand consistency */
     --primary: #ff6347;
@@ -121,10 +125,12 @@ html {
     --primary-hover: #ff7a61;
     --primary-soft: rgba(255, 99, 71, 0.15);
 
-     --success: #22c55e;
+    --success: #22c55e;
     --success-foreground: oklch(0.145 0 0);
     --warning: #f59e0b;
     --warning-foreground: oklch(0.145 0 0);
+    --info: #3b82f6;
+    --info-foreground: oklch(0.145 0 0);
 
     --secondary: oklch(0.269 0 0);
     --secondary-foreground: oklch(0.985 0 0);

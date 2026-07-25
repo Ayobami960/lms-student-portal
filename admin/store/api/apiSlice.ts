@@ -19,7 +19,7 @@ export interface CreateCoursePayload {
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Course", "User", "Certificate", "Notification", "Invitation", "Announcement", "Assignment"],
+  tagTypes: ["Course", "User", "Certificate", "Notification", "Invitation", "Announcement", "Assignment", "Conversation"],
   endpoints: (builder) => ({
     // ---------------- Auth ----------------
     register: builder.mutation<ApiSuccess<{ accessToken: string }>, { name: string; email: string; password: string; confirmPassword: string }>({
@@ -52,6 +52,13 @@ export const apiSlice = createApi({
     setUserDeactivate: builder.mutation<ApiSuccess<any>, string>({
       query: (id) => ({ url: `/users/${id}/deactivate`, method: "PATCH" }),
       invalidatesTags: (_r, _e, id) => [{ type: "User", id }, { type: "User", id: "LIST" }],
+    }),
+    assignStudentId: builder.mutation<ApiSuccess<any>, { id: string; studentId?: string }>({
+      query: ({ id, studentId }) => ({ url: `/users/${id}/student-id`, method: "PATCH", body: { studentId } }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: "User", id }, { type: "User", id: "LIST" }],
+    }),
+    getUserActivity: builder.query<ApiSuccess<any>, string>({
+      query: (id) => `/users/${id}/activity`,
     }),
     updateUserRole: builder.mutation<ApiSuccess<any>, { id: string; role: string }>({
       query: ({ id, role }) => ({ url: `/users/${id}/role`, method: "PATCH", body: { role } }),
@@ -127,6 +134,33 @@ export const apiSlice = createApi({
     // ---------------- Analytics ----------------
     getDashboardAnalytics: builder.query<ApiSuccess<any>, void>({ query: () => "/analytics/admin/dashboard" }),
     getAdminDashboardAnalytics: builder.query<ApiSuccess<any>, void>({ query: () => "/analytics/admin/dashboard" }),
+    getDashboardCharts: builder.query<ApiSuccess<any>, void>({ query: () => "/analytics/charts" }),
+
+    // ---------------- Audit logs ----------------
+    listAuditLogs: builder.query<Paginated<any>, { page?: number; limit?: number; action?: string; actorId?: string; from?: string; to?: string }>({
+      query: (params) => ({ url: "/audit-logs", params }),
+    }),
+    listAuditActions: builder.query<ApiSuccess<string[]>, void>({
+      query: () => "/audit-logs/actions",
+    }),
+
+    // ---------------- Support inbox (admin side of messaging) ----------------
+    listConversations: builder.query<ApiSuccess<any[]>, void>({
+      query: () => "/conversations",
+      providesTags: [{ type: "Conversation" as const, id: "LIST" }],
+    }),
+    getConversation: builder.query<ApiSuccess<any>, string>({
+      query: (id) => `/conversations/${id}`,
+      providesTags: (_r, _e, id) => [{ type: "Conversation" as const, id }],
+    }),
+    sendConversationMessage: builder.mutation<ApiSuccess<any>, { id: string; content: string }>({
+      query: ({ id, content }) => ({ url: `/conversations/${id}/messages`, method: "POST", body: { content } }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: "Conversation" as const, id }, { type: "Conversation" as const, id: "LIST" }],
+    }),
+    updateConversationStatus: builder.mutation<ApiSuccess<any>, { id: string; status: "OPEN" | "RESOLVED" | "ARCHIVED" }>({
+      query: ({ id, status }) => ({ url: `/conversations/${id}/status`, method: "PATCH", body: { status } }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: "Conversation" as const, id }, { type: "Conversation" as const, id: "LIST" }],
+    }),
 
     // ---------------- Admin invitations ----------------
     inviteAdmin: builder.mutation<ApiSuccess<{ email: string; expiresAt: string }>, { email: string }>({
@@ -195,6 +229,8 @@ export const {
   useApproveInstructorMutation,
   useSetUserActivateMutation,
   useSetUserDeactivateMutation,
+  useAssignStudentIdMutation,
+  useGetUserActivityQuery,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
   useListCoursesQuery,
@@ -211,6 +247,13 @@ export const {
   useDeleteAssignmentMutation,
   useGetDashboardAnalyticsQuery,
   useGetAdminDashboardAnalyticsQuery,
+  useGetDashboardChartsQuery,
+  useListAuditLogsQuery,
+  useListAuditActionsQuery,
+  useListConversationsQuery,
+  useGetConversationQuery,
+  useSendConversationMessageMutation,
+  useUpdateConversationStatusMutation,
   useInviteAdminMutation,
   useListPendingInvitationsQuery,
   useVerifyInvitationQuery,

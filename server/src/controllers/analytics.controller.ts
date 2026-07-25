@@ -25,4 +25,8 @@ export const analyticsController = {
     const data = await analyticsService.studentPerformance(req.user!.sub);
     sendSuccess(res, data);
   }),
+  charts: asyncHandler(async (_req, res) => {
+    const data = await analyticsService.getPlatformCharts();
+    sendSuccess(res, data);
+  }),
 };

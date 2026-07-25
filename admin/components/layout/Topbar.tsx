@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { NotificationBell } from "../notifications/NotificationBell";
+import { NotificationBell } from "../dashboard/notifications/NotificationBell";
 
 // Turn "Jordan Alvarez" -> "JA", "Cher" -> "C", falls back to "?"
 function getInitials(name?: string | null) {
@@ -62,10 +62,7 @@ export function Topbar() {
       <div className="flex items-center gap-2">
         {/* <ThemeToggle /> */}
 
-        {/* <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
-          <Bell size={18} />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
-        </Button> */}
+       
 
         <NotificationBell />
 

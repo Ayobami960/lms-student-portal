@@ -8,7 +8,7 @@ import {
   useMarkNotificationReadMutation,
   useMarkAllNotificationsReadMutation,
   useDeleteNotificationMutation,
-} from "../../store/api/apiSlice";
+} from "@/store/api/apiSlice";
 
 function timeAgo(dateStr: string) {
   const diffMs = Date.now() - new Date(dateStr).getTime();
@@ -20,6 +20,9 @@ function timeAgo(dateStr: string) {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
+
+const PREVIEW_LIMIT = 6;
+
 export function NotificationBell() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -30,6 +33,7 @@ export function NotificationBell() {
 
   const notifications = data?.data?.notifications ?? [];
   const unreadCount = data?.data?.unreadCount ?? 0;
+  const previewNotifications = notifications.slice(0, PREVIEW_LIMIT);
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
@@ -67,10 +71,10 @@ export function NotificationBell() {
           </div>
 
           <div className="max-h-96 overflow-y-auto">
-            {notifications.length === 0 ? (
+            {previewNotifications.length === 0 ? (
               <p className="px-4 py-8 text-center text-sm text-gray-400">You're all caught up.</p>
             ) : (
-              notifications.map((n: any) => {
+              previewNotifications.map((n: any) => {
                 const content = (
                   <div className={`flex items-start gap-2 px-4 py-3 text-sm ${!n.read ? "bg-primary-50/50 dark:bg-primary-900/10" : ""}`}>
                     <div className="flex-1">
@@ -108,6 +112,14 @@ export function NotificationBell() {
               })
             )}
           </div>
+
+          <Link
+            href="/notifications"
+            onClick={() => setOpen(false)}
+            className="block border-t border-gray-100 px-4 py-2.5 text-center text-xs font-semibold text-primary-600 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800/50"
+          >
+            View all notifications
+          </Link>
         </div>
       )}
     </div>

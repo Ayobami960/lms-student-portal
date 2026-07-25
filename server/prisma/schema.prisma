@@ -59,9 +59,9 @@ model User {
   role       Role     @default(STUDENT)
   avatar     String?
   isVerified Boolean  @default(false)
-  isApproved Boolean  @default(true) // instructors start false until an admin approves them
-  isActive   Boolean  @default(true) // deactivated by admin -> blocked from logging in
-  studentId  String?  @unique // student-facing ID code, used to verify live-class join
+  isApproved Boolean  @default(true) 
+  isActive   Boolean  @default(true) 
+  studentId  String?  @unique 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -122,7 +122,7 @@ model Course {
   thumbnail    String?
   category     String
   level        Level    @default(BEGINNER)
-  duration     Int      @default(0) // minutes
+  duration     Int      @default(0) 
   rating       Float    @default(0)
   published    Boolean  @default(false)
   instructorId String
@@ -239,7 +239,7 @@ model Submission {
   score        Int?
   feedback     String?
   status       SubmissionStatus @default(SUBMITTED)
-  approved     Boolean          @default(false) // instructor must explicitly approve before it counts toward a certificate
+  approved     Boolean          @default(false) 
   submittedAt  DateTime         @default(now())
   gradedAt     DateTime?
   updatedAt    DateTime         @updatedAt
@@ -299,9 +299,6 @@ model AIMessage {
   @@map("ai_messages")
 }
 
-// ============================================================
-// Notifications, admin invitations, announcements, platform settings
-// ============================================================
 
 enum NotificationType {
   ENROLLMENT
@@ -373,8 +370,7 @@ model Announcement {
   @@map("announcements")
 }
 
-// Simple singleton key/value store — used for maintenance mode today,
-// generic enough to hold other platform-wide toggles later without a migration.
+
 model Setting {
   key       String   @id
   value     String
@@ -383,9 +379,6 @@ model Setting {
   @@map("settings")
 }
 
-// ============================================================
-// Admin audit trail
-// ============================================================
 
 model AuditLog {
   id          String   @id @default(uuid())
@@ -405,10 +398,6 @@ model AuditLog {
   @@map("audit_logs")
 }
 
-// ============================================================
-// Messaging: student support threads (to all admins) and
-// instructor -> student direct messages
-// ============================================================
 
 model Conversation {
   id        String           @id @default(uuid())
@@ -453,9 +442,6 @@ model ChatMessage {
   @@map("chat_messages")
 }
 
-// ============================================================
-// Live classes
-// ============================================================
 
 model LiveClass {
   id           String          @id @default(uuid())
@@ -479,8 +465,7 @@ model LiveClass {
   @@map("live_classes")
 }
 
-// Note: no unique(liveClassId, studentId) — a student can leave and rejoin,
-// producing multiple attendance rows for the same class.
+
 model ClassAttendance {
   id           String    @id @default(uuid())
   liveClassId  String
