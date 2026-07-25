@@ -87,9 +87,9 @@ export const LoginPage: React.FC = () => {
               <h1 className="text-4xl text-white font-bold tracking-tight">SkillForge</h1>
               <p className="text-lg text-white/90">Elevate your modern learning experience.</p>
               <div className="mt-lg flex items-center gap-md">
-                <div className="h-[1px] w-12 bg-white/30"></div>
+                <div className="h-px w-12 bg-white/30"></div>
                 <span className="text-white/70 text-xs font-medium uppercase tracking-widest">Empowering Minds</span>
-                <div className="h-[1px] w-12 bg-white/30"></div>
+                <div className="h-px w-12 bg-white/30"></div>
               </div>
             </div>
           </div>
@@ -97,7 +97,7 @@ export const LoginPage: React.FC = () => {
       </section>
 
       {/* Right side: Login Form — padding matches the image section (p-10) so both cards are the same visible height */}
-      <main className="flex-1 flex items-center justify-center h-full p-10 bg-surface-container-low dark:bg-inverse-surface">
+      <main className="flex-1 flex items-center justify-center h-full p-5 bg-surface-container-low dark:bg-inverse-surface">
         <div className="cyber-auth-shell w-full  h-full">
           <div
             ref={cardRef}
@@ -123,8 +123,8 @@ export const LoginPage: React.FC = () => {
             {/* Form content — centered vertically inside the full-height card, scrollable if it ever overflows on short screens */}
             <div className="relative z-10 flex-1 flex flex-col justify-center overflow-y-auto">
               <div className="mb-lg">
-                <h2 className="text-2xl font-semibold text-on-surface tracking-tight mb-2 text-center">Skill Forge</h2>
-                <h2 className="text-xl font-semibold text-on-surface tracking-tight mb-2">Welcome Back</h2>
+                
+                <h2 className="text-xl font-semibold text-on-surface tracking-tight mb-2">Welcome Back Skill Forge</h2>
                 <p className="text-sm text-outline">Please sign in to access your digital environment</p>
               </div>
 

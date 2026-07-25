@@ -102,9 +102,9 @@ export const RegisterPage: React.FC = () => {
               <h1 className="text-4xl text-white font-bold tracking-tight">Skill Forge</h1>
               <p className="text-lg text-white/90">Elevate your modern learning experience.</p>
               <div className="mt-lg flex items-center gap-md">
-                <div className="h-[1px] w-12 bg-white/30"></div>
+                <div className="h-px w-12 bg-white/30"></div>
                 <span className="text-white/70 text-xs font-medium uppercase tracking-widest">Empowering Minds</span>
-                <div className="h-[1px] w-12 bg-white/30"></div>
+                <div className="h-px w-12 bg-white/30"></div>
               </div>
             </div>
           </div>
@@ -112,7 +112,7 @@ export const RegisterPage: React.FC = () => {
       </section>
 
       {/* Right side: Register Form */}
-      <main className="flex-1 flex items-center justify-center h-full p-10 bg-surface-container-low dark:bg-inverse-surface">
+      <main className="flex-1 flex items-center justify-center h-full p-5 bg-surface-container-low dark:bg-inverse-surface">
         <div className="cyber-auth-shell w-full h-full">
           <div
             ref={cardRef}
