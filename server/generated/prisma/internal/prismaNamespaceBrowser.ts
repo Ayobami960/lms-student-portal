@@ -74,7 +74,8 @@ export const ModelName = {
   ChatMessage: 'ChatMessage',
   LiveClass: 'LiveClass',
   ClassAttendance: 'ClassAttendance',
-  ClassChatMessage: 'ClassChatMessage'
+  ClassChatMessage: 'ClassChatMessage',
+  Todo: 'Todo'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -415,6 +416,19 @@ export const ClassChatMessageScalarFieldEnum = {
 } as const
 
 export type ClassChatMessageScalarFieldEnum = (typeof ClassChatMessageScalarFieldEnum)[keyof typeof ClassChatMessageScalarFieldEnum]
+
+
+export const TodoScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  category: 'category',
+  dueAt: 'dueAt',
+  completed: 'completed',
+  createdAt: 'createdAt'
+} as const
+
+export type TodoScalarFieldEnum = (typeof TodoScalarFieldEnum)[keyof typeof TodoScalarFieldEnum]
 
 
 export const SortOrder = {

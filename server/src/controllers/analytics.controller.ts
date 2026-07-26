@@ -29,4 +29,12 @@ export const analyticsController = {
     const data = await analyticsService.getPlatformCharts();
     sendSuccess(res, data);
   }),
+   monthlyHours: asyncHandler(async (req, res) => {
+    const data = await analyticsService.getMonthlyHours(req.user!.sub);
+    sendSuccess(res, data);
+  }),
+  leaderboard: asyncHandler(async (req, res) => {
+    const data = await analyticsService.getLeaderboard(req.query.courseId as string | undefined);
+    sendSuccess(res, data);
+  }),
 };

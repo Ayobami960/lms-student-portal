@@ -4,51 +4,62 @@
   /* Let Tailwind know to use the .dark selector strategy */
   --variant-dark: .dark &;
 
-  /* ---- Brand colors (Material-style semantic tokens) ---- */
-  --color-primary: #3525cd;
+  /* ---- Brand colors (Material-style semantic tokens) ----
+     Palette pulled from the dashboard design:
+     - near-black for icon chips / primary buttons
+     - teal + coral/salmon as the paired data-viz colors
+     - warm orange as the single "live" accent (gauge needle, notif dot, date ring)
+  */
+  --color-primary: #14131f;
   --color-on-primary: #ffffff;
-  --color-primary-container: #4f46e5;
-  --color-on-primary-container: #dad7ff;
+  --color-primary-container: #2b2a3d;
+  --color-on-primary-container: #f3f2fb;
 
-  --color-secondary: #006a61;
+  --color-secondary: #14b8a6;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #86f2e4;
-  --color-on-secondary-container: #006f66;
-  --color-secondary-fixed-dim: #6bd8cb;
+  --color-secondary-container: #d8f5f0;
+  --color-on-secondary-container: #0d6d63;
+  --color-secondary-fixed-dim: #5eead4;
 
-  --color-tertiary: #571ac0;
+  --color-tertiary: #f4977a;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #6f3dd9;
-  --color-on-tertiary-container: #e3d5ff;
-  --color-tertiary-fixed: #e9ddff;
-  --color-on-tertiary-fixed-variant: #5516be;
+  --color-tertiary-container: #fde6dc;
+  --color-on-tertiary-container: #9a4a2f;
+  --color-tertiary-fixed: #fde6dc;
+  --color-on-tertiary-fixed-variant: #c96a48;
+
+  /* Warm orange — the single "alive" accent color in the design */
+  --color-accent: #f97316;
+  --color-on-accent: #ffffff;
+  --color-accent-container: #ffe4cc;
+  --color-on-accent-container: #7c2d12;
 
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
   --color-error-container: #ffdad6;
   --color-on-error-container: #93000a;
 
-  --color-warning: #8a5000;
+  --color-warning: #f97316;
   --color-on-warning: #ffffff;
-  --color-warning-container: #ffddb3;
-  --color-on-warning-container: #2a1800;
+  --color-warning-container: #ffe4cc;
+  --color-on-warning-container: #7c2d12;
 
-  --color-success: #1e6e2e;
+  --color-success: #22c55e;
   --color-on-success: #ffffff;
-  --color-success-container: #b7f2bd;
-  --color-on-success-container: #06280f;
+  --color-success-container: #d1fae0;
+  --color-on-success-container: #0f5c2a;
 
   /* ---- Surfaces (flip in .dark below) ---- */
-  --color-surface: #f8f9ff;
-  --color-on-surface: #0b1c30;
-  --color-on-surface-variant: #464555;
-  --color-surface-container: #e5eeff;
-  --color-surface-container-high: #dce9ff;
-  --color-surface-container-highest: #d3e4fe;
+  --color-surface: #f7f7fa;
+  --color-on-surface: #17161f;
+  --color-on-surface-variant: #74738a;
+  --color-surface-container: #f1f1f4;
+  --color-surface-container-high: #e9e8ee;
+  --color-surface-container-highest: #dfdee7;
   --color-surface-container-lowest: #ffffff;
 
-  --color-outline: #777587;
-  --color-outline-variant: #c7c4d8;
+  --color-outline: #a4a2b3;
+  --color-outline-variant: #e7e5ec;
 
   /* ---- Spacing & radius ---- */
   --spacing-md: 1.5rem;
@@ -58,6 +69,9 @@
   --spacing-xl: 3rem;
   --spacing-margin-mobile: 1rem;
   --spacing-margin-desktop: 2.5rem;
+
+  /* Card radius used throughout the dashboard (bigger + softer than a stock design) */
+  --radius-card: 1.25rem;
 }
 
 ::-webkit-scrollbar {
@@ -79,35 +93,40 @@
 }
 
 /* Dark mode overrides — only the tokens that should actually change.
-   Brand colors (primary/secondary/tertiary) and "fixed" tokens intentionally
+   Brand colors (primary/secondary/tertiary/accent) and "fixed" tokens intentionally
    stay constant across themes; only surfaces + status colors flip contrast. */
 @layer base {
   .dark {
-    --color-surface: #0b1c30;
-    --color-on-surface: #f8f9ff;
-    --color-on-surface-variant: #c7c4d8;
-    --color-surface-container: #172e48;
-    --color-surface-container-high: #1c3552;
-    --color-surface-container-highest: #23405f;
-    --color-surface-container-lowest: #13273e;
+    --color-primary: #f3f2fb;
+    --color-on-primary: #14131f;
+    --color-primary-container: #2b2a3d;
+    --color-on-primary-container: #f3f2fb;
 
-    --color-outline: #8f8da3;
-    --color-outline-variant: #2d435e;
+    --color-surface: #100f18;
+    --color-on-surface: #f3f2fb;
+    --color-on-surface-variant: #a4a2b3;
+    --color-surface-container: #1a1926;
+    --color-surface-container-high: #211f30;
+    --color-surface-container-highest: #29273a;
+    --color-surface-container-lowest: #17161f;
+
+    --color-outline: #74738a;
+    --color-outline-variant: #2e2c3f;
 
     --color-error: #ffb4ab;
     --color-on-error: #690005;
     --color-error-container: #93000a;
     --color-on-error-container: #ffdad6;
 
-    --color-warning: #ffb95c;
-    --color-on-warning: #452b00;
-    --color-warning-container: #684100;
-    --color-on-warning-container: #ffddb3;
+    --color-warning: #fdba74;
+    --color-on-warning: #451a03;
+    --color-warning-container: #7c2d12;
+    --color-on-warning-container: #ffe4cc;
 
-    --color-success: #8ad99a;
-    --color-on-success: #06280f;
-    --color-success-container: #0f4a20;
-    --color-on-success-container: #b7f2bd;
+    --color-success: #86efac;
+    --color-on-success: #052e16;
+    --color-success-container: #0f5c2a;
+    --color-on-success-container: #d1fae0;
   }
 }
 
@@ -115,7 +134,7 @@
 
 .input {
   width: 100%;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   border: 1px solid var(--color-outline-variant);
   background-color: var(--color-surface-container-lowest);
   padding: 0.625rem 0.875rem;
@@ -134,8 +153,8 @@
 }
 
 .input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgb(53 37 205 / 0.2);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgb(20 184 166 / 0.18);
 }
 
 .input:disabled {
@@ -145,14 +164,14 @@
 
 .input-search {
   width: 100%;
-  border-radius: 0.5rem;
-  border: 1px solid var(--color-outline-variant);
-  background-color: var(--color-surface-container-lowest);
-  padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background-color: var(--color-surface-container);
+  padding: 0.625rem 1rem 0.625rem 2.5rem;
   font-size: 0.875rem;
   color: var(--color-on-surface);
   outline: none;
-  transition: border-color 150ms, box-shadow 150ms;
+  transition: border-color 150ms, box-shadow 150ms, background-color 150ms;
 }
 
 .input-search::placeholder {
@@ -160,12 +179,13 @@
 }
 
 .input-search:hover {
-  border-color: var(--color-outline);
+  background-color: var(--color-surface-container-high);
 }
 
 .input-search:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgb(53 37 205 / 0.2);
+  background-color: var(--color-surface-container-lowest);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgb(20 184 166 / 0.18);
 }
 
 /* Dropdown / select styling with a custom chevron */
@@ -175,16 +195,16 @@ select.input {
   padding-right: 2.25rem;
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23777587' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2374738a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
-/* Primary action button */
+/* Primary action button — near-black chip, matches icon-tile buttons in the design */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.75rem;
+  border-radius: 0.85rem;
   background-color: var(--color-primary);
   padding: 0.625rem 1.25rem;
   font-size: 0.875rem;
@@ -196,7 +216,7 @@ select.input {
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
+  opacity: 0.88;
 }
 
 .btn-primary:active {
@@ -215,7 +235,7 @@ select.input {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.75rem;
+  border-radius: 0.85rem;
   border: 1px solid var(--color-outline-variant);
   background-color: var(--color-surface-container-lowest);
   padding: 0.625rem 1.25rem;
@@ -227,8 +247,8 @@ select.input {
 }
 
 .btn-secondary:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
 }
 
 .btn-secondary:disabled {
@@ -238,12 +258,45 @@ select.input {
   color: var(--color-on-surface);
 }
 
-/* Card surface used by CourseCard and similar list items */
+/* Card surface — soft, borderless, generously rounded, matches the dashboard's
+   stat / chart / leaderboard tiles */
 .card {
-  border-radius: 1rem;
+  border-radius: var(--radius-card);
   border: 1px solid var(--color-outline-variant);
   background-color: var(--color-surface-container-lowest);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  box-shadow: 0 1px 3px rgb(23 22 31 / 0.04), 0 8px 24px -12px rgb(23 22 31 / 0.06);
+}
+
+/* Small icon tile — the black rounded-square icon badges seen on stat cards
+   (e.g. the eye / check / question icons next to "Total Enrolled", "Completed"...) */
+.icon-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  flex-shrink: 0;
+}
+
+/* Data-viz accent utilities — use these for chart series / legends so the
+   teal + coral pairing stays consistent across charts */
+.chart-series-a {
+  color: var(--color-tertiary); /* coral/salmon bars */
+}
+.chart-series-b {
+  color: var(--color-secondary); /* teal bars */
+}
+
+/* Active nav item pill — mirrors the "Overview" active state in the sidebar
+   (soft neutral fill, no border, rounded-xl) */
+.nav-item-active {
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface);
+  font-weight: 600;
+  border-radius: 0.85rem;
 }
 
 /* ==================== Scrolling text loader ==================== */
@@ -257,7 +310,7 @@ select.input {
 .loader {
   --loader-main-size: 4em;
   --loader-text-color: var(--color-on-surface);
-  --loader-shine-color: var(--color-primary);
+  --loader-shine-color: var(--color-secondary);
   --loader-shadow-color: var(--color-outline);
   display: flex;
   justify-content: center;
@@ -484,8 +537,8 @@ select.input {
 
 .cyber-auth-card:hover {
   box-shadow:
-    0 20px 60px -15px color-mix(in srgb, var(--color-primary) 35%, transparent),
-    0 0 40px -10px color-mix(in srgb, var(--color-secondary) 30%, transparent);
+    0 20px 60px -15px color-mix(in srgb, var(--color-secondary) 35%, transparent),
+    0 0 40px -10px color-mix(in srgb, var(--color-tertiary) 30%, transparent);
 }
 
 .cyber-auth-glow-field {
@@ -540,7 +593,7 @@ select.input {
   position: absolute;
   height: 1px;
   width: 100%;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-primary) 45%, transparent), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-secondary) 45%, transparent), transparent);
   transform: scaleX(0);
   pointer-events: none;
 }
@@ -571,7 +624,7 @@ select.input {
   position: absolute;
   width: 14px;
   height: 14px;
-  border: 2px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
+  border: 2px solid color-mix(in srgb, var(--color-secondary) 40%, transparent);
   transition: all 300ms ease;
   pointer-events: none;
 }
@@ -580,15 +633,15 @@ select.input {
 .cyber-auth-corners span:nth-child(3) { bottom: 10px; left: 10px; border-right: 0; border-top: 0; }
 .cyber-auth-corners span:nth-child(4) { bottom: 10px; right: 10px; border-left: 0; border-top: 0; }
 .cyber-auth-card:hover .cyber-auth-corners span {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-primary) 50%, transparent);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-secondary) 50%, transparent);
 }
 
 .cyber-auth-scan {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent);
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-secondary) 12%, transparent), transparent);
   transform: translateY(-100%);
   animation: cyberScan 2.6s linear infinite;
   opacity: 0;

@@ -6,10 +6,6 @@ const participantsWithUser = {
   include: { user: { select: { id: true, name: true, role: true } } },
 } as const;
 
-async function firstAdminId(): Promise<string | null> {
-  const admin = await prisma.user.findFirst({ where: { role: "ADMIN" }, orderBy: { createdAt: "asc" } });
-  return admin?.id ?? null;
-}
 
 export const conversationService = {
  

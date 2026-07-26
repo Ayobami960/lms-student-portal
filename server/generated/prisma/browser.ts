@@ -137,3 +137,8 @@ export type ClassAttendance = Prisma.ClassAttendanceModel
  * 
  */
 export type ClassChatMessage = Prisma.ClassChatMessageModel
+/**
+ * Model Todo
+ * 
+ */
+export type Todo = Prisma.TodoModel

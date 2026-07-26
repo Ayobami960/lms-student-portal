@@ -498,3 +498,17 @@ model ClassChatMessage {
   @@index([liveClassId])
   @@map("class_chat_messages")
 }
+
+
+model Todo {
+  id        String    @id @default(uuid())
+  userId    String
+  title     String
+  category  String?
+  dueAt     DateTime?
+  completed Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("todos")
+}

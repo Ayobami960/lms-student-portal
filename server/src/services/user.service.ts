@@ -55,31 +55,45 @@ export const userService = {
     return { items, total };
   },
 
-  // Full activity snapshot for the admin "view user activity" screen: recent
-  // enrollments, submissions, and (for instructors) courses taught.
+ 
+  
   async getActivity(id: string) {
     const user = await this.getById(id);
-    const [enrollments, submissions, coursesTaught] = await Promise.all([
+    const [enrollments, submissions, certificates, coursesTaught] = await Promise.all([
       prisma.enrollment.findMany({
         where: { studentId: id },
-        include: { course: { select: { title: true } } },
+        include: { course: { select: { id: true, title: true } } },
         orderBy: { enrolledAt: "desc" },
-        take: 10,
+        take: 50,
       }),
       prisma.submission.findMany({
         where: { studentId: id },
-        include: { assignment: { select: { title: true } } },
+        include: { assignment: { select: { title: true, maxScore: true } } },
         orderBy: { submittedAt: "desc" },
-        take: 10,
+        take: 20,
+      }),
+      prisma.certificate.findMany({
+        where: { studentId: id },
+        select: { id: true, courseName: true, issueDate: true },
       }),
       user.role === "INSTRUCTOR"
         ? prisma.course.findMany({
             where: { instructorId: id },
-            select: { id: true, title: true, published: true, createdAt: true },
+            select: { id: true, title: true, published: true, createdAt: true, _count: { select: { enrollments: true } } },
           })
         : Promise.resolve([]),
     ]);
-    return { user, enrollments, submissions, coursesTaught };
+
+    const summary = {
+      totalCourses: enrollments.length,
+      completedCourses: enrollments.filter((e) => e.completed).length,
+      averageProgress: enrollments.length
+        ? Math.round(enrollments.reduce((sum, e) => sum + e.progress, 0) / enrollments.length)
+        : 0,
+      certificatesEarned: certificates.length,
+    };
+
+    return { user, summary, enrollments, submissions, certificates, coursesTaught };
   },
 
   async approveInstructor(id: string, actor: Actor) {

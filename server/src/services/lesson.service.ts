@@ -66,12 +66,7 @@ export const lessonService = {
     await prisma.lesson.delete({ where: { id } });
   },
 
-  /**
-   * Marks a lesson complete for a student, then recalculates course progress:
-   * 1. Upsert LessonProgress
-   * 2. Count completed lessons vs total lessons in the course
-   * 3. Update Enrollment.progress (and completed flag / completedAt)
-   */
+ 
   async completeLesson(lessonId: string, studentId: string) {
     const lesson = await prisma.lesson.findUnique({
       where: { id: lessonId },
@@ -109,8 +104,6 @@ export const lessonService = {
       },
     });
 
-    // Only fire the "just completed" notifications the moment it crosses the
-    // line, not on every subsequent lesson toggle within an already-complete course.
     const justCompleted = isComplete && !enrollment.completed;
     if (justCompleted) {
       const [student, course] = await Promise.all([

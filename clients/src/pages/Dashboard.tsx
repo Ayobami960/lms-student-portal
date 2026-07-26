@@ -59,8 +59,7 @@ export default function DashboardPage() {
     [isInstructor, stats]
   );
 
-  // Guard goes AFTER all hooks so hook order stays stable across renders.
-  // Anyone who's neither a student nor an instructor gets redirected.
+ 
   if (user && !isStudent && !isInstructor) {
     return <Navigate to="/" replace />;
   }

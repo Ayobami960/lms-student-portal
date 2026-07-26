@@ -10,5 +10,7 @@ analyticsRoutes.get("/progress", authenticate, analyticsController.progress);
 analyticsRoutes.get("/admin/dashboard", authenticate, authorize("ADMIN"), analyticsController.adminDashboard);
 analyticsRoutes.get("/performance", authenticate, analyticsController.performance);
 analyticsRoutes.get("/charts", authenticate, authorize("ADMIN"), analyticsController.charts);
+analyticsRoutes.get("/monthly-hours", authenticate, analyticsController.monthlyHours);
+analyticsRoutes.get("/leaderboard", authenticate, analyticsController.leaderboard);
 
 export default analyticsRoutes;

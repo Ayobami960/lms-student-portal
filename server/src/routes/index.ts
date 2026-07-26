@@ -17,6 +17,7 @@ import notificationRoutes from "./notificationRoutes.js";
 import liveClassRoutes from "./liveClassRoutes.js";
 import auditLogRoutes from "./auditLogRoutes.js";
 import conversationRoutes from "./conversationRoutes.js";
+import todoRoutes from "./todoRoutes.js";
 
 
 const router = Router();
@@ -40,5 +41,6 @@ router.use("/", lessonRoutes);       // /modules/:moduleId/lessons, /lessons/:id
 router.use("/", liveClassRoutes); 
 router.use("/audit-logs", auditLogRoutes);
 router.use("/conversations", conversationRoutes);
+router.use("/todos", todoRoutes);
 
 export default router;

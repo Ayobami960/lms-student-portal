@@ -112,7 +112,7 @@ export const analyticsService = {
       totalStudents,
       submissionsToGrade,
       averageRating: avgRating._avg.rating ?? 0,
-      // Map return layout matching explicit structure definitions
+      
       courses: (courses as unknown as CourseWithCount[]).map((c) => ({
         id: c.id,
         title: c.title,
@@ -183,6 +183,64 @@ export const analyticsService = {
       usersByRole: usersByRole.map((r) => ({ role: r.role, count: r._count })),
       monthlyEnrollments,
     };
+  },
+
+   async getMonthlyHours(studentId: string) {
+    const completions = await prisma.lessonProgress.findMany({
+      where: { studentId, completed: true, completedAt: { not: null } },
+      include: { lesson: { include: { module: { include: { course: true } } } } },
+    });
+
+    const lessonCountByCourse = new Map<string, number>();
+    for (const c of completions) {
+      const courseId = c.lesson.module.courseId;
+      if (!lessonCountByCourse.has(courseId)) {
+        const count = await prisma.lesson.count({ where: { module: { courseId } } });
+        lessonCountByCourse.set(courseId, count || 1);
+      }
+    }
+
+    const now = new Date();
+    const months: { label: string; year: number; month: number }[] = [];
+    for (let i = 4; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ label: d.toLocaleString("default", { month: "short" }), year: d.getFullYear(), month: d.getMonth() });
+    }
+
+    return months.map(({ label, year, month }) => {
+      const inMonth = completions.filter((c) => c.completedAt!.getFullYear() === year && c.completedAt!.getMonth() === month);
+      const minutes = inMonth.reduce((sum, c) => {
+        const course = c.lesson.module.course;
+        const lessonCount = lessonCountByCourse.get(course.id) ?? 1;
+        return sum + course.duration / lessonCount;
+      }, 0);
+      return { month: label, hours: Math.round((minutes / 60) * 10) / 10 };
+    });
+  },
+
+  
+  async getLeaderboard(courseId?: string, limit = 10) {
+    const studentWhere = courseId ? { enrollments: { some: { courseId } } } : {};
+    const students = await prisma.user.findMany({ where: { role: "STUDENT", ...studentWhere }, select: { id: true, name: true, avatar: true } });
+
+    const results = await Promise.all(
+      students.map(async (s) => {
+        const [submissions, completedLessons, enrollments] = await Promise.all([
+          prisma.submission.findMany({ where: { studentId: s.id, approved: true, ...(courseId ? { assignment: { lesson: { module: { courseId } } } } : {}) }, select: { score: true } }),
+          prisma.lessonProgress.count({ where: { studentId: s.id, completed: true, ...(courseId ? { lesson: { module: { courseId } } } : {}) } }),
+          prisma.enrollment.findMany({ where: { studentId: s.id, ...(courseId ? { courseId } : {}) }, select: { courseId: true } }),
+        ]);
+        const scorePoints = submissions.reduce((sum, sub) => sum + (sub.score ?? 0), 0);
+        const points = scorePoints + completedLessons * 5;
+        return { id: s.id, name: s.name, avatar: s.avatar, courses: enrollments.length, points };
+      })
+    );
+
+    return results
+      .filter((r) => r.points > 0)
+      .sort((a, b) => b.points - a.points)
+      .slice(0, limit)
+      .map((r, i) => ({ rank: i + 1, ...r }));
   },
 };
 

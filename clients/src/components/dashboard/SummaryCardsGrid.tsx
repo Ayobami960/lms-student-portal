@@ -18,7 +18,7 @@ function SummaryCardsGridImpl({ cards, isLoading }: SummaryCardsGridProps) {
   }
 
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md" aria-label="Summary statistics">
+    <section className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-md" aria-label="Summary statistics">
       {cards.map((card) => {
         const Icon = card.icon;
         return (

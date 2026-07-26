@@ -17,6 +17,8 @@ const InstructorCoursesPage = lazy(() => import("./pages/InstructorController/In
 const ViewCoursesPage = lazy(() => import("./pages/InstructorController/ViewCoursesPage"));
 
 const CourseEditPage = lazy(() => import("./pages/InstructorController/CourseEdit"));
+const MessagesPage = lazy(() => import("./pages/InstructorController/MessagesPage"));
+const LiveClassroomPage = lazy(() => import("./pages/LiveClassroomPage"));
 
 const CoursesPage = lazy(() => import("./pages/courses/CoursesPage"));
 const CoursesDetail = lazy(() => import("./pages/courses/CourseDetails"));
@@ -29,14 +31,14 @@ const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
 function Fallback() {
   return (
     <div className="flex h-screen items-center justify-center ">
-       <Loader/>
+      <Loader />
     </div>
   );
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { accessToken } = useAppSelector((state) => state.auth);
-  
+
   if (accessToken) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -64,16 +66,15 @@ export default function App() {
         if (mounted) {
           // FIX 1: Update the user object profile details
           dispatch(setUser(payload.data));
-          
-          
+
+
           if (payload.accessToken) {
             dispatch(setAccessToken(payload.accessToken));
           }
         }
       })
       .catch(() => {
-        // FIX 3: If the background refresh API request hits a 401 or network error 
-        // because the user's cookies expired, clean up the stale localStorage user layout context.
+
         if (mounted) {
           dispatch(clearAuth());
         }
@@ -109,38 +110,38 @@ export default function App() {
     <Suspense fallback={<Fallback />}>
       <Routes>
         {/* Public auth pages (Will redirect to /dashboard if logged in) */}
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             <PublicRoute>
               <LoginPage />
             </PublicRoute>
-          } 
+          }
         />
-        <Route 
-          path="/register" 
+        <Route
+          path="/register"
           element={
             <PublicRoute>
               <RegisterPage />
             </PublicRoute>
-          } 
+          }
         />
-        <Route 
-          path="/forgot-password" 
+        <Route
+          path="/forgot-password"
           element={
             <PublicRoute>
               <ForgotPasswordPage />
             </PublicRoute>
-          } 
+          }
         />
 
-         <Route 
-          path="/reset-password" 
+        <Route
+          path="/reset-password"
           element={
             <PublicRoute>
               <ResetPasswordPage />
             </PublicRoute>
-          } 
+          }
         />
 
 
@@ -153,13 +154,13 @@ export default function App() {
           <Route path="/assignments" element={<AssignmentsPage />} />
           <Route path="/certificates" element={<CertificatesPage />} />
           <Route path="/ai-assistant" element={<AIAssistantPage />} />
-            <Route path="/my-courses" element={<InstructorCoursesPage />} />
-            
-            <Route path="/view-courses/:id" element={<ViewCoursesPage />} />
-          
-            
-            <Route path="/my-courses/:id" element={<CourseEditPage />} />
-            <Route path="/grading" element={<GradingPage />} />
+          <Route path="/my-courses" element={<InstructorCoursesPage />} />
+
+          <Route path="/view-courses/:id" element={<ViewCoursesPage />} />
+          <Route path="/my-courses/:id" element={<CourseEditPage />} />
+          <Route path="/grading" element={<GradingPage />} />
+          <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/courses/:id/classroom" element={<LiveClassroomPage />} />
         </Route>
 
         {/* Fallback route - sends unhandled paths back home */}

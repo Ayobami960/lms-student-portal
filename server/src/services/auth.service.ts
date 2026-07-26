@@ -6,6 +6,7 @@ import { prisma } from "../config/db.js";
 import { emailService } from "./email.service.js";
 import { emailTemplates } from "../../emails/templates.js";
 import { notificationService } from "./notification.service.js";
+import { auditLogService } from "./audit-log.service.js";
 
 const SALT_ROUNDS = 12;
 const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN ?? "7d";
@@ -51,7 +52,8 @@ export const authService = {
     const { subject, html } = emailTemplates.welcome(user.name);
     void emailService.send({ to: user.email, subject, html });
     void notificationService.create(user.id, "GENERAL", "Welcome to LMS Platform", "Your account has been created successfully.");
-
+    void auditLogService.log({ id: user.id, name: user.name, role: user.role }, "USER_REGISTERED", `${user.name} registered as ${role}`, "User", user.id);
+    
     return authService.issueTokens(user.id, user.role, user.email);
   },
 
