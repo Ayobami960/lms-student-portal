@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
 import { useAppSelector } from "../../hooks/redux";
 
 function useClock() {
@@ -13,16 +12,12 @@ function useClock() {
 
 export const TopbarDashboard = () => {
  
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  
   const mobileInputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
+  
   const user = useAppSelector((s) => s.auth.user);
   const isInstructor = user?.role === "INSTRUCTOR";
   const now = useClock();
-
-  useEffect(() => {
-    if (mobileSearchOpen) mobileInputRef.current?.focus();
-  }, [mobileSearchOpen]);
 
   const time = now.toLocaleTimeString("en-US", {
     hour: "2-digit",
