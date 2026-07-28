@@ -24,13 +24,11 @@ export const authController = {
   }),
 
   login: asyncHandler(async (req, res) => {
-    const { accessToken, refreshToken, user } = await authService.login(req.body.email, req.body.password);
-    setRefreshCookie(res, refreshToken);
-    sendSuccess(res, {
-      accessToken,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role, avatar: user.avatar, isApproved: user.isApproved },
-    }, "Login successful");
-  }),
+  const { accessToken, refreshToken, user } = await authService.login(req.body.email, req.body.password);
+  setRefreshCookie(res, refreshToken);
+  sendSuccess(res, { accessToken, user }, "Login successful");
+}),
+
 
   refresh: asyncHandler(async (req, res) => {
     const token = req.cookies?.[REFRESH_COOKIE] ?? req.body.refreshToken;

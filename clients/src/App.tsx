@@ -1,12 +1,14 @@
 import { Routes, Route, Navigate } from "react-router";
 import { lazy, Suspense, useState, useEffect } from "react";
 
-import ProtectedLayout from "./components/layout/ProtectedLayout";
+
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { useLazyMeQuery } from "./store/api/apiSlice";
 
 import { setUser, setAccessToken, clearAuth } from "./store/authSlice";
 import Loader from "./components/Loading";
+import { ProtectedLayout } from "./components/layout/ProtectedLayout";
+import { useTheme } from "./hooks/useTheme";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/auth/RegisterPage"));
@@ -46,7 +48,8 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
+   const { currentTheme, onToggleTheme } = useTheme();
+
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const { accessToken, user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
@@ -88,19 +91,7 @@ export default function App() {
     };
   }, [accessToken, user, triggerMe, dispatch]);
 
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  };
+  
 
   if (!isAuthChecked) {
     return <Fallback />;
@@ -147,7 +138,7 @@ export default function App() {
 
 
         {/* Protected layout wraps the dashboard and course routes */}
-        <Route element={<ProtectedLayout currentTheme={theme} onToggleTheme={toggleTheme} />}>
+        <Route element={<ProtectedLayout currentTheme={currentTheme} onToggleTheme={onToggleTheme} />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:id" element={<CoursesDetail />} />

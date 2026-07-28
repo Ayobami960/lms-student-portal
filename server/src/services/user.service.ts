@@ -7,16 +7,26 @@ import { auditLogService } from "./audit-log.service.js";
 import { generateStudentId } from "../utils/studentId.js";
 
 type Actor = { id: string; name: string; role: string };
+const PUBLIC_USER_SELECT = {
+  id: true,
+  name: true,
+  email: true,
+  role: true,
+  avatar: true,
+  isVerified: true,
+  isApproved: true,
+  isActive: true,
+  studentId: true,
+  createdAt: true,
+} as const;
+
+
 
 export const userService = {
   async getById(id: string) {
     const user = await prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true, name: true, email: true, role: true, avatar: true,
-        isVerified: true, isApproved: true, isActive: true, studentId: true,
-        createdAt: true, updatedAt: true,
-      },
+      select: PUBLIC_USER_SELECT,
     });
     if (!user) throw ApiError.notFound("User not found");
     return user;
@@ -26,13 +36,13 @@ export const userService = {
     return prisma.user.update({
       where: { id },
       data,
-      select: { id: true, name: true, email: true, role: true, avatar: true },
+      select: PUBLIC_USER_SELECT,
     });
   },
 
   async setAvatar(id: string, avatarUrl: string) {
     return prisma.user.update({ where: { id }, data: { avatar: avatarUrl }, select: { id: true, avatar: true } });
-  },
+  },  
 
   async listAll(page: number, limit: number, role?: string, pendingOnly?: boolean, search?: string) {
     const where: any = {

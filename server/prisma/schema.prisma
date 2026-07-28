@@ -500,6 +500,7 @@ model ClassChatMessage {
 }
 
 
+
 model Todo {
   id        String    @id @default(uuid())
   userId    String

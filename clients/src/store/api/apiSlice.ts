@@ -1,3 +1,4 @@
+
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./baseQuery";
 
@@ -19,6 +20,7 @@ export const apiSlice = createApi({
     "Notification",
     "SupportConversation",
     "LiveClass",
+    "Todo",
   ],
   endpoints: (builder) => ({
     // ---------------- Auth ----------------
@@ -37,6 +39,10 @@ export const apiSlice = createApi({
     me: builder.query<ApiSuccess<AuthUser> & { accessToken?: string }, void>({
       query: () => "/auth/me",
       providesTags: ["Me"],
+    }),
+    updateProfile: builder.mutation<ApiSuccess<any>, { name?: string; avatar?: string  }>({
+      query: (body) => ({ url: "/users/me", method: "PATCH", body }),
+      invalidatesTags: ["Me"],
     }),
     forgotPassword: builder.mutation<ApiSuccess<{ token: string | null }>, { email: string }>({
       query: (body) => ({ url: "/auth/forgot-password", method: "POST", body }),
@@ -78,6 +84,14 @@ export const apiSlice = createApi({
     enrollCourse: builder.mutation<ApiSuccess<any>, string>({
       query: (id) => ({ url: `/courses/${id}/enroll`, method: "POST" }),
       invalidatesTags: (_r, _e, id) => [{ type: "Course", id }, { type: "Course", id: "LIST" }],
+    }),
+    getCourseRoster: builder.query<ApiSuccess<any[]>, string>({
+      query: (id) => `/courses/${id}/roster`,
+      providesTags: (_r, _e, id) => [{ type: "Course" as const, id: `roster-${id}` }],
+    }),
+    unenrollStudent: builder.mutation<ApiSuccess<null>, { enrollmentId: string; courseId: string }>({
+      query: ({ enrollmentId }) => ({ url: `/courses/enrollments/${enrollmentId}`, method: "DELETE" }),
+      invalidatesTags: (_r, _e, { courseId }) => [{ type: "Course" as const, id: `roster-${courseId}` }],
     }),
 
     // ---------------- Lessons ----------------
@@ -127,7 +141,7 @@ export const apiSlice = createApi({
           ? [...result.data.map((s: any) => ({ type: "Submission" as const, id: s.id })), { type: "Submission", id: "LIST" }]
           : [{ type: "Submission", id: "LIST" }],
     }),
-    gradeSubmission: builder.mutation<ApiSuccess<any>, { id: string; score: number; feedback?: string }>({
+    gradeSubmission: builder.mutation<ApiSuccess<any>, { id: string; score: number; feedback?: string; approved?: boolean }>({
       query: ({ id, ...body }) => ({ url: `/grading/submissions/${id}`, method: "PATCH", body }),
       invalidatesTags: (_r, _e, { id }) => [{ type: "Submission", id }, { type: "Submission", id: "LIST" }],
     }),
@@ -149,6 +163,10 @@ export const apiSlice = createApi({
     getDashboardAnalytics: builder.query<ApiSuccess<any>, void>({ query: () => "/analytics/dashboard" }),
     getProgressAnalytics: builder.query<ApiSuccess<any[]>, void>({ query: () => "/analytics/progress" }),
     getPerformanceAnalytics: builder.query<ApiSuccess<any[]>, void>({ query: () => "/analytics/performance" }),
+    getMonthlyHours: builder.query<ApiSuccess<{ month: string; hours: number }[]>, void>({ query: () => "/analytics/monthly-hours" }),
+    getLeaderboard: builder.query<ApiSuccess<any[]>, string | void>({
+      query: (courseId) => ({ url: "/analytics/leaderboard", params: courseId ? { courseId } : {} }),
+    }),
 
     // ---------------- Platform settings ----------------
     getMaintenanceStatus: builder.query<ApiSuccess<{ enabled: boolean; message: string }>, void>({
@@ -215,6 +233,27 @@ export const apiSlice = createApi({
       query: ({ id, content }) => ({ url: `/live-classes/${id}/chat`, method: "POST", body: { content } }),
     }),
 
+    // ---------------- To-do list ----------------
+    listTodos: builder.query<ApiSuccess<any[]>, void>({
+      query: () => "/todos",
+      providesTags: (result) =>
+        result
+          ? [...result.data.map((t: any) => ({ type: "Todo" as const, id: t.id })), { type: "Todo", id: "LIST" }]
+          : [{ type: "Todo", id: "LIST" }],
+    }),
+    createTodo: builder.mutation<ApiSuccess<any>, { title: string; category?: string; dueAt?: string }>({
+      query: (body) => ({ url: "/todos", method: "POST", body }),
+      invalidatesTags: [{ type: "Todo", id: "LIST" }],
+    }),
+    updateTodo: builder.mutation<ApiSuccess<any>, { id: string; completed?: boolean; title?: string }>({
+      query: ({ id, ...body }) => ({ url: `/todos/${id}`, method: "PATCH", body }),
+      invalidatesTags: [{ type: "Todo", id: "LIST" }],
+    }),
+    deleteTodo: builder.mutation<ApiSuccess<null>, string>({
+      query: (id) => ({ url: `/todos/${id}`, method: "DELETE" }),
+      invalidatesTags: [{ type: "Todo", id: "LIST" }],
+    }),
+
     // ---------------- AI Assistant ----------------
     listConversations: builder.query<ApiSuccess<any[]>, void>({
       query: () => "/ai/conversations",
@@ -237,9 +276,9 @@ export const apiSlice = createApi({
       query: ({ courseId, data }) => ({ url: `/courses/${courseId}/modules`, method: "POST", body: data }),
       invalidatesTags: (_r, _e, { courseId }) => [{ type: "Course", id: courseId }],
     }),
-    createLesson: builder.mutation<ApiSuccess<any>, { moduleId: string; data: Record<string, unknown> }>({
+    createLesson: builder.mutation<ApiSuccess<any>, { moduleId: string; courseId?: string; data: Record<string, unknown> }>({
       query: ({ moduleId, data }) => ({ url: `/modules/${moduleId}/lessons`, method: "POST", body: data }),
-      invalidatesTags: [{ type: "Course", id: "LIST" }],
+      invalidatesTags: (_r, _e, { courseId }) => (courseId ? [{ type: "Course", id: courseId }] : [{ type: "Course", id: "LIST" }]),
     }),
 
     // ---------------- Notifications ----------------
@@ -268,6 +307,7 @@ export const {
   useLogoutMutation,
   useMeQuery,
   useLazyMeQuery,
+  useUpdateProfileMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useListCoursesQuery,
@@ -276,6 +316,8 @@ export const {
   useUpdateCourseMutation,
   useDeleteCourseMutation,
   useEnrollCourseMutation,
+  useGetCourseRosterQuery,
+  useUnenrollStudentMutation,
   useGetLessonQuery,
   useCompleteLessonMutation,
   useUpdateLessonMutation,
@@ -289,6 +331,8 @@ export const {
   useGetDashboardAnalyticsQuery,
   useGetProgressAnalyticsQuery,
   useGetPerformanceAnalyticsQuery,
+  useGetMonthlyHoursQuery,
+  useGetLeaderboardQuery,
   useGetMaintenanceStatusQuery,
   useListMyConversationsQuery,
   useGetMyConversationQuery,
@@ -303,6 +347,10 @@ export const {
   useGetLiveClassAttendanceQuery,
   useListLiveClassChatQuery,
   useSendLiveClassChatMutation,
+  useListTodosQuery,
+  useCreateTodoMutation,
+  useUpdateTodoMutation,
+  useDeleteTodoMutation,
   useListConversationsQuery,
   useGetConversationQuery,
   useLazyGetConversationQuery,
@@ -314,3 +362,4 @@ export const {
   useMarkAllNotificationsReadMutation,
   useDeleteNotificationMutation,
 } = apiSlice;
+

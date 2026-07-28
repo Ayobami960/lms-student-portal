@@ -2,8 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { AuthUser, AuthState } from "../types";
 
-
-
 const STORAGE_KEY = "lms-student-auth";
 
 function loadPersistedUser(): AuthUser | null {
@@ -31,6 +29,12 @@ const authSlice = createSlice({
     setUser(state, action: PayloadAction<AuthUser>) {
       state.user = action.payload;
     },
+    
+    updateUser(state, action: PayloadAction<Partial<AuthUser>>) {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+      }
+    },
     setAccessToken(state, action: PayloadAction<string>) {
       state.accessToken = action.payload;
     },
@@ -41,7 +45,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuth, setUser, setAccessToken, clearAuth } = authSlice.actions;
+export const { setAuth, setUser, updateUser, setAccessToken, clearAuth } = authSlice.actions;
 export default authSlice.reducer;
 
 export function persistAuthUser(user: AuthUser | null) {

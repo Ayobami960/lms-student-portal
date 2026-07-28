@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
-@theme {
-  /* Let Tailwind know to use the .dark selector strategy */
-  --variant-dark: .dark &;
+/* Registers `.dark` as the toggle target for any `dark:` utilities you use
+   later. Not required by your current CSS-variable approach below, but this
+   is the correct v4 syntax if you ever add dark: prefixed classes. */
+@custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
   /* ---- Brand colors (Material-style semantic tokens) ----
      Palette pulled from the dashboard design:
      - near-black for icon chips / primary buttons

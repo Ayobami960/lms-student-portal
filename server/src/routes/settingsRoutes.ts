@@ -7,8 +7,7 @@ import { setMaintenanceSchema } from "../validations/settings.validation.js";
 
 const settingsRoutes = Router();
 
-// Public read so every frontend can check maintenance status before rendering,
-// even for logged-out visitors.
+
 settingsRoutes.get("/maintenance", settingsController.getMaintenance);
 settingsRoutes.patch("/maintenance", authenticate, authorize("ADMIN"), validate(setMaintenanceSchema), settingsController.setMaintenance);
 
