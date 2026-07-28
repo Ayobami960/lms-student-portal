@@ -51,7 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <span className="icon-tile">
             <GraduationCap size={18} />
           </span>
-          Skill
+          Skill Forge
         </div>
         <button
           className="lg:hidden text-on-surface-variant"
