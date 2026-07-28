@@ -13,8 +13,7 @@ function useClock() {
 export const TopbarDashboard = () => {
  
   
-  const mobileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const user = useAppSelector((s) => s.auth.user);
   const isInstructor = user?.role === "INSTRUCTOR";
   const now = useClock();
