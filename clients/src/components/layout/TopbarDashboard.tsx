@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
-import { Search, Bell, X } from "lucide-react";
 import { useAppSelector } from "../../hooks/redux";
 
 function useClock() {
@@ -13,7 +12,7 @@ function useClock() {
 }
 
 export const TopbarDashboard = () => {
-  const [query, setQuery] = useState("");
+ 
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -42,13 +41,7 @@ export const TopbarDashboard = () => {
     day: "numeric",
   });
 
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    const trimmed = query.trim();
-    if (!trimmed) return;
-    navigate(`/courses?search=${encodeURIComponent(trimmed)}`);
-    setMobileSearchOpen(false);
-  }
+
 
   return (
     <header
