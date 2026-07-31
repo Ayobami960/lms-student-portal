@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Send, Inbox, Archive, CheckCircle2 } from "lucide-react";
+import toast from "react-hot-toast";
 import {
   useListConversationsQuery,
   useGetConversationQuery,
@@ -12,23 +13,35 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 export default function InboxPage() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [input, setInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Poll so the admin sees new incoming messages without refreshing the page.
   const { data: listRes, isLoading } = useListConversationsQuery();
   const { data: convRes } = useGetConversationQuery(activeId!, { skip: !activeId });
   const [sendMessage, { isLoading: sending }] = useSendConversationMessageMutation();
   const [updateStatus] = useUpdateConversationStatusMutation();
-
   const conversations = listRes?.data ?? [];
   const active = convRes?.data;
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [active?.messages?.length]);
+
   async function handleSend() {
     if (!activeId || !input.trim()) return;
-    await sendMessage({ id: activeId, content: input.trim() });
+    const content = input.trim();
     setInput("");
+    try {
+      await sendMessage({ id: activeId, content }).unwrap();
+    } catch (e: any) {
+      setInput(content); // restore so the admin doesn't lose what they typed
+      toast.error(e?.data?.message ?? "Failed to send message");
+    }
   }
 
   return (
@@ -95,13 +108,14 @@ export default function InboxPage() {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2 border-t border-gray-100 p-3 dark:border-gray-800">
-              <input className="input" placeholder="Reply..." value={input} onChange={(e) => setInput(e.target.value)} />
-              <button type="submit" disabled={!input.trim() || sending} className="btn-primary" aria-label="Send">
+            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2 border-t border-gray-100 p-3 dark:border-gray-800">
+              <input className="input" placeholder="Type a reply..." value={input} onChange={(e) => setInput(e.target.value)} />
+              <Button type="submit" size="icon" disabled={!input.trim() || sending} aria-label="Send">
                 <Send size={16} />
-              </button>
+              </Button>
             </form>
           </>
         )}

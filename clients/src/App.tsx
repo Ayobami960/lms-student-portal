@@ -19,7 +19,7 @@ const InstructorCoursesPage = lazy(() => import("./pages/InstructorController/In
 const ViewCoursesPage = lazy(() => import("./pages/InstructorController/ViewCoursesPage"));
 
 const CourseEditPage = lazy(() => import("./pages/InstructorController/CourseEdit"));
-const MessagesPage = lazy(() => import("./pages/InstructorController/MessagesPage"));
+const MessagesPage = lazy(() => import("./pages/MessagesPage"));
 const LiveClassroomPage = lazy(() => import("./pages/LiveClassroomPage"));
 
 const CoursesPage = lazy(() => import("./pages/courses/CoursesPage"));

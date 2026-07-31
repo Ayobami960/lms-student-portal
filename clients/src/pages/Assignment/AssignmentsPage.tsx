@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { ClipboardList, Upload, FileText, Loader2 } from "lucide-react";
+import { ClipboardList, Upload, FileText, Loader2, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import { useListAssignmentsQuery, useSubmitAssignmentMutation } from "../../store/api/apiSlice";
 import { Skeleton } from "../../components/Skeleton";
@@ -9,12 +9,14 @@ import { Badge } from "../../components/Badge";
 const ALLOWED_EXT = [".pdf", ".doc", ".docx", ".ppt", ".pptx", ".zip", ".png", ".jpg", ".jpeg"];
 const MAX_SIZE = 25 * 1024 * 1024;
 
+
 function statusFor(assignment: any) {
   const sub = assignment.submissions?.[0];
-  if (sub?.status === "GRADED") return { label: "Graded", variant: "success" as const };
-  if (sub) return { label: sub.status === "LATE" ? "Submitted (late)" : "Submitted", variant: "info" as const };
-  if (new Date(assignment.dueDate) < new Date()) return { label: "Overdue", variant: "danger" as const };
-  return { label: "Not started", variant: "default" as const };
+  if (sub?.status === "GRADED" && sub.approved) return { label: "Approved", variant: "success" as const, needsAction: false };
+  if (sub?.status === "GRADED" && !sub.approved) return { label: "Needs revision", variant: "danger" as const, needsAction: true };
+  if (sub) return { label: sub.status === "LATE" ? "Submitted (late)" : "Submitted — awaiting review", variant: "info" as const, needsAction: false };
+  if (new Date(assignment.dueDate) < new Date()) return { label: "Overdue", variant: "danger" as const, needsAction: true };
+  return { label: "Not started", variant: "default" as const, needsAction: true };
 }
 
 function SubmitPanel({ assignment }: { assignment: any }) {
@@ -68,11 +70,19 @@ export default function AssignmentsPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const { data, isLoading } = useListAssignmentsQuery();
   const assignments = data?.data;
+  const needingRevision = assignments?.filter((a: any) => statusFor(a).label === "Needs revision").length ?? 0;
 
   return (
     <div>
       <h1 className="mb-1 text-2xl font-bold">Assignments</h1>
       <p className="mb-6 text-sm text-on-surface-variant">Track deadlines and submit your work.</p>
+
+      {needingRevision > 0 && (
+        <div className="mb-4 flex items-center gap-2 rounded-lg border border-error/30 bg-error-container/20 px-4 py-3 text-sm text-on-error-container">
+          <AlertTriangle size={16} />
+          {needingRevision} assignment{needingRevision > 1 ? "s" : ""} need revision before you can claim a certificate — see the instructor's feedback below.
+        </div>
+      )}
 
       {isLoading ? (
         <div className="space-y-3">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20" />)}</div>
@@ -99,9 +109,17 @@ export default function AssignmentsPage() {
                 {expanded === a.id && (
                   <div className="mt-3">
                     <p className="text-sm text-on-surface-variant">{a.description}</p>
-                    {sub?.status === "GRADED" ? (
+
+                    {sub?.status === "GRADED" && !sub.approved && sub.feedback && (
+                      <div className="mt-3 rounded-lg border border-error/30 bg-error-container/20 p-3 text-sm">
+                        <p className="font-medium text-on-error-container">Why this needs revision:</p>
+                        <p className="mt-1 text-on-error-container/90">{sub.feedback}</p>
+                      </div>
+                    )}
+
+                    {sub?.status === "GRADED" && sub.approved ? (
                       <div className="mt-3 rounded-lg bg-surface-container p-3 text-sm">
-                        <p className="font-medium">Score: {sub.score} / {a.maxScore}</p>
+                        <p className="font-medium">Score: {sub.score} / {a.maxScore} · Approved ✓</p>
                         {sub.feedback && <p className="mt-1 text-on-surface-variant">Feedback: {sub.feedback}</p>}
                       </div>
                     ) : (

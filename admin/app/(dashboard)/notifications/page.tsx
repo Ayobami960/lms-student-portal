@@ -187,7 +187,7 @@ const NotificationsPage = () => {
                 return n.link ? (
                   <Link
                     key={n.id}
-                    href={n.link}
+                    href="/inbox"
                     onClick={() => {
                       if (!n.read) markRead(n.id);
                     }}

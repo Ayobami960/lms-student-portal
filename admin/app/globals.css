@@ -190,6 +190,10 @@ html {
     @apply bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-2xl;
   }
 
+  .input {
+    @apply w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
   /* Brand gradients — use sparingly: hero stat cards, CTA buttons, chart accents */
   .gradient-primary {
     background: linear-gradient(135deg, #ff6347 0%, #ff4500 100%);

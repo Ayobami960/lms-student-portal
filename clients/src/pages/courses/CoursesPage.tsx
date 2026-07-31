@@ -45,11 +45,12 @@ export default function CoursesPage() {
 
   return (
     <div className="space-y-lg animate-fade-in">
-      <div className="flex flex-col gap-md md:flex-row md:items-center md:justify-between">
-        <div>
+     <div>
           <h1 className="text-3xl font-semibold text-on-surface">Courses</h1>
           <p className="text-sm text-on-surface-variant mt-1">Browse and enroll in courses.</p>
         </div>
+      <div className="flex flex-col gap-md md:flex-row md:items-center ">
+       
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative w-full sm:w-80">

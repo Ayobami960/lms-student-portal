@@ -102,12 +102,15 @@ export function NotificationBell() {
                     </div>
                   </div>
                 );
-                return n.link ? (
-                  <Link key={n.id} href={n.link} onClick={() => { setOpen(false); if (!n.read) markRead(n.id); }} className="block border-b border-gray-50 last:border-0 hover:bg-gray-50 dark:border-gray-800/50 dark:hover:bg-gray-800/50">
+                return (
+                  <Link
+                    key={n.id}
+                    href="/notifications"
+                    onClick={() => { setOpen(false); if (!n.read) markRead(n.id); }}
+                    className="block border-b border-gray-50 last:border-0 hover:bg-gray-50 dark:border-gray-800/50 dark:hover:bg-gray-800/50"
+                  >
                     {content}
                   </Link>
-                ) : (
-                  <div key={n.id} className="border-b border-gray-50 last:border-0 dark:border-gray-800/50">{content}</div>
                 );
               })
             )}
